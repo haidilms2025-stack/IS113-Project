@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Browse Recipes</title>
+</head>
+
+<body>
+
+<h1>Browse Recipes</h1>
+
+<!-- Search -->
+<form method="POST" action="/">
+    <input type="text" name="search" placeholder="Search recipes">
+    <button type="submit">Search</button>
+</form>
+
+<hr>
+
+<h2>Recipes</h2>
+
+<% if (recipes.length === 0) { %>
+<p>No recipes found.</p>
+<% } %>
+
+<% recipes.forEach(recipe => { %>
+
+<div>
+
+    <!-- Recipe Image -->
+    <img src="<%= recipe.image %>" width="200">
+
+    <!-- Recipe Title -->
+    <h3><%= recipe.title %></h3>
+
+    <!-- Short Description -->
+    <p><%= recipe.description %></p>
+
+    <!-- Optional Details -->
+    <p>
+        <strong>Ingredients:</strong>
+        <%= recipe.ingredients %>
+    </p>
+
+    <!-- View Button -->
+    <form method="GET" action="/recipe/<%= recipe.id %>">
+        <button type="submit">View Recipe</button>
+    </form>
+
+</div>
+
+<hr>
+
+<% }) %>
+
+</body>
+</html>
