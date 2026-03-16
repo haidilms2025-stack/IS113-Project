@@ -38,7 +38,7 @@ function startServer() {
   server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
   });
-}
+}                                                                                                                 
 
 // call connectDB first and when connection is ready we start the web server
 connectDB().then(startServer);

@@ -1,10 +1,14 @@
 const recipeModel = require("../models/recipeModel")
 
 exports.displayRecipes = async (req,res) => {
-    
-    //Haidil's Code goes here
-    const recipes = await recipeModel.getAllRecipes();
-    res.render('recipes', {recipes});
+    try {
+    let recipes = await recipeModel.getAllRecipes();// fetch all the list    
+    console.log(recipes);
+    res.render("recipes", { recipes }); // Render the EJS form view and pass the recipes
+  } catch (error) {
+    console.error(error);
+    res.send("Error reading database"); // Send error message if fetching fails
+  }
 }
 
 exports.filterRecipes = async (req,res) => {

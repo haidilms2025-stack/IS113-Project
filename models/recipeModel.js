@@ -82,3 +82,11 @@ exports.addUser = function(newUser){
     return users.create(newUser);
 }
 
+exports.getAllRecipes = function (){
+    return recipes.find();
+}
+
+exports.findByID = function(isbn) {
+    //they key 'isbn' refers to the field in books collection
+    return Book.findOne({ isbn:isbn });
+}
