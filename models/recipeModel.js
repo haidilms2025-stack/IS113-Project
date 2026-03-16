@@ -82,3 +82,7 @@ exports.addUser = function(newUser){
     return users.create(newUser);
 }
 
+//Casper's Code here
+exports.updateRecipe = function(recipe) {
+    return recipes.update(recipe);
+}
