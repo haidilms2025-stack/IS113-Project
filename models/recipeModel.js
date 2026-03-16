@@ -60,12 +60,12 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: [true, 'A user must have a username'],
-        unique: true
+        
     },
     email: {
         type: String,
         required: [true, 'A user must have an email'],
-        unique: true
+        
         
     },
     password: {
@@ -80,6 +80,14 @@ const users = mongoose.model('users', userSchema,'users');
 
 exports.addUser = function(newUser){
     return users.create(newUser);
+}
+//read operation
+exports.retrieveAll = function() {
+
+  return users.find();
+};
+exports.findUserByEmail = function(email){
+    return users.findOne({ email: email });
 }
 
 //Casper's Code here
