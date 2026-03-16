@@ -14,6 +14,7 @@ const recipesRoute = require("./routes/recipeRoute.js") //hadi route
 const myRecipes = require("./routes/myRecipes(sm)") //sheng ming route
 
 
+
 server.use("/", authRoutes);        // handles /login, /register ash part
 server.use('/recipes', recipesRoute) //any path that starts with recipe, we wil send it to this route 
 
@@ -40,7 +41,7 @@ function startServer() {
   server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
   });
-}
+}                                                                                                                 
 
 // call connectDB first and when connection is ready we start the web server
 connectDB().then(startServer);

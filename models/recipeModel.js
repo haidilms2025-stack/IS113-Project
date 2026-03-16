@@ -82,3 +82,16 @@ exports.addUser = function(newUser){
     return users.create(newUser);
 }
 
+exports.getAllRecipes = function (){
+    return recipes.find();
+}
+
+exports.findByTitle = async function(title) {
+    
+    //we need to wait first for database to find all the recipes first
+   let allRecipes = await recipes.find(); // wait for database
+   //then we can filter all the recipes.
+    return allRecipes.filter(recipe =>
+        recipe.title.toLowerCase().includes(title.toLowerCase())
+    );
+}

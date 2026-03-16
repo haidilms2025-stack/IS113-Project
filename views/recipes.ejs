@@ -9,8 +9,8 @@
 <h1>Browse Recipes</h1>
 
 <!-- Search -->
-<form method="POST" action="/">
-    <input type="text" name="search" placeholder="Search recipes">
+<form method="POST" action="/recipes">
+    <input type="text" name="titlesearch" placeholder="Search recipes">
     <button type="submit">Search</button>
 </form>
 
@@ -25,21 +25,33 @@
 <% recipes.forEach(recipe => { %>
 
 <div>
+    
+    <!-- Recipe Title -->
+    <h3><%= recipe.title %></h3>
+
+    <!-- Username of Creator -->
+    <h4><%= recipe.username%></h4>
 
     <!-- Recipe Image -->
     <img src="<%= recipe.image %>" width="200">
 
-    <!-- Recipe Title -->
-    <h3><%= recipe.title %></h3>
-
     <!-- Short Description -->
-    <p><%= recipe.description %></p>
+    <p>Description: <%= recipe.description %></p>
 
-    <!-- Optional Details -->
+    <!-- Optional Details  for each-->
     <p>
         <strong>Ingredients:</strong>
         <%= recipe.ingredients %>
     </p>
+    <p>
+        <strong>Steps:</strong>
+        <br>
+        <% recipe.steps.forEach((element,index) => { %> 
+            Step <%=index+1%>:<%=element%>
+            <br>
+        <%})%>
+    </p>
+
 
     <!-- View Button -->
     <form method="GET" action="/recipe/<%= recipe.id %>">
