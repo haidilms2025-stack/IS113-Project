@@ -1,50 +1,40 @@
-<html>
-    <head>
-        <title>Edit/Delete Recipes</title>
-    </head>
-
-    <body>
-        <!--Name of recipe-->
-        <h2><%=recipe.title%></h2>
-
-        <div>
-
-            <p>
-                <!--Displays image of recipe-->
-                <img src="<%=recipe.image%>" alt="this is a image of the recipe">
-            </p>
-
-
-            <p>
-                <form method="post" action="/controllers/recipeController.js">
-
-                    <strong>Description:</strong><br>
-
-                    <!--Edit the recipe description-->
-                    <textarea name="description" id="description" rows="10" cols="55">
-                        <%=recipe.description%>
-                    </textarea>
-
-                    <br><br><br>
-                    <strong>Ingredients:</strong> <br>
-
-                    <!--Edit the recipe ingredients-->
-                    <textarea name="ingredients" id="ingredients" rows="10" cols="55">
-                        <%=recipe.ingredients%>
-                    </textarea>
-
-                    <input type="checkbox" name="delete" id="delete">
-                    <label for="delete">Delete Recipe?</label>
-
-                    <button type="submit"><strong>Save Changes</strong></button>
-
-                    
-                </form>
-            </p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Update Recipe</title>
+</head>
+<body>
+      <%  if(result.title){ %>
+    <h3>Update recipe </h3>
+    <form action="/update-recipe" method="POST">
+        <table border="1">
+            <tr>
+                <th>Title :</th><td><%= result.title %></td>
+            </tr>
+            <tr>
+                <th>Id: </th><td><%= result.id %></td>
+            </tr>
+            <tr>
+                <th>Description:</th><td><input type="text" name="description" value = "<%= result.description %>"></td>
+            </tr>
+            <tr>
+                <th>Ingredients:</th><td><input type="text" name="ingredients" value="<%= result.ingredients %>"></td>
+            </tr>
+            <input type="hidden" name="id" value="<%= result.id %>">
+            <tr>
+                <td colspan="2"><button type="submit">Update Recipe</button></td>
+            </tr>
+        </table>
+     
+        
+    </form>
+     <% } %>
 
 
-            
+<br><br>
 
-        </div>
-    </body>
+        
+   
+    
+</body>
 </html>

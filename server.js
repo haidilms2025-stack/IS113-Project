@@ -12,6 +12,7 @@ server.set("view engine", "ejs");
 const authRoutes = require("./routes/ashrel_auth") //ash route
 const recipesRoute = require("./routes/recipeRoute.js") //hadi route
 
+
 server.use("/", authRoutes);        // handles /login, /register ash part
 server.use('/recipes', recipesRoute) //any path that starts with recipe, we wil send it to this route 
 
