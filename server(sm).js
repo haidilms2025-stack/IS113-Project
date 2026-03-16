@@ -1,12 +1,14 @@
-
 const express = require("express");
 const server = express();
 
 server.use(express.urlencoded({ extended: true }));
 server.set("view engine", "ejs");
 
-const recipesRoute = require("./routes/recipeRoute.js")
-server.use('/recipes', recipesRoute) //any path that starts with recipe, we wil send it to this route 
+const myRecipes = require("./routes/myRecipes(sm)")
+server.use("/myRecipe", myRecipes)
+
+
+
 
 // END OF YOUR CODE HERE
 
