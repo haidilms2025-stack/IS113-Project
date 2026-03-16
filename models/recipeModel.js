@@ -60,12 +60,12 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: [true, 'A user must have a username'],
-        unique: true
+        
     },
     email: {
         type: String,
         required: [true, 'A user must have an email'],
-        unique: true
+        
         
     },
     password: {
@@ -81,12 +81,12 @@ const users = mongoose.model('users', userSchema,'users');
 exports.addUser = function(newUser){
     return users.create(newUser);
 }
+//read operation
+exports.retrieveAll = function() {
 
-exports.getAllRecipes = function (){
-    return recipes.find();
+  return users.find();
+};
+exports.findUserByEmail = function(email){
+    return users.findOne({ email: email });
 }
 
-exports.findByID = function(isbn) {
-    //they key 'isbn' refers to the field in books collection
-    return Book.findOne({ isbn:isbn });
-}
