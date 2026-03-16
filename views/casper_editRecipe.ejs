@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <title>Edit/Delete Recipes</title>
+    </head>
+
+    <body>
+        <!--Name of recipe-->
+        <h2><%=recipe.title%></h2>
+
+        <div>
+
+            <p>
+                <!--Displays image of recipe-->
+                <img src="<%=recipe.image%>" alt="this is a image of the recipe">
+            </p>
+
+
+            <p>
+                <form method="post" action="/controllers/recipeController.js">
+
+                    <strong>Description:</strong><br>
+
+                    <!--Edit the recipe description-->
+                    <textarea name="description" id="description" rows="10" cols="55">
+                        <%=recipe.description%>
+                    </textarea>
+
+                    <br><br><br>
+                    <strong>Ingredients:</strong> <br>
+
+                    <!--Edit the recipe ingredients-->
+                    <textarea name="ingredients" id="ingredients" rows="10" cols="55">
+                        <%=recipe.ingredients%>
+                    </textarea>
+
+                    <input type="checkbox" name="delete" id="delete">
+                    <label for="delete">Delete Recipe?</label>
+
+                    <button type="submit"><strong>Save Changes</strong></button>
+
+                    
+                </form>
+            </p>
+
+
+            
+
+        </div>
+    </body>
+</html>
