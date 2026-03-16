@@ -86,7 +86,8 @@ exports.getAllRecipes = function (){
     return recipes.find();
 }
 
-exports.findByID = function(isbn) {
+exports.findByTitle = function(title) {
+    
     //they key 'isbn' refers to the field in books collection
-    return Book.findOne({ isbn:isbn });
+    return recipes.find({ title:title });
 }

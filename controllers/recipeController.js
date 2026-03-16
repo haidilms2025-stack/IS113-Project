@@ -12,8 +12,18 @@ exports.displayRecipes = async (req,res) => {
 }
 
 exports.filterRecipes = async (req,res) => {
-    // Haidil's Code goes here
+    // Haidil's Code goes here\
 
+    let title = req.body.titlesearch
+    try {
+    let recipes = await recipeModel.findByTitle(title);// fetch all the list    
+   // recipes.map(recipe=>recipe.title = recipe.title.toLowercase());
+   // console.log(recipes)
+    res.render("recipes", { recipes }); // Render the EJS form view and pass the recipes
+  } catch (error) {
+    console.error(error);
+    res.send("Error reading database"); // Send error message if fetching fails
+  }
 }
 
 exports.addRecipes = async (req,res) => {
