@@ -22,5 +22,7 @@ exports.addRecipes = async (req,res) => {
 exports.editRecipes = async(req,res) => {
 
     //Casper's Code goes here
+
+    res.render('casper_editRecipe', {recipe})
 }
 
