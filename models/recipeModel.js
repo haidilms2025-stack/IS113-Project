@@ -86,8 +86,12 @@ exports.getAllRecipes = function (){
     return recipes.find();
 }
 
-exports.findByTitle = function(title) {
+exports.findByTitle = async function(title) {
     
-    //they key 'isbn' refers to the field in books collection
-    return recipes.find({ title:title });
+    //we need to wait first for database to find all the recipes first
+   let allRecipes = await recipes.find(); // wait for database
+   //then we can filter all the recipes.
+    return allRecipes.filter(recipe =>
+        recipe.title.toLowerCase().includes(title.toLowerCase())
+    );
 }
