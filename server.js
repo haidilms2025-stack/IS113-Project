@@ -16,7 +16,8 @@ const myRecipes = require("./routes/myRecipes(sm)") //sheng ming route
 
 
 server.use("/", authRoutes);        // handles /login, /register ash part
-server.use('/recipes', recipesRoute) //any path that starts with recipe, we wil send it to this route 
+server.use('/recipes', recipesRoute) //any path that starts with recipe, we wil send it to this route
+server.use("/myRecipes", myRecipes)  //routes to recipe dashboard 
 
 // DataBase Set UP
 // Specify the path to the environment variablef file 'config.env'

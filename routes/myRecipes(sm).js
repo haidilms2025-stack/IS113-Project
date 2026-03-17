@@ -2,7 +2,10 @@ const express = require("express")
 const router = express.Router()
 
 const myRecipesController = require("../controllers/myRecipesController(sm)")
-router.get("/", myRecipesController)
+
+router.get("/", myRecipesController.displayRecipes)
+
+router.post("/", myRecipesController.removeRecipe)
 
 
 

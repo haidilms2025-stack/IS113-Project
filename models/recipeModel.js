@@ -119,3 +119,9 @@ exports.findByTitle = async function(title) {
 exports.editRecipes = async function(email, userName, newDesc, newIngredients, newSteps) {
     return recipes.updateOne({email, userName}, {newDesc, newIngredients, newSteps});
 }
+
+
+//delete recipe by title(sm)
+exports.deleteRecipe = (title) => {
+    return recipes.deleteOne({title: title})
+}
