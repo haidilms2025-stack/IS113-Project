@@ -65,7 +65,7 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: [true, 'A user must have an email'],
-        
+        unique: true
         
     },
     password: {
@@ -78,19 +78,40 @@ const users = mongoose.model('users', userSchema,'users');
 
 //Put your functions below!!!!!!!!
 
+// ------------------
+// User Functions
+// ------------------
+
+// CREATE user (used in register)
 exports.addUser = function(newUser){
-    return users.create(newUser);
+    return users.create(newUser)
+    // inserts a new user document into MongoDB
 }
-//read operation
-exports.retrieveAll = function() {
 
-  return users.find();
-};
+
+// READ all users (used in login - your current approach)
+exports.retrieveAll = function(){
+    return users.find()
+    // returns an array of all users in the collection
+}
+
+
+// READ one user by email (used in register + login)
 exports.findUserByEmail = function(email){
-    return users.findOne({ email: email });
+    return users.findOne({ email: email })
+    // returns ONE user object if found, otherwise null
 }
 
-//Casper's Code here
-exports.editRecipe = function(email, userName, description, ingredients, steps) {
-    return recipes.updateOne({email: email, userName: userName}, {description: description, ingredients: ingredients, steps: steps});
+exports.getAllRecipes = function (){
+    return recipes.find();
+}
+
+exports.findByTitle = async function(title) {
+    
+    //we need to wait first for database to find all the recipes first
+   let allRecipes = await recipes.find(); // wait for database
+   //then we can filter all the recipes.
+    return allRecipes.filter(recipe =>
+        recipe.title.toLowerCase().includes(title.toLowerCase())
+    );
 }

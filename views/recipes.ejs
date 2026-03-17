@@ -9,8 +9,8 @@
 <h1>Browse Recipes</h1>
 
 <!-- Search -->
-<form method="POST" action="/">
-    <input type="text" name="search" placeholder="Search recipes">
+<form method="POST" action="/recipes">
+    <input type="text" name="titlesearch" placeholder="Search recipes">
     <button type="submit">Search</button>
 </form>
 
@@ -36,7 +36,7 @@
     <img src="<%= recipe.image %>" width="200">
 
     <!-- Short Description -->
-    <p><%= recipe.description %></p>
+    <p>Description: <%= recipe.description %></p>
 
     <!-- Optional Details  for each-->
     <p>
@@ -45,7 +45,11 @@
     </p>
     <p>
         <strong>Steps:</strong>
-        <%= recipe.steps %>
+        <br>
+        <% recipe.steps.forEach((element,index) => { %> 
+            Step <%=index+1%>:<%=element%>
+            <br>
+        <%})%>
     </p>
 
 
