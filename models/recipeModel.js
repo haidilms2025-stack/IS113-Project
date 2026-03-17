@@ -115,3 +115,7 @@ exports.findByTitle = async function(title) {
         recipe.title.toLowerCase().includes(title.toLowerCase())
     );
 }
+
+exports.editRecipes = async function(email, userName, newDesc, newIngredients, newSteps) {
+    return recipes.updateOne({email, userName}, {newDesc, newIngredients, newSteps});
+}
