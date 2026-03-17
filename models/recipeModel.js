@@ -91,6 +91,6 @@ exports.findUserByEmail = function(email){
 }
 
 //Casper's Code here
-exports.updateRecipe = function(recipe) {
-    return recipes.update(recipe);
+exports.editRecipe = function(email, userName, description, ingredients, steps) {
+    return recipes.updateOne({email: email, userName: userName}, {description: description, ingredients: ingredients, steps: steps});
 }
