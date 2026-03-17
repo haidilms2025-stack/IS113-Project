@@ -12,7 +12,7 @@
                 <th>Title :</th><td><%= result.title %></td>
             </tr>
             <tr>
-                <th>Id: </th><td><%= result.id %></td>
+                <th>Image: </th><td><%= result.image %></td>
             </tr>
             <tr>
                 <th>Description:</th><td><input type="text" name="description" value = "<%= result.description %>"></td>
@@ -20,7 +20,11 @@
             <tr>
                 <th>Ingredients:</th><td><input type="text" name="ingredients" value="<%= result.ingredients %>"></td>
             </tr>
-            <input type="hidden" name="id" value="<%= result.id %>">
+            <tr>
+                <th>Steps:</th><td><textarea name="steps" id="steps" value="<%result.steps%>"></textarea></td>
+            </tr>
+            <input type="hidden" name="email" value="<%= result.email %>">
+            <input type="hidden" name="userName" value="<%= result.userName %>">
             <tr>
                 <td colspan="2"><button type="submit">Update Recipe</button></td>
             </tr>

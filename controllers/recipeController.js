@@ -32,11 +32,23 @@ exports.addRecipes = async (req, res) => {
 
 }
 
-exports.editRecipes = async (req, res) => {
+exports.updateRecipes = async(req,res) => {
 
-  //Casper's Code goes here
-  //const recipes = await recipeModel.getAllRecipes();
+    //Casper's Code goes here
+    //const recipes = await recipeModel.getAllRecipes();
+    let newDesc = req.body.description
+    let newIngredients = req.body.Ingredients
+    let newSteps = req.body.steps
+    let email = req.body.email
+    let userName = req.body.userName
 
-  res.render('casper_editRecipe', { recipe })
+    try {
+        let success = await recipeModel.editRecipe(email, userName, newDesc, newIngredients, newSteps)
+        console.log("Sucess")
+        res.send("Recipe has been succesfully updated")
+    } catch(error) { 
+        console.error(error)
+    }
+   
 }
 
