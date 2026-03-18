@@ -116,6 +116,7 @@ exports.findByTitle = async function(title) {
     );
 }
 
+//edit recipes casper
 exports.editRecipes = async function(email, userName, newDesc, newIngredients, newSteps) {
     return recipes.updateOne({email, userName}, {newDesc, newIngredients, newSteps});
 }
