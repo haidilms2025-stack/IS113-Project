@@ -20,9 +20,22 @@
             <tr>
                 <th>Ingredients:</th><td><input type="text" name="ingredients" value="<%= result.ingredients %>"></td>
             </tr>
+            
             <tr>
-                <th>Steps:</th><td><textarea name="steps" id="steps" value="<%result.steps%>"></textarea></td>
+                <th>Steps:</th>
+                <td>
+                    <ol id="step-list">
+                        <% result.steps.forEach((step)=> { %>
+                            <li>
+                                <input type="text" name="steps[]" value="<%= step %>" required>
+                                <button type="button" onclick="removeStep(this)">Delete</button>
+                            </li>
+                            <% }) %>
+                    </ol>
+                    <button type="button" onclick="addStep()">+ Add Step</button>
+                </td>
             </tr>
+            
             <input type="hidden" name="email" value="<%= result.email %>">
             <input type="hidden" name="userName" value="<%= result.userName %>">
             <tr>
@@ -33,7 +46,28 @@
         
     </form>
      <% } %>
+    <script>
+        // Function to remove a step
+        function removeStep(buttonElement) {
+            // 'buttonElement.parentElement' gets the <li> tag containing the button and input
+            const listItem = buttonElement.parentElement;
+            listItem.remove(); // Removes it from the page
+        }
 
+        // Function to add a new blank step
+        function addStep() {
+            const list = document.getElementById('step-list');
+            const newListItem = document.createElement('li');
+
+            // Create the inner HTML for the new step, matching the EJS structure
+            newListItem.innerHTML = `
+                <input type="text" name="steps[]" value="" required>
+                <button type="button" onclick="removeStep(this)">Delete</button>
+            `;
+
+            list.appendChild(newListItem);
+        }
+    </script>
 
 <br><br>
 
