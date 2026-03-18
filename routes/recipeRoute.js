@@ -11,7 +11,7 @@ router.get('/', recipeController.displayRecipes);
 router.post('/', recipeController.filterRecipes);
 
 //user wants to edit a recipe from my recipes
-router.get('/editrecipe', recipeController.editRecipes);
+router.get('/editrecipe', recipeController.updateRecipes);
 
 module.exports = router;
 
