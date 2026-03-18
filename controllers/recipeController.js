@@ -43,7 +43,7 @@ exports.updateRecipes = async(req,res) => {
     let userName = req.body.userName
 
     try {
-        let success = await recipeModel.editRecipe(email, userName, newDesc, newIngredients, newSteps)
+        let success = await recipeModel.editRecipes(email, userName, newDesc, newIngredients, newSteps)
         console.log("Sucess")
         res.send("Recipe has been succesfully updated")
     } catch(error) { 
