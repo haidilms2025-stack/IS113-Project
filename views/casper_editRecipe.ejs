@@ -4,7 +4,7 @@
     <title>Update Recipe</title>
 </head>
 <body>
-      <%  if(result.title){ %>
+      <%  if(result){ %>
     <h3>Update recipe </h3>
     <form action="/update-recipe" method="POST">
         <table border="1">
@@ -47,14 +47,14 @@
     </form>
      <% } %>
     <script>
-        // Function to remove a step
+        // Function to remove step
         function removeStep(buttonElement) {
-            // 'buttonElement.parentElement' gets the <li> tag containing the button and input
+            // 'buttonElement.parentElement' gets <li> tag containing the button and input
             const listItem = buttonElement.parentElement;
-            listItem.remove(); // Removes it from the page
+            listItem.remove(); // Removes step from the page
         }
 
-        // Function to add a new blank step
+        // Function to add new blank step
         function addStep() {
             const list = document.getElementById('step-list');
             const newListItem = document.createElement('li');
