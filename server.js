@@ -12,12 +12,13 @@ server.set("view engine", "ejs");
 const authRoutes = require("./routes/ashrel_auth") //ash route
 const recipesRoute = require("./routes/recipeRoute.js") //hadi route
 const myRecipes = require("./routes/myRecipes(sm)") //sheng ming route
+const index = require("./routes/test") //qr route
 
-
-
-server.use("/", authRoutes);        // handles /login, /register ash part
+server.use('/',index); //index
+server.use("/authentication", authRoutes);        // handles /login, /register ash part
 server.use('/recipes', recipesRoute) //any path that starts with recipe, we wil send it to this route
 server.use("/myRecipes", myRecipes)  //routes to recipe dashboard 
+
 
 // DataBase Set UP
 // Specify the path to the environment variablef file 'config.env'
