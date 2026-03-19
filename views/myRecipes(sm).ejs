@@ -6,22 +6,45 @@
         <h3>View My recipes</h3>
         <hr>
         <!-- redirect to add recipe page -->
-        <a href="/addrecipe">Add recipe</a>
+        <!-- <a href="/addrecipe">Add recipe</a> -->
+        <form action="/myRecipes" method = "post">
         <table border = "1">
             <!-- array of objects myrecipes -->
-             <tr>
+            <tr>
                 <th>Title</th>
                 <th>Description</th>
+                <th>Image</th>
+                <th>ingredients</th>
                 <th>Steps</th>
-             </tr>
-            <% myrecipes.forEach((recipe) => {%>
+                <th>Remove </th>
+            </tr>
+            <% recipeList.forEach((recipe) => {%>
                 <tr>
-                    <td><%= recipe.title%></td>
+                    <td><%= recipe.title %></td>
                     <td><%= recipe.description %></td>
-                    <td><%= recipe.steps %></td>
+                    <td><%= recipe.image %></td>
+                    <td>
+                        <ul>
+                            <% recipe.ingredients.forEach((ingredient) => { %>
+                                <li><%= ingredient %></li>
+                            <% }) %>
+                        </ul>
+                    </td>
+                    <td>
+                        <ol>
+                            <% recipe.steps.forEach((step) => { %>
+                                <li><%= step %></li>
+                            <% }) %>
+                        </ol>
+                    </td>
+                    <td>
+                        <input type="checkbox" name ="titles" value ="<%= recipe.title %>">
+                    </td>
                 </tr>
             <% }) %>
         </table>
-        <a href="/editrecipe">Edit/Delete Recipe(s)</a>
+        <button type = "submit"> Delete recipes </button>
+        </form>
+        
     </body>
 </html>

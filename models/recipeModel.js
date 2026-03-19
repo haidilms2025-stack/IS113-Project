@@ -60,7 +60,7 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: [true, 'A user must have a username'],
-        unique: true
+        
     },
     email: {
         type: String,
@@ -78,7 +78,51 @@ const users = mongoose.model('users', userSchema,'users');
 
 //Put your functions below!!!!!!!!
 
+// ------------------
+// User Functions
+// ------------------
+
+// CREATE user (used in register)
 exports.addUser = function(newUser){
-    return users.create(newUser);
+    return users.create(newUser)
+    // inserts a new user document into MongoDB
 }
 
+
+// READ all users (used in login - your current approach)
+exports.retrieveAll = function(){
+    return users.find()
+    // returns an array of all users in the collection
+}
+
+
+// READ one user by email (used in register + login)
+exports.findUserByEmail = function(email){
+    return users.findOne({ email: email })
+    // returns ONE user object if found, otherwise null
+}
+
+exports.getAllRecipes = function (){
+    return recipes.find();
+}
+
+exports.findByTitle = async function(title) {
+    
+    //we need to wait first for database to find all the recipes first
+   let allRecipes = await recipes.find(); // wait for database
+   //then we can filter all the recipes.
+    return allRecipes.filter(recipe =>
+        recipe.title.toLowerCase().includes(title.toLowerCase())
+    );
+}
+
+//edit recipes casper
+exports.editRecipes = async function(email, userName, newDesc, newIngredients, newSteps) {
+    return recipes.updateOne({email, userName}, {newDesc, newIngredients, newSteps});
+}
+
+
+//delete recipe by title(sm)
+exports.deleteRecipe = (title) => {
+    return recipes.deleteOne({title: title})
+}

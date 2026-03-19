@@ -12,7 +12,7 @@
                 <th>Title :</th><td><%= result.title %></td>
             </tr>
             <tr>
-                <th>Id: </th><td><%= result.id %></td>
+                <th>Image: </th><td><%= result.image %></td>
             </tr>
             <tr>
                 <th>Description:</th><td><input type="text" name="description" value = "<%= result.description %>"></td>
@@ -20,7 +20,24 @@
             <tr>
                 <th>Ingredients:</th><td><input type="text" name="ingredients" value="<%= result.ingredients %>"></td>
             </tr>
-            <input type="hidden" name="id" value="<%= result.id %>">
+            
+            <tr>
+                <th>Steps:</th>
+                <td>
+                    <ol id="step-list">
+                        <% result.steps.forEach((step)=> { %>
+                            <li>
+                                <input type="text" name="steps[]" value="<%= step %>" required>
+                                <button type="button" onclick="removeStep(this)">Delete</button>
+                            </li>
+                            <% }) %>
+                    </ol>
+                    <button type="button" onclick="addStep()">+ Add Step</button>
+                </td>
+            </tr>
+            
+            <input type="hidden" name="email" value="<%= result.email %>">
+            <input type="hidden" name="userName" value="<%= result.userName %>">
             <tr>
                 <td colspan="2"><button type="submit">Update Recipe</button></td>
             </tr>
@@ -29,7 +46,28 @@
         
     </form>
      <% } %>
+    <script>
+        // Function to remove a step
+        function removeStep(buttonElement) {
+            // 'buttonElement.parentElement' gets the <li> tag containing the button and input
+            const listItem = buttonElement.parentElement;
+            listItem.remove(); // Removes it from the page
+        }
 
+        // Function to add a new blank step
+        function addStep() {
+            const list = document.getElementById('step-list');
+            const newListItem = document.createElement('li');
+
+            // Create the inner HTML for the new step, matching the EJS structure
+            newListItem.innerHTML = `
+                <input type="text" name="steps[]" value="" required>
+                <button type="button" onclick="removeStep(this)">Delete</button>
+            `;
+
+            list.appendChild(newListItem);
+        }
+    </script>
 
 <br><br>
 
