@@ -42,6 +42,10 @@ const recipeSchema = new mongoose.Schema({
         type: Array,
         required: [true, 'A recipe must have steps']
     },
+    difficulty: {
+        type: Array,
+        required: [true, 'A recipe must have a difficulty']
+    },
     email:{
         type:String,
         required: [true, 'A recipe must have user email']

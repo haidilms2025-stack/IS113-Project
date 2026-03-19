@@ -16,53 +16,113 @@
 
 <hr>
 
+<!-- SORT DROPDOWN -->
+<div>
+    <label><strong>Sort by:</strong></label>
+
+    <select id="sortAuthor">
+        <option value="asc">Author (A-Z)</option>
+        <option value="desc">Author (Z-A)</option>
+         <option value="diff">Difficulty</option>
+    </select>
+
+    <button type="button" onclick="sortRecipes()">Apply</button>
+</div>
+
+<hr>
+
 <h2>Recipes</h2>
 
 <% if (recipes.length === 0) { %>
 <p>No recipes found.</p>
 <% } %>
 
+<!-- ✅ NEW: container -->
+<div id="recipes-container">
+
 <% recipes.forEach(recipe => { %>
 
-<div>
+<div class="recipe" 
+     data-author="<%= recipe.username %>" 
+     data-difficulty="<%= recipe.difficulty %>">
     
-    <!-- Recipe Title -->
-    <h3><%= recipe.title %></h3>
+    <h3>Title: <%= recipe.title %></h3>
+    <h4>Author: <%= recipe.username %></h4>
+    <h4>
+    Difficulty: 
+    <% 
+        let stars = "";
+        for (let i = 0; i < recipe.difficulty; i++) {
+            stars += "⭐";
+        }
+    %>
+    <%= stars %>
+</h4>
 
-    <!-- Username of Creator -->
-    <h4><%= recipe.username%></h4>
-
-    <!-- Recipe Image -->
     <img src="<%= recipe.image %>" width="200">
 
-    <!-- Short Description -->
     <p>Description: <%= recipe.description %></p>
 
-    <!-- Optional Details  for each-->
     <p>
         <strong>Ingredients:</strong>
         <%= recipe.ingredients %>
     </p>
+
     <p>
         <strong>Steps:</strong>
         <br>
         <% recipe.steps.forEach((element,index) => { %> 
             Step <%=index+1%>:<%=element%>
             <br>
-        <%})%>
+        <% }) %>
     </p>
 
-
-    <!-- View Button -->
     <form method="GET" action="/recipe/<%= recipe.id %>">
         <button type="submit">View Recipe</button>
     </form>
 
+    <hr> 
+
 </div>
 
-<hr>
-
 <% }) %>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    //This waits until the entire HTML page is loaded before running the code
+
+    //find the main div that holds all the recipes
+    const container = document.getElementById("recipes-container");
+    const originalOrder = Array.from(container.querySelectorAll(".recipe"));
+
+    window.sortRecipes = function () {
+        const sortType = document.getElementById("sortAuthor").value;
+        let recipes = Array.from(container.querySelectorAll(".recipe"));
+
+        if (sortType === "asc") {
+            recipes.sort((a, b) =>
+                a.dataset.author.localeCompare(b.dataset.author)
+            );
+        } else if (sortType === "desc") {
+            recipes.sort((a, b) =>
+                b.dataset.author.localeCompare(a.dataset.author)
+            );
+        } else if (sortType === "diff") {
+        recipes.sort((a, b) =>
+            Number(a.dataset.difficulty) - Number(b.dataset.difficulty)
+        );
+        // smaller number = easier recipe first
+        } else {
+            recipes = originalOrder;
+        }
+
+        recipes.forEach(recipe => container.appendChild(recipe));
+    };
+
+});
+</script>
 
 </body>
 </html>
