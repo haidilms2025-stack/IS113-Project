@@ -51,4 +51,15 @@ exports.updateRecipes = async(req,res) => {
     }
    
 }
+// casper's code to get from my_recipes to edit
+exports.viewRecipes = async(req,res) => {
 
+  let title = req.query.title;
+  console.log(title);
+
+  try {
+    res.render("/casper_editRecipe", {result})
+  } catch (error) {
+    
+  }
+} 
