@@ -8,25 +8,25 @@
 
 <h1>Browse Recipes</h1>
 
-<!-- 🔍 SEARCH (POST stays) -->
+
 <form method="POST" action="/recipes">
-    <input type="text" name="titlesearch" value="<%= titlesearch ? titlesearch : '' %>"placeholder="Search recipes">
+    <input type="text" name="titlesearch" value="<%= titlesearch ? titlesearch : '' %>" placeholder="Search recipes">
     <button type="submit">Search</button>
 
-    <!-- RESET -->
+     <input type="hidden" name="sort" value="<%= sort ? sort : '' %>">
+
     <button type="button" onclick="window.location='/recipes'">Reset</button>
 </form>
 
 <hr>
 
-<!-- 🔃 SORT (GET) -->
 <div>
     <form method="GET" action="/recipes">
         Sort by:
         <select name="sort">
-            <option value="asc">Author (A-Z)</option>
-            <option value="desc">Author (Z-A)</option>
-            <option value="diff">Difficulty</option>
+            <option value="asc"<%= sort === 'asc' ? 'selected' : '' %>>Author (A-Z)</option>
+            <option value="desc"<%= sort === 'desc' ? 'selected' : '' %>>Author (Z-A)</option>
+            <option value="diff"<%= sort === 'diff' ? 'selected' : '' %>>Difficulty</option>
         </select>
 
         <button type="submit">Apply</button>
@@ -34,11 +34,13 @@
 </div>
 
 <hr>
-
+<% if (isSearch && titlesearch) { %>
+    <h1>Showing recipes for "<%= titlesearch %>"</h1>
+    <hr>
+<% } %>
 <h2>Recipes</h2>
-
 <% if (recipes.length === 0) { %>
-<p>No recipes found.</p>
+<p>No recipes found for "<%= titlesearch %>"</p>
 <% } %>
 
 <div id="recipes-container">

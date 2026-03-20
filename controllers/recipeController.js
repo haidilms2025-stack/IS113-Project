@@ -23,7 +23,7 @@ exports.displayRecipes = async (req, res) => {
             );
         }
 
-        res.render("recipes", { recipes, titlesearch:null });
+        res.render("recipes", { recipes, titlesearch:null, sort, isSearch:false});
 
     } catch (error) {
         console.error(error);
@@ -35,11 +35,12 @@ exports.filterRecipes = async (req, res) => {
   // Haidil's Code goes here\
 
   let titlesearch = req.body.titlesearch
+  const sort = req.body.sort || '';
   let title = req.body.titlesearch.toLowerCase();
   try {
     let recipes = await recipeModel.findRecipesByTitle(title);// fetch all the list    
     console.log(recipes)
-    res.render("recipes", { recipes, titlesearch}); // Render the EJS form view and pass the recipes
+    res.render("recipes", { recipes, titlesearch, sort, isSearch:true}); // Render the EJS form view and pass the recipes
   } catch (error) {
     console.error(error);
     res.send("Error reading database"); // Send error message if fetching fails
