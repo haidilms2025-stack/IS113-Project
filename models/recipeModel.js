@@ -110,11 +110,11 @@ exports.getAllRecipes = function (){
     return recipes.find();
 }
 
-exports.findByTitle = async function(title) {
+exports.findRecipesByTitle = async function(title) {
     
     //we need to wait first for database to find all the recipes first
-   let allRecipes = await recipes.find(); // wait for database
-   //then we can filter all the recipes.
+   let allRecipes = await recipes.find(); 
+   //once we get all recipes, we will convert each recipe in database to lowercase and compare from there
     return allRecipes.filter(recipe =>
         recipe.title.toLowerCase().includes(title.toLowerCase())
     );

@@ -2,24 +2,44 @@ const recipeModel = require("../models/recipeModel")
 
 exports.displayRecipes = async (req, res) => {
   try {
-    let recipes = await recipeModel.getAllRecipes();// fetch all the list    
+        let recipes = await recipeModel.getAllRecipes();
 
-    res.render("recipes", { recipes }); // Render the EJS form view and pass the recipes
-  } catch (error) {
-    console.error(error);
-    res.send("Error reading database"); // Send error message if fetching fails
-  }
+        const sort = req.query.sort;
+
+        // 🔃 SORT (only if user selected something)
+        if (sort === "asc") {
+            recipes.sort((a, b) =>
+                a.username.localeCompare(b.username)
+            );
+        } 
+        else if (sort === "desc") {
+            recipes.sort((a, b) =>
+                b.username.localeCompare(a.username)
+            );
+        } 
+        else if (sort === "diff") {
+            recipes.sort((a, b) =>
+                a.difficulty - b.difficulty
+            );
+        }
+
+        res.render("recipes", { recipes, titlesearch:null });
+
+    } catch (error) {
+        console.error(error);
+        res.send("Error reading database");
+    }
 }
 
 exports.filterRecipes = async (req, res) => {
   // Haidil's Code goes here\
 
+  let titlesearch = req.body.titlesearch
   let title = req.body.titlesearch.toLowerCase();
   try {
-    let recipes = await recipeModel.findByTitle(title);// fetch all the list    
-    // recipes.map(recipe=>recipe.title = recipe.title.toLowercase());
+    let recipes = await recipeModel.findRecipesByTitle(title);// fetch all the list    
     console.log(recipes)
-    res.render("recipes", { recipes }); // Render the EJS form view and pass the recipes
+    res.render("recipes", { recipes, titlesearch}); // Render the EJS form view and pass the recipes
   } catch (error) {
     console.error(error);
     res.send("Error reading database"); // Send error message if fetching fails
