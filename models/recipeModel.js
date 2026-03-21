@@ -130,3 +130,23 @@ exports.editRecipes = async function(email, userName, newDesc, newIngredients, n
 exports.deleteRecipe = (title) => {
     return recipes.deleteOne({title: title})
 }
+
+//Create DB for Shopping List
+const shoppingItemSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  quantity: { type: Number, required: true, min: 0, default: 1 },
+  unit: { type: String, trim: true },
+});
+
+const items = mongoose.model('items',shoppingItemSchema,'items')
+
+// below is not confirmed yet, need to know how to have indiv list for logged in user
+const shoppingListSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  name: { type: String, required: true, trim: true },
+  description: String,
+  items: [shoppingItemSchema],
+  sharedWith: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] //do we want this function? hmm
+});
+
+const shoppingList = mongoose.model('shoppingList',shoppingListSchema,'shoppingList')
