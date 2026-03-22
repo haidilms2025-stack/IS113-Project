@@ -39,6 +39,7 @@
     <hr>
 <% } %>
 <h2>Recipes</h2>
+<hr>
 <% if (recipes.length === 0) { %>
 <p>No recipes found for "<%= titlesearch %>"</p>
 <% } %>
@@ -51,8 +52,15 @@
     
     <h3>Title: <%= recipe.title %></h3>
     <h4>Author: <%= recipe.username %></h4>
+    <%if(recipe.rating != ""){%>
+    <h4>Rating: <%= recipe.rating %></h4>
+    <%}else {%>
+        <h4>No Rating Given</h4>
+      <%  } %>
 
-    <h4>
+    <img src="<%= recipe.image %>" width="200">
+
+     <h4>
     Difficulty: 
     <% 
         let stars = "";
@@ -62,8 +70,6 @@
     %>
     <%= stars %>
     </h4>
-
-    <img src="<%= recipe.image %>" width="200">
 
     <p>Description: <%= recipe.description %></p>
 
@@ -82,14 +88,67 @@
     <form method="GET" action="/recipe/<%= recipe.id %>">
         <button type="submit">View Recipe</button>
     </form>
+    <br>
+    <button type="button" onclick="openRating('<%= recipe.id %>')">
+    ⭐ Give A Rating
+    </button>
 
     <hr> 
 
 </div>
 
+<div id="ratingModal" style="
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.5);
+">
+
+    <div style="
+        background:white;
+        padding:20px;
+        margin:10% auto;
+        width:300px;
+        text-align:center;
+    ">
+        <h2>Rate this recipe</h2>
+
+        <form id="ratingForm" method="POST" action="recipes/rate">
+            
+            <input type="hidden" name="recipeId" id="recipeIdInput">
+
+            <div>
+                <input type="radio" name="rating" value="1"> ⭐<br>
+                <input type="radio" name="rating" value="2"> ⭐⭐<br>
+                <input type="radio" name="rating" value="3"> ⭐⭐⭐<br>
+                <input type="radio" name="rating" value="4"> ⭐⭐⭐⭐<br>
+                <input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐
+            </div>
+
+            <br>
+
+            <button type="submit">Submit</button>
+            <button type="button" onclick="closeRating()">Cancel</button>
+
+        </form>
+    </div>
+</div>
+
 <% }) %>
 
 </div>
+
+<script>
+function openRating(recipeId) {
+    document.getElementById("ratingModal").style.display = "block";
+    document.getElementById("recipeIdInput").value = recipeId;
+}
+
+function closeRating() {
+    document.getElementById("ratingModal").style.display = "none";
+}
+</script>
 
 </body>
 </html>

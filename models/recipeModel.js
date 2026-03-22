@@ -2,6 +2,7 @@
 const fs = require("node:fs/promises"); 
 const filePath = "data/recipes.json";
 const mongoose = require('mongoose');
+const { ObjectId } = require("mongodb");
 
 // exports.getAllRecipes = async () => {
 
@@ -45,6 +46,9 @@ const recipeSchema = new mongoose.Schema({
     difficulty: {
         type: Array,
         required: [true, 'A recipe must have a difficulty']
+    },
+    rating: {
+        type: Array
     },
     email:{
         type:String,
@@ -109,6 +113,31 @@ exports.findUserByEmail = function(email){
 exports.getAllRecipes = function (){
     return recipes.find();
 }
+
+exports.addRating = function(recipeId, rating){
+    return recipes.updateOne(
+        { _id: new ObjectId(recipeId) },
+        { $push: { rating: rating } }
+    );
+};
+
+exports.updateAverageRating = async function(recipeId){
+    const recipe = await recipes.findOne({
+        _id: new ObjectId(recipeId)
+    });
+
+    const ratings = recipe.rating || [];
+
+    let avg = 0;
+    if (ratings.length > 0) {
+        avg = ratings.reduce((a,b) => a + b, 0) / ratings.length;
+    }
+
+    return recipes.updateOne(
+        { _id: new ObjectId(recipeId) },
+        { $set: { rating: avg } }
+    );
+};
 
 exports.findRecipesByTitle = async function(title) {
     
