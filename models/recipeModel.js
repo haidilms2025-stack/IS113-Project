@@ -88,6 +88,9 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         required: [true, 'A user must have a role']
+    },
+    favourites: {
+        type: Array
     }
 });
 
@@ -176,7 +179,7 @@ exports.findRecipeByID = async function(RecipeID) {
     return recipes.findOne({RecipeID : RecipeID})
 };
 
-//add to favourites from recipes
+//add to favourites from recipes using email
 exports.addToFavourites = async function(email, recipe) {
     return users.updateOne({email:email}, {$push: {recipe: recipe}})
 }

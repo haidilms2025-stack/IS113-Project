@@ -137,10 +137,16 @@ exports.viewRecipes = async (req, res) => {
 
 //Casper's code to update favourites list from haildil's recipe page
 exports.updateFavourites = async (req, res) => {
+  if(req.session.user) {
+    res.redirect("/login") //path might be wrong will fix later
+  }
+  let email = req.sesion.email
   let recipeID = req.body.recipeID
   try {
     //let result = await recipeModel.findRecipeByID(recipeID)
-    await recipeModel.updateFavourites(email, recipeID) //need to find out how to obtain the email
+    await recipeModel.updateFavourites(email, recipeID)
+    console.log("success!")
+    res.render("favourites", {user: req.session.user})
   } catch(error) {
     console.error(error)
   }
