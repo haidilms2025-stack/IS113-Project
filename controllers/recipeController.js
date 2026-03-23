@@ -113,15 +113,15 @@ exports.updateRecipes = async (req, res) => {
   let userName = req.body.userName
 
   try {
-    let success = await recipeModel.editRecipes(email, userName, newDesc, newIngredients, newSteps)
-    console.log("Sucess")
+    let success = await recipeModel.editRecipes(email,newDesc, newIngredients, newSteps)
+    console.log("Success")
     res.send("Recipe has been succesfully updated")
   } catch (error) {
     console.error(error)
   }
 
 }
-// casper's code to get from my_recipes to edit
+// casper's code to get from my_recipes to edit WORK IN PROGRESS
 exports.viewRecipes = async (req, res) => {
 
   let title = req.query.title;
@@ -134,3 +134,16 @@ exports.viewRecipes = async (req, res) => {
     console.error("unable to find recipe")
   }
 } 
+
+//Casper's code to update favourites list from haildil's recipe page
+exports.updateFavourites = async (req, res) => {
+  let recipeID = req.body.recipeID
+  try {
+    //let result = await recipeModel.findRecipeByID(recipeID)
+    await recipeModel.updateFavourites(email, recipeID) //need to find out how to obtain the email
+  } catch(error) {
+    console.error(error)
+  }
+}
+
+//

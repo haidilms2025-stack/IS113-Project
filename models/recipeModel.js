@@ -84,6 +84,9 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'A user must have a password'],
+    },
+    favourites: {
+        type: Array
     }
 });
 
@@ -164,11 +167,18 @@ exports.updateAverageRating = async function(recipeId){
 };
 
 //edit recipes casper
-exports.editRecipes = async function(email, userName, newDesc, newIngredients, newSteps) {
-    return recipes.updateOne({email, userName}, {newDesc, newIngredients, newSteps});
+exports.editRecipes = async function(email, description, ingredients, steps) {
+    return recipes.updateOne({email: email}, {description : description, ingredients: ingredients, steps, steps});
 } //does this one work?
 
+exports.findRecipeByID = async function(RecipeID) {
+    return recipes.findOne({RecipeID : RecipeID})
+};
 
+//add to favourites from recipes
+exports.addToFavourites = async function(email, recipe) {
+    return users.updateOne({email:email}, {$push: {recipe: recipe}})
+}
 //delete recipe by title(sm)
 exports.deleteRecipe = (title) => {
     return recipes.deleteOne({title: title})
@@ -183,3 +193,4 @@ const shoppingListSchema = new mongoose.Schema({
 });
 
 const shoppingList = mongoose.model('shoppingList',shoppingListSchema,'shoppingList')
+
