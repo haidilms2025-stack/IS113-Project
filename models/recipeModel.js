@@ -84,6 +84,10 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'A user must have a password'],
+    },
+    role: {
+        type: String,
+        required: [true, 'A user must have a role']
     }
 });
 
@@ -164,11 +168,18 @@ exports.updateAverageRating = async function(recipeId){
 };
 
 //edit recipes casper
-exports.editRecipes = async function(email, userName, newDesc, newIngredients, newSteps) {
-    return recipes.updateOne({email, userName}, {newDesc, newIngredients, newSteps});
+exports.editRecipes = async function(email, description, ingredients, steps) {
+    return recipes.updateOne({email: email}, {description : description, ingredients: ingredients, steps, steps});
 } //does this one work?
 
+exports.findRecipeByID = async function(RecipeID) {
+    return recipes.findOne({RecipeID : RecipeID})
+};
 
+//add to favourites from recipes
+exports.addToFavourites = async function(email, recipe) {
+    return users.updateOne({email:email}, {$push: {recipe: recipe}})
+}
 //delete recipe by title(sm)
 exports.deleteRecipe = (title) => {
     return recipes.deleteOne({title: title})
@@ -178,8 +189,43 @@ exports.deleteRecipe = (title) => {
 
 //session element
 const shoppingListSchema = new mongoose.Schema({
-  email: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   items: { type: Array},
 });
 
-const shoppingList = mongoose.model('shoppingList',shoppingListSchema,'shoppingList')
+const carts = mongoose.model('shoppingList',shoppingListSchema,'shoppingList')
+
+exports.displayCart = async (userID)=>{
+    return carts.findOne({ userID: userID }) 
+}
+
+exports.addItems = async (userID, itemsArray) => {
+    try {
+        const cart = await shoppingList.findOneAndUpdate(
+            { userID },
+            { 
+                $push: { 
+                    items: { $each: itemsArray }  // Adds each item individually
+                } 
+            },
+            { upsert: true, new: true }
+        );
+        return cart;
+    } catch (error) {
+        throw new Error(`Error adding items: ${error.message}`);
+    }
+};
+
+
+exports.deleteItem = async (userID, itemName) => {
+    try {
+        const cart = await shoppingList.findOneAndUpdate(
+            { userID },
+            { $pull: { items: itemName } },  // Pull matching string from array
+            { new: true }
+        );
+        return cart;
+    } catch (error) {
+        throw new Error(`Error deleting item: ${error.message}`);
+    }
+};
