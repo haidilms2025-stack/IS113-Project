@@ -91,8 +91,10 @@
     <p>Description: <%= recipe.description %></p>
 
     <p>
-        <strong>Ingredients:</strong>
-        <%= recipe.ingredients %>
+        <strong>Ingredients:</strong><br>
+        <% recipe.ingredients.forEach((element,index) => { %> 
+             <%=index+1%>: <%=element %><br>
+        <% }) %>
     </p>
 
     <p>
