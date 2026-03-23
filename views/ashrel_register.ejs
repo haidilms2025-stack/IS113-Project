@@ -23,7 +23,7 @@
         </div>
         <% } %>
 
-            <form action="/register" method="POST">
+            <form action="/authentication/register" method="POST">
 
                 Username<br>
                 <input type="text" name="username"><br><br>
@@ -34,13 +34,19 @@
                 Password<br>
                 <input type="password" name="password"><br><br>
 
-                <button type="submit">Register</button>
+                Role: <br>
+                <select name="role">
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                </select> <br>
+                <br> <button type="submit">Register</button>
+
 
             </form>
 
             <br>
 
-            <a href="/login">Already have an account? Login</a>
+            <a href="/authentication/login">Already have an account? Login</a>
 
 </body>
 
