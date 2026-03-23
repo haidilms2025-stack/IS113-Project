@@ -47,76 +47,104 @@
 
 <div id="recipes-container">
 
-<% recipes.forEach(recipe => { %>
+<table border="1" cellpadding="10" align="center">
+<%
+for (let i = 0; i < recipes.length; i++) {
+    let recipe = recipes[i];
 
-<div class="recipe">
+    if (i % 4 === 0) { %>
+        <tr>
+<% } %>
+
+    <td valign="top">
+        <div>
     
-    <h3>Title: <%= recipe.title %>
-    <form method="POST" action="/cart/add" style="display:inline;">
-            <input type="hidden" name="recipeId" value="<%= recipe._id %>">
-            <button type="submit">🛒</button>
-    </form>
-    <form method="POST" action="/favourites" style="display:inline;">
-            <input type="hidden" name="recipeId" value="<%= recipe._id %>">
-            <button type="submit">❤️</button>
-    </form>
-    </h3> 
-    <h4>Author: <%= recipe.username %></h4>
-    
+            <h3>
+                Title: <%= recipe.title %>
 
-    <img src="<%= recipe.image %>" width="200">
-    <h4>
-        Rating:
-    <% 
-        let stars = "";
-        if (recipe.avgRating) {
-            let fullStars = Math.round(recipe.avgRating);
+                <form method="POST" action="/cart/add" style="display:inline;">
+                    <input type="hidden" name="recipeId" value="<%= recipe._id %>">
+                    <button type="submit">🛒</button>
+                </form>
 
-            for (let i = 0; i < fullStars; i++) {
-                stars += "⭐";
-            }
-        } else {
-            stars = "No Rating";
-        }
-    %>
-    <%= stars %>
-    </h4>
-     <h4>
-    Difficulty: 
-    <% 
-        let fire = "";
-        for (let i = 0; i < recipe.difficulty; i++) {
-            fire += "🔥";
-        }
-    %>
-    <%= fire %>
-    </h4>
+                <form method="POST" action="/favourites" style="display:inline;">
+                    <input type="hidden" name="recipeId" value="<%= recipe._id %>">
+                    <button type="submit">❤️</button>
+                </form>
+            </h3> 
 
-    <p>Description: <%= recipe.description %></p>
+            <h4>Author: <%= recipe.username %></h4>
 
-    <p>
-        <strong>Ingredients:</strong><br>
-        <% recipe.ingredients.forEach((element,index) => { %> 
- <%=index+1%>: <%=element %><br>
-        <% }) %>
-    </p>
+            <img src="<%= recipe.image %>" width="200" height="200">
 
-    <p>
-        <strong>Steps:</strong><br>
-        <% recipe.steps.forEach((element,index) => { %> 
-            Step <%=index+1%>: <%=element %><br>
-        <% }) %>
-    </p>
+            <h4>
+                Rating:
+                <%
+                    let stars = "";
+                    if (recipe.avgRating) {
+                        let fullStars = Math.round(recipe.avgRating);
+                        for (let j = 0; j < fullStars; j++) {
+                            stars += "⭐";
+                        }
+                    } else {
+                        stars = "No Rating";
+                    }
+                %>
+                <%= stars %>
+            </h4>
 
-    <form method="GET" action="/recipe/<%= recipe.id %>">
-        <button type="submit">View Recipe</button>
-    </form>
-    <br>
-    <button type="button" onclick="openRating('<%= recipe.id %>')">
-    ⭐ Give A Rating
-    </button>
+            <h4>
+                Difficulty:
+                <%
+                    let fire = "";
+                    for (let j = 0; j < recipe.difficulty; j++) {
+                        fire += "🔥";
+                    }
+                %>
+                <%= fire %>
+            </h4>
 
-    <hr> 
+            <p>Description: <%= recipe.description %></p>
+
+            <p>
+                <strong>Ingredients:</strong><br>
+                <% recipe.ingredients.forEach((element, index) => { %> 
+                    <%= index + 1 %>: <%= element %><br>
+                <% }) %>
+            </p>
+
+            <p>
+                <strong>Steps:</strong><br>
+                <% recipe.steps.forEach((element, index) => { %> 
+                    Step <%= index + 1 %>: <%= element %><br>
+                <% }) %>
+            </p>
+
+            <form method="GET" action="/recipe/<%= recipe._id %>">
+                <button type="submit">View Recipe</button>
+            </form>
+
+            <br>
+
+            <button type="button" onclick="openRating('<%= recipe._id %>')">
+                ⭐ Give A Rating
+            </button>
+
+        </div>
+    </td>
+
+<% if (i % 4 === 3) { %>
+        </tr>
+<% } %>
+
+<% } %>
+
+<!-- Close last row if not full -->
+<% if (recipes.length % 4 !== 0) { %>
+    </tr>
+<% } %>
+
+</table>
 
 </div>
 
@@ -157,9 +185,6 @@
         </form>
     </div>
 </div>
-
-<% }) %>
-
 </div>
 
 <script>

@@ -136,7 +136,7 @@ exports.findRecipesByTitle = async function(title) {
 
 exports.addRating = function(recipeId, rating){
     return recipes.updateOne(
-        { _id: new ObjectId(recipeId) },
+        { _id: recipeId },
         { $push: { rating: rating } }
     );
 };
@@ -158,7 +158,7 @@ exports.updateAverageRating = async function(recipeId){
     }
 
     return recipes.updateOne(
-        { _id: new ObjectId(recipeId) },
+        { _id: recipeId },
         { $set: { avgRating: avg } }
     );
 };
