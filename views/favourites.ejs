@@ -1,0 +1,27 @@
+<html>
+    <head>
+        favourite recipes
+    </head>
+
+    <body>
+        <h2><%= user %>'s favourite recipes</h2>
+
+        <form action="/delete-favourites">
+            <table border="1">
+                <% result.forEach((recipe) => { %>
+                    <tr>
+                        <th>
+                            <%= recipe.title %>
+                        </th>
+                        <td>
+                            <button type="submit">Remove</button>
+                        </td>
+                    </tr>
+                <%})%>
+            </table>
+        </form>
+
+    </body>
+
+
+</html>
