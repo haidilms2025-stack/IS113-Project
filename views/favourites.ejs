@@ -7,15 +7,15 @@
 
 <body>
 
-<h1>Favourite Recipes</h1>
+<h1> <%= User.username%>'s Favourite Recipes</h1>
 
 
 <div id="recipes-container">
 
 <table border="1" cellpadding="10" align="center">
 <%
-for (let i = 0; i < recipes.length; i++) {
-    let recipe = recipes[i];
+for (let i = 0; i < user.favourites.length; i++) {
+    let favourite = user.favourites[i];
 
     if (i % 4 === 0) { %>
         <tr>
@@ -25,75 +25,52 @@ for (let i = 0; i < recipes.length; i++) {
         <div>
     
             <h3>
-                Title: <%= recipe.title %>
-
-                <form method="POST" action="/cart/add" style="display:inline;">
-                    <input type="hidden" name="recipeId" value="<%= recipe._id %>">
-                    <button type="submit">🛒</button>
-                </form>
-
-                <form method="POST" action="/favourites" style="display:inline;">
-                    <input type="hidden" name="recipeId" value="<%= recipe._id %>">
-                    <button type="submit">❤️</button>
-                </form>
+                Title: <%= favourite.title %>
+                
             </h3> 
 
-            <h4>Author: <%= recipe.username %></h4>
+            <h4>Author: <%= favourite.username %></h4>
 
-            <img src="<%= recipe.image %>" width="200" height="200">
+            <img src="<%= favourite.image %>" width="200" height="200">
 
-            <h4>
-                Rating:
-                <%
-                    let stars = "";
-                    if (recipe.avgRating) {
-                        let fullStars = Math.round(recipe.avgRating);
-                        for (let j = 0; j < fullStars; j++) {
-                            stars += "⭐";
-                        }
-                    } else {
-                        stars = "No Rating";
-                    }
-                %>
-                <%= stars %>
-            </h4>
-
+            
             <h4>
                 Difficulty:
                 <%
                     let fire = "";
-                    for (let j = 0; j < recipe.difficulty; j++) {
+                    for (let j = 0; j < favourite.difficulty; j++) {
                         fire += "🔥";
                     }
                 %>
                 <%= fire %>
             </h4>
 
-            <p>Description: <%= recipe.description %></p>
+            <p>Description: <%= favourite.description %></p>
 
             <p>
                 <strong>Ingredients:</strong><br>
-                <% recipe.ingredients.forEach((element, index) => { %> 
+                <% favourite.ingredients.forEach((element, index) => { %> 
                     <%= index + 1 %>: <%= element %><br>
                 <% }) %>
             </p>
 
             <p>
                 <strong>Steps:</strong><br>
-                <% recipe.steps.forEach((element, index) => { %> 
+                <% favourite.steps.forEach((element, index) => { %> 
                     Step <%= index + 1 %>: <%= element %><br>
                 <% }) %>
             </p>
 
-            <form method="GET" action="/recipe/<%= recipe._id %>">
+            <form method="GET" action="/recipe/<%= favourite._id %>">
                 <button type="submit">View Recipe</button>
             </form>
 
+            <form method="get" action="/delete-favourites">
+                <button type="submit">Remove from Favourites</button>
+            </form>
             <br>
 
-            <button type="button" onclick="openRating('<%= recipe._id %>')">
-                ⭐ Give A Rating
-            </button>
+            
 
         </div>
     </td>
@@ -113,55 +90,6 @@ for (let i = 0; i < recipes.length; i++) {
 
 </div>
 
-<div id="ratingModal" style="
-    display:none;
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background:rgba(0,0,0,0.5);
-">
-
-    <div style="
-        background:white;
-        padding:20px;
-        margin:10% auto;
-        width:300px;
-        text-align:center;
-    ">
-        <h2>Rate this recipe</h2>
-
-        <form id="ratingForm" method="POST" action="recipes/rate">
-            
-            <input type="hidden" name="recipeId" id="recipeIdInput">
-
-            <div>
-                <input type="radio" name="rating" value="1"> ⭐<br>
-                <input type="radio" name="rating" value="2"> ⭐⭐<br>
-                <input type="radio" name="rating" value="3"> ⭐⭐⭐<br>
-                <input type="radio" name="rating" value="4"> ⭐⭐⭐⭐<br>
-                <input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐
-            </div>
-
-            <br>
-
-            <button type="submit">Submit</button>
-            <button type="button" onclick="closeRating()">Cancel</button>
-
-        </form>
-    </div>
-</div>
-</div>
-
-<script>
-function openRating(recipeId) {
-    document.getElementById("ratingModal").style.display = "block";
-    document.getElementById("recipeIdInput").value = recipeId;
-}
-
-function closeRating() {
-    document.getElementById("ratingModal").style.display = "none";
-}
-</script>
 
 </body>
 </html>
