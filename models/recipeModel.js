@@ -115,10 +115,14 @@ exports.findUserByEmail = function(email){
     // returns ONE user object if found, otherwise null
 }
 
+//Create recipes
+exports.createRecipe = async function(recipe){
+    return recipes.create(newRecipe)
+}
+
 exports.getAllRecipes = function (){
     return recipes.find();
 }
-
 
 exports.findRecipesByTitle = async function(title) {
     
@@ -162,7 +166,7 @@ exports.updateAverageRating = async function(recipeId){
 //edit recipes casper
 exports.editRecipes = async function(email, userName, newDesc, newIngredients, newSteps) {
     return recipes.updateOne({email, userName}, {newDesc, newIngredients, newSteps});
-}
+} //does this one work?
 
 
 //delete recipe by title(sm)
@@ -171,21 +175,11 @@ exports.deleteRecipe = (title) => {
 }
 
 //Create DB for Shopping List
-const shoppingItemSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true },
-  quantity: { type: Number, required: true, min: 0, default: 1 },
-  unit: { type: String, trim: true },
-});
 
-const items = mongoose.model('items',shoppingItemSchema,'items')
-
-// below is not confirmed yet, need to know how to have indiv list for logged in user
+//session element
 const shoppingListSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  name: { type: String, required: true, trim: true },
-  description: String,
-  items: [shoppingItemSchema],
-  sharedWith: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] //do we want this function? hmm
+  email: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  items: { type: Array},
 });
 
 const shoppingList = mongoose.model('shoppingList',shoppingListSchema,'shoppingList')
