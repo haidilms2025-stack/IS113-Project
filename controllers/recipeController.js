@@ -96,7 +96,7 @@ exports.viewRecipes = async (req, res) => {
 
   try {
     let result = await recipeModel.findByTitle(title)
-    res.render("/casper_editRecipe", { result })
+    res.render("casper_editRecipe", { result })
   } catch (error) {
     console.error("unable to find recipe")
   }
