@@ -50,25 +50,42 @@
 
 <div class="recipe">
     
-    <h3>Title: <%= recipe.title %></h3>
+    <h3>Title: <%= recipe.title %>
+    <form method="POST" action="/cart/add" style="display:inline;">
+            <input type="hidden" name="recipeId" value="<%= recipe._id %>">
+            <button type="submit">🛒</button>
+        </form>
+    </h3> 
     <h4>Author: <%= recipe.username %></h4>
-    <%if(recipe.rating != ""){%>
-    <h4>Rating: <%= recipe.rating %></h4>
-    <%}else {%>
-        <h4>No Rating Given</h4>
-      <%  } %>
+    <h4>
+        Rating:
+    <% 
+        let stars = "";
+        if (recipe.avgRating) {
+            let fullStars = Math.round(recipe.avgRating);
+
+            for (let i = 0; i < fullStars; i++) {
+                stars += "⭐";
+            }
+        } else {
+            stars = "No Rating";
+        }
+    %>
+    <%= stars %>
+    </h4>
+    
 
     <img src="<%= recipe.image %>" width="200">
 
      <h4>
     Difficulty: 
     <% 
-        let stars = "";
+        let fire = "";
         for (let i = 0; i < recipe.difficulty; i++) {
-            stars += "⭐";
+            fire += "🔥";
         }
     %>
-    <%= stars %>
+    <%= fire %>
     </h4>
 
     <p>Description: <%= recipe.description %></p>

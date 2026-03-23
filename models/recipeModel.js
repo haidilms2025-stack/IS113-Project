@@ -48,12 +48,17 @@ const recipeSchema = new mongoose.Schema({
         required: [true, 'A recipe must have a difficulty']
     },
     rating: {
-        type: Array
+        type: [Number],   // array of numbers
+        default: []
     },
     email:{
         type:String,
         required: [true, 'A recipe must have user email']
 
+    },
+    avgRating: {
+        type: Number,
+        default: 0
     },
     username:{
         type:String,
@@ -110,34 +115,14 @@ exports.findUserByEmail = function(email){
     // returns ONE user object if found, otherwise null
 }
 
+//Create recipes
+exports.createRecipe = async function(recipe){
+    return recipes.create(newRecipe)
+}
+
 exports.getAllRecipes = function (){
     return recipes.find();
 }
-
-exports.addRating = function(recipeId, rating){
-    return recipes.updateOne(
-        { _id: new ObjectId(recipeId) },
-        { $push: { rating: rating } }
-    );
-};
-
-exports.updateAverageRating = async function(recipeId){
-    const recipe = await recipes.findOne({
-        _id: new ObjectId(recipeId)
-    });
-
-    const ratings = recipe.rating || [];
-
-    let avg = 0;
-    if (ratings.length > 0) {
-        avg = ratings.reduce((a,b) => a + b, 0) / ratings.length;
-    }
-
-    return recipes.updateOne(
-        { _id: new ObjectId(recipeId) },
-        { $set: { rating: avg } }
-    );
-};
 
 exports.findRecipesByTitle = async function(title) {
     
@@ -148,6 +133,35 @@ exports.findRecipesByTitle = async function(title) {
         recipe.title.toLowerCase().includes(title.toLowerCase())
     );
 }
+
+exports.addRating = function(recipeId, rating){
+    return recipes.updateOne(
+        { _id: new ObjectId(recipeId) },
+        { $push: { rating: rating } }
+    );
+};
+
+exports.updateAverageRating = async function(recipeId){
+    const recipe = await recipes.findOne({ 
+        _id: recipeId //Find the record where _id = recipeId
+    }); // check the databse and find recipe based on RecipeID, and store it in recipe variable
+
+    if (!recipe) {
+        throw new Error("Recipe not found");
+    }
+
+    const ratingsArray = recipe.rating || []; //if the recipe has no rating, then declare it as an empty array
+
+    let avg = 0;
+    if (ratingsArray.length > 0) { //only if the array has past ratings, we calculate the average
+        avg = ratingsArray.reduce((a,b) => a + b, 0) / ratingsArray.length;
+    }
+
+    return recipes.updateOne(
+        { _id: new ObjectId(recipeId) },
+        { $set: { avgRating: avg } }
+    );
+};
 
 //edit recipes casper
 exports.editRecipes = async function(email, userName, newDesc, newIngredients, newSteps) {
