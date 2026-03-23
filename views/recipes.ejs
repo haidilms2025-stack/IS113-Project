@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Browse Recipes</title>
+    
 </head>
 
 <body>
@@ -54,9 +55,16 @@
     <form method="POST" action="/cart/add" style="display:inline;">
             <input type="hidden" name="recipeId" value="<%= recipe._id %>">
             <button type="submit">🛒</button>
-        </form>
+    </form>
+    <form method="POST" action="/favourites" style="display:inline;">
+            <input type="hidden" name="recipeId" value="<%= recipe._id %>">
+            <button type="submit">❤️</button>
+    </form>
     </h3> 
     <h4>Author: <%= recipe.username %></h4>
+    
+
+    <img src="<%= recipe.image %>" width="200">
     <h4>
         Rating:
     <% 
@@ -73,10 +81,6 @@
     %>
     <%= stars %>
     </h4>
-    
-
-    <img src="<%= recipe.image %>" width="200">
-
      <h4>
     Difficulty: 
     <% 
@@ -93,7 +97,7 @@
     <p>
         <strong>Ingredients:</strong><br>
         <% recipe.ingredients.forEach((element,index) => { %> 
-             <%=index+1%>: <%=element %><br>
+ <%=index+1%>: <%=element %><br>
         <% }) %>
     </p>
 
