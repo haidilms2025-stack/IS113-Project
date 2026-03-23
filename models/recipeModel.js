@@ -189,9 +189,43 @@ exports.deleteRecipe = (title) => {
 
 //session element
 const shoppingListSchema = new mongoose.Schema({
-  email: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   items: { type: Array},
 });
 
-const shoppingList = mongoose.model('shoppingList',shoppingListSchema,'shoppingList')
+const carts = mongoose.model('shoppingList',shoppingListSchema,'shoppingList')
 
+exports.displayCart = async (userID)=>{
+    return carts.findOne({ userID: userID }) 
+}
+
+exports.addItems = async (userID, itemsArray) => {
+    try {
+        const cart = await shoppingList.findOneAndUpdate(
+            { userID },
+            { 
+                $push: { 
+                    items: { $each: itemsArray }  // Adds each item individually
+                } 
+            },
+            { upsert: true, new: true }
+        );
+        return cart;
+    } catch (error) {
+        throw new Error(`Error adding items: ${error.message}`);
+    }
+};
+
+
+exports.deleteItem = async (userID, itemName) => {
+    try {
+        const cart = await shoppingList.findOneAndUpdate(
+            { userID },
+            { $pull: { items: itemName } },  // Pull matching string from array
+            { new: true }
+        );
+        return cart;
+    } catch (error) {
+        throw new Error(`Error deleting item: ${error.message}`);
+    }
+};
