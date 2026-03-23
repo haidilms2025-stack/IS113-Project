@@ -85,8 +85,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'A user must have a password'],
     },
-    favourites: {
-        type: Array
+    role: {
+        type: String,
+        required: [true, 'A user must have a role']
     }
 });
 
