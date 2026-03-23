@@ -63,9 +63,42 @@ exports.updateRating = async (req, res) => {
 
 }
 
-exports.addRecipes = async (req, res) => {
+exports.showCreateRecipe = (req,res) => {
+  res.render('create_recipe_ronald')
+}
 
-  //Ronald's Code goes here
+exports.addRecipes = async (req, res) => {
+  let title = req.body.title;// get title
+  let description = req.body.description;// get description
+  let image = req.body.image;// get image
+  let ingredients = req.body.ingredient; // get ingridients
+  let steps = req.body.steps;// get steps
+  let difficulty = req.body.difficulty
+  let username = "test username"
+  let email = "test@email.com"
+
+  //cleaning up ingredients and steps arrat
+  ingredients = ingredients.map(item => item.trim());
+  const cleanIngredients = ingredients.filter(item => item !== "");
+  steps = steps.map(item => item.trim());
+  const cleanSteps = steps.filter(item => item !== "");
+
+  let newRecipe ={
+    title:title,
+    description:description,
+    image:image,
+    ingredients: cleanIngredients,
+    steps:cleanSteps,
+    difficulty:difficulty,
+    email:email,
+    username:username
+  }
+  try {
+    let result = await recipeModel.createRecipe(newRecipe)
+    res.redirect("/recipes");
+  } catch (error) {
+    console.log(error)
+  }
 
 }
 
@@ -96,7 +129,7 @@ exports.viewRecipes = async (req, res) => {
 
   try {
     let result = await recipeModel.findByTitle(title)
-    res.render("/casper_editRecipe", { result })
+    res.render("casper_editRecipe", { result })
   } catch (error) {
     console.error("unable to find recipe")
   }
