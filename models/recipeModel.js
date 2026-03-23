@@ -115,10 +115,14 @@ exports.findUserByEmail = function(email){
     // returns ONE user object if found, otherwise null
 }
 
+//Create recipes
+exports.createRecipe = async function(recipe){
+    return recipes.create(newRecipe)
+}
+
 exports.getAllRecipes = function (){
     return recipes.find();
 }
-
 
 exports.findRecipesByTitle = async function(title) {
     
