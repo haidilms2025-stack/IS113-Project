@@ -116,7 +116,7 @@ exports.findUserByEmail = function(email){
 }
 
 //Create recipes
-exports.createRecipe = async function(recipe){
+exports.createRecipe = async function(newRecipe){
     return recipes.create(newRecipe)
 }
 

@@ -15,6 +15,10 @@ router.post('/rate',recipeController.updateRating)
 //user wants to edit a recipe from my recipes
 router.get('/editrecipe', recipeController.updateRecipes);
 
+router.get('/create-recipe', recipeController.showCreateRecipe);
+
+router.post('/create-recipe', recipeController.addRecipes);
+
 module.exports = router;
 
 
