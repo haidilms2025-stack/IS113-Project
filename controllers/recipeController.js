@@ -23,7 +23,7 @@ exports.displayRecipes = async (req, res) => {
       );
     }
 
-    res.render("recipes", { recipes, titlesearch: null, sort, isSearch: false });
+    res.render("recipes", { recipes, titlesearch: null, sort, isSearch: false, hasRated: false });
 
   } catch (error) {
     console.error(error);
@@ -40,7 +40,7 @@ exports.filterRecipes = async (req, res) => {
   try {
     let recipes = await recipeModel.findRecipesByTitle(title);// fetch all the list    
     console.log(recipes)
-    res.render("recipes", { recipes, titlesearch, sort, isSearch: true }); // Render the EJS form view and pass the recipes
+    res.render("recipes", { recipes, titlesearch, sort, isSearch: true, hasRated: false }); // Render the EJS form view and pass the recipes
   } catch (error) {
     console.error(error);
     res.send("Error reading database"); // Send error message if fetching fails
@@ -48,13 +48,28 @@ exports.filterRecipes = async (req, res) => {
 }
 
 exports.updateRating = async (req, res) => {
+
+  if (!req.session.user) {
+    return res.redirect("/authentication/login")
+  }
+
   const rating = parseInt(req.body.rating);
   const recipeId = req.body.recipeId;
+  const email = req.session.user.email
+  console.log(email)
+
   try {
-    await recipeModel.addRating(recipeId, rating);
+    const existing = await recipeModel.hasUserRated(recipeId, email); //check if user already rated
+
+    if (existing) {
+      const recipes = await recipeModel.getAllRecipes(); // or whatever your function is
+
+      return res.render('recipes', {recipes, titlesearch:null, sort:null, isSearch: false, hasRated: true});
+    }
+    await recipeModel.addRating(recipeId, email, rating);
     await recipeModel.updateAverageRating(recipeId);
 
-    res.redirect("/recipes");
+    res.redirect('/recipes');
 
   } catch (error) {
     console.error(error);
@@ -63,7 +78,7 @@ exports.updateRating = async (req, res) => {
 
 }
 
-exports.showCreateRecipe = (req,res) => {
+exports.showCreateRecipe = (req, res) => {
   res.render('create_recipe_ronald')
 }
 
@@ -83,15 +98,15 @@ exports.addRecipes = async (req, res) => {
   steps = steps.map(item => item.trim());
   const cleanSteps = steps.filter(item => item !== "");
 
-  let newRecipe ={
-    title:title,
-    description:description,
-    image:image,
+  let newRecipe = {
+    title: title,
+    description: description,
+    image: image,
     ingredients: cleanIngredients,
-    steps:cleanSteps,
-    difficulty:difficulty,
-    email:email,
-    username:username
+    steps: cleanSteps,
+    difficulty: difficulty,
+    email: email,
+    username: username
   }
   try {
     let result = await recipeModel.createRecipe(newRecipe)
@@ -113,7 +128,7 @@ exports.updateRecipes = async (req, res) => {
   let userName = req.body.userName
 
   try {
-    let success = await recipeModel.editRecipes(email,newDesc, newIngredients, newSteps)
+    let success = await recipeModel.editRecipes(email, newDesc, newIngredients, newSteps)
     console.log("Success")
     res.send("Recipe has been succesfully updated")
   } catch (error) {
@@ -133,11 +148,11 @@ exports.viewRecipes = async (req, res) => {
   } catch (error) {
     console.error("unable to find recipe")
   }
-} 
+}
 
 //Casper's code to update favourites list from haildil's recipe page
 exports.updateFavourites = async (req, res) => {
-  if(req.session.user) {
+  if (req.session.user) {
     res.redirect("/login") //path might be wrong will fix later
   }
   let email = req.sesion.email
@@ -146,8 +161,8 @@ exports.updateFavourites = async (req, res) => {
     //let result = await recipeModel.findRecipeByID(recipeID)
     await recipeModel.updateFavourites(email, recipeID)
     console.log("success!")
-    res.render("favourites", {user: req.session.user})
-  } catch(error) {
+    res.render("favourites", { user: req.session.user })
+  } catch (error) {
     console.error(error)
   }
 }

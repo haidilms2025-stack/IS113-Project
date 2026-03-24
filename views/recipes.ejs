@@ -176,9 +176,11 @@ for (let i = 0; i < recipes.length; i++) {
                 <input type="radio" name="rating" value="4"> ⭐⭐⭐⭐<br>
                 <input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐
             </div>
-
+            
             <br>
-
+            <%if(hasRated){%>
+                <p>You have already submitted a rating!</p>
+            <%}%>
             <button type="submit">Submit</button>
             <button type="button" onclick="closeRating()">Cancel</button>
 

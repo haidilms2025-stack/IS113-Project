@@ -47,9 +47,14 @@ const recipeSchema = new mongoose.Schema({
         type: Array,
         required: [true, 'A recipe must have a difficulty']
     },
-    rating: {
-        type: [Number],   // array of numbers
-        default: []
+    ratings: {
+        type: [
+        {
+            email: String,   // store email here
+            rating: Number
+        }
+    ],
+    default: []
     },
     email:{
         type:String,
@@ -141,11 +146,25 @@ exports.findRecipesByTitle = async function(title) {
     );
 }
 
-exports.addRating = function(recipeId, rating){
+exports.addRating = function (recipeId, email, rating) {
     return recipes.updateOne(
         { _id: recipeId },
-        { $push: { rating: rating } }
+        {
+            $push: {
+                ratings: {
+                    email: email,
+                    rating: rating
+                }
+            }
+        }
     );
+};
+
+exports.hasUserRated = function (recipeId, email) {
+    return recipes.findOne({
+        _id: recipeId,
+        "ratings.email": email
+    });
 };
 
 exports.updateAverageRating = async function(recipeId){
@@ -157,11 +176,18 @@ exports.updateAverageRating = async function(recipeId){
         throw new Error("Recipe not found");
     }
 
-    const ratingsArray = recipe.rating || []; //if the recipe has no rating, then declare it as an empty array
+    const ratingsArray = recipe.ratings; //if the recipe has no rating, then declare it as an empty array
+
+    let total = 0;
+
+    for (let i = 0; i < ratingsArray.length; i++) {
+        total += ratingsArray[i].rating;
+    }
 
     let avg = 0;
-    if (ratingsArray.length > 0) { //only if the array has past ratings, we calculate the average
-        avg = ratingsArray.reduce((a,b) => a + b, 0) / ratingsArray.length;
+
+    if (ratingsArray.length > 0) {
+        avg = total / ratingsArray.length;
     }
 
     return recipes.updateOne(
