@@ -15,9 +15,11 @@ router.post('/rate',recipeController.updateRating)
 //user wants to edit a recipe from my recipes
 router.get('/editrecipe', recipeController.updateRecipes);
 
-router.get('/create-recipe', recipeController.showCreateRecipe);
 
-router.post('/create-recipe', recipeController.addRecipes);
+//create and edit recipes route moved to myRecipes(sm).js
+// router.get('/create-recipe', recipeController.showCreateRecipe);
+
+// router.post('/create-recipe', recipeController.addRecipes);
 
 router.post("/favourites", recipeController.updateFavourites)
 

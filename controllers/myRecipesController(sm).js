@@ -1,16 +1,20 @@
-const fs = require("node:fs/promises")
 const myRecipesModel = require("../models/recipeModel.js")
-const { deleteModel } = require("mongoose")
 
+//normalise user input to array
+function normalizeToArray(v) {
+  // Nothing selected → empty array
+  if (v === undefined || v === null) return [];
 
+  // If already an array, keep it.
+  // Otherwise, wrap the single value in an array.
+  return Array.isArray(v) ? v : [v];
+}
+
+//display userdashboard
 exports.displayRecipes = async (req, res) => {
     try{
-        let users = await myRecipesModel.retrieveAll()
-        console.log(users)
-        console.log("")
-        // use as placeholder until a way to make user stay logged in is found
-
-        let userEmail = "bloodster35@gmail.com"
+        let userEmail = req.session.user.email
+        console.log(`User email: ${userEmail}`)
         let RawRecipes = await myRecipesModel.getAllRecipes();
         RawRecipes = JSON.parse(JSON.stringify(RawRecipes));
         let recipeList = RawRecipes.filter((recipe) => {return recipe.email === userEmail})
@@ -25,18 +29,7 @@ exports.displayRecipes = async (req, res) => {
 }
 
 
-
-function normalizeToArray(v) {
-  // Nothing selected → empty array
-  if (v === undefined || v === null) return [];
-
-  // If already an array, keep it.
-  // Otherwise, wrap the single value in an array.
-  return Array.isArray(v) ? v : [v];
-}
-
-
-
+//delete selected recipes by title from user dashboard
 exports.removeRecipe = async(req, res) => {
     let titles = normalizeToArray(req.body.titles)
     console.log(titles)
@@ -57,5 +50,45 @@ exports.removeRecipe = async(req, res) => {
     }
 }
 
+
+//add recipe code
+exports.showCreateRecipe = (req, res) => {
+  res.render('create_recipe_ronald')
+}
+
+exports.addRecipes = async (req, res) => {
+  let title = req.body.title;// get title
+  let description = req.body.description;// get description
+  let image = req.body.image;// get image
+  let ingredients = req.body.ingredient; // get ingridients
+  let steps = req.body.steps;// get steps
+  let difficulty = req.body.difficulty
+  let username = req.session.user.username
+  let email = req.session.user.email
+
+  //cleaning up ingredients and steps arrat
+  ingredients = ingredients.map(item => item.trim());
+  const cleanIngredients = ingredients.filter(item => item !== "");
+  steps = steps.map(item => item.trim());
+  const cleanSteps = steps.filter(item => item !== "");
+
+  let newRecipe = {
+    title: title,
+    description: description,
+    image: image,
+    ingredients: cleanIngredients,
+    steps: cleanSteps,
+    difficulty: difficulty,
+    email: email,
+    username: username
+  }
+  try {
+    let result = await myRecipesModel.createRecipe(newRecipe)
+    res.redirect("/recipes");
+  } catch (error) {
+    console.log(error)
+  }
+
+}
 
 

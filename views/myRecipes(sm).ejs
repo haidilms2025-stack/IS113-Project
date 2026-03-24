@@ -4,47 +4,53 @@
     </head>
     <body>
         <h3>View My recipes</h3>
+        <a href="/myRecipes/create-recipe">Create new recipe?</a>
         <hr>
+        <% if (recipeList.length == 0) {%>
+            <h3>Currently no recipes</h3>
+        <% } else {%>
         <!-- redirect to add recipe page -->
         <!-- <a href="/addrecipe">Add recipe</a> -->
-        <form action="/myRecipes" method = "post">
-        <table border = "1">
-            <!-- array of objects myrecipes -->
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Image</th>
-                <th>ingredients</th>
-                <th>Steps</th>
-                <th>Remove </th>
-            </tr>
-            <% recipeList.forEach((recipe) => {%>
-                <tr>
-                    <td><%= recipe.title %></td>
-                    <td><%= recipe.description %></td>
-                    <td><%= recipe.image %></td>
-                    <td>
-                        <ul>
-                            <% recipe.ingredients.forEach((ingredient) => { %>
-                                <li><%= ingredient %></li>
-                            <% }) %>
-                        </ul>
-                    </td>
-                    <td>
-                        <ol>
-                            <% recipe.steps.forEach((step) => { %>
-                                <li><%= step %></li>
-                            <% }) %>
-                        </ol>
-                    </td>
-                    <td>
-                        <input type="checkbox" name ="titles" value ="<%= recipe.title %>">
-                    </td>
-                </tr>
-            <% }) %>
-        </table>
-        <button type = "submit"> Delete recipes </button>
-        </form>
+            <form action="/myRecipes" method = "post">
+                    <table border = "1">
+                        <!-- array of objects myrecipes -->
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Image</th>
+                            <th>ingredients</th>
+                            <th>Steps</th>
+                            <th>Remove </th>
+                        </tr>
+                        <% recipeList.forEach((recipe) => {%>
+                            <tr>
+                                <td><%= recipe.title %></td>
+                                <td><%= recipe.description %></td>
+                                <td><%= recipe.image %></td>
+                                <td>
+                                    <ul>
+                                        <% recipe.ingredients.forEach((ingredient) => { %>
+                                            <li><%= ingredient %></li>
+                                        <% }) %>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ol>
+                                        <% recipe.steps.forEach((step) => { %>
+                                            <li><%= step %></li>
+                                        <% }) %>
+                                    </ol>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name ="titles" value ="<%= recipe.title %>">
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </table>
+                <button type = "submit"> Delete recipes </button>
+            </form>
+        <% } %>
+        <a href="/">Go back home</a>
         
     </body>
 </html>
