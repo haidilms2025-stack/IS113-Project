@@ -129,38 +129,38 @@ exports.updateRating = async (req, res) => {
 
 // }
 
-exports.updateRecipes = async (req, res) => {
+// exports.updateRecipes = async (req, res) => {
 
-  //Casper's Code goes here
-  //const recipes = await recipeModel.getAllRecipes();
-  let newDesc = req.body.description
-  let newIngredients = req.body.Ingredients
-  let newSteps = req.body.steps
-  let email = req.body.email
-  let userName = req.body.userName
+//   //Casper's Code goes here
+//   //const recipes = await recipeModel.getAllRecipes();
+//   let newDesc = req.body.description
+//   let newIngredients = req.body.Ingredients
+//   let newSteps = req.body.steps
+//   let email = req.body.email
+//   let userName = req.body.userName
 
-  try {
-    let success = await recipeModel.editRecipes(email, newDesc, newIngredients, newSteps)
-    console.log("Success")
-    res.send("Recipe has been succesfully updated")
-  } catch (error) {
-    console.error(error)
-  }
+//   try {
+//     let success = await recipeModel.editRecipes(email, newDesc, newIngredients, newSteps)
+//     console.log("Success")
+//     res.send("Recipe has been succesfully updated")
+//   } catch (error) {
+//     console.error(error)
+//   }
 
-}
+// }
 // casper's code to get from my_recipes to edit WORK IN PROGRESS
-exports.viewRecipes = async (req, res) => {
+// exports.viewRecipes = async (req, res) => {
 
-  let title = req.query.title;
-  console.log(title);
+//   let title = req.query.title;
+//   console.log(title);
 
-  try {
-    let result = await recipeModel.findByTitle(title)
-    res.render("casper_editRecipe", { result })
-  } catch (error) {
-    console.error("unable to find recipe")
-  }
-}
+//   try {
+//     let result = await recipeModel.findByTitle(title)
+//     res.render("casper_editRecipe", { result })
+//   } catch (error) {
+//     console.error("unable to find recipe")
+//   }
+// }
 
 //Casper's code to update favourites list from haildil's recipe page
 exports.updateFavourites = async (req, res) => {

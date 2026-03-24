@@ -132,10 +132,12 @@ exports.createRecipe = async function(newRecipe){
     return recipes.create(newRecipe)
 }
 
+//Read all recipes
 exports.getAllRecipes = function (){
     return recipes.find();
 }
 
+//Find recipes by title
 exports.findRecipesByTitle = async function(title) {
     
     //we need to wait first for database to find all the recipes first
@@ -196,14 +198,20 @@ exports.updateAverageRating = async function(recipeId){
     );
 };
 
+
 //edit recipes casper
-exports.editRecipes = async function(email, description, ingredients, steps) {
-    return recipes.updateOne({email: email}, {description : description, ingredients: ingredients, steps, steps});
+exports.editRecipes = function(email, description, ingredients, steps) {
+    return recipes.updateOne({email: email}, {description : description, ingredients: ingredients, steps: steps});
 }
 
-exports.findRecipeByID = async function(recipeID) {
-    return recipes.findById(recipeID);  // Uses MongoDB's _id field
-};
+exports.findByTitle = (title) => {
+    return recipes.findOne({title: title})
+}
+
+// exports.findRecipeByID = function(recipeID) {
+//     return recipes.findById(recipeID);  // Uses MongoDB's _id field
+// };
+
 
 //add to favourites from recipes using email
 exports.addToFavourites = async function(email, recipe) {

@@ -20,6 +20,7 @@
                             <th>Image</th>
                             <th>ingredients</th>
                             <th>Steps</th>
+                            <th>Edit</th>
                             <th>Remove </th>
                         </tr>
                         <% recipeList.forEach((recipe) => {%>
@@ -41,6 +42,7 @@
                                         <% }) %>
                                     </ol>
                                 </td>
+                                <td><a href="/myRecipes/edit-recipe?title=<%= recipe.title %>">Edit</a></td>
                                 <td>
                                     <input type="checkbox" name ="titles" value ="<%= recipe.title %>">
                                 </td>

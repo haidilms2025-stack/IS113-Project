@@ -1,5 +1,6 @@
 const myRecipesModel = require("../models/recipeModel.js")
 
+
 //normalise user input to array
 function normalizeToArray(v) {
   // Nothing selected → empty array
@@ -66,7 +67,7 @@ exports.addRecipes = async (req, res) => {
   let username = req.session.user.username
   let email = req.session.user.email
 
-  //cleaning up ingredients and steps arrat
+  //cleaning up ingredients and steps arrays
   ingredients = ingredients.map(item => item.trim());
   const cleanIngredients = ingredients.filter(item => item !== "");
   steps = steps.map(item => item.trim());
@@ -91,4 +92,37 @@ exports.addRecipes = async (req, res) => {
 
 }
 
+
+//edit recipe
+exports.viewRecipes = async (req, res) => {
+    let title = req.query.title;
+    console.log(title);
+
+    try {
+        let result = await myRecipesModel.findByTitle(title)
+        res.render("casper_editRecipe", { result })
+    } catch (error) {
+        console.error("unable to find recipe")
+    }
+}
+
+
+exports.updateRecipes = async (req, res) => {
+
+  //Casper's Code goes here
+  //const recipes = await recipeModel.getAllRecipes();
+  let newDesc = req.body.description
+  let newIngredients = req.body.ingredients
+  let newSteps = req.body.steps
+  let email = req.body.email
+  
+
+  try {
+    let success = await myRecipesModel.editRecipes(email, newDesc, newIngredients, newSteps)
+    console.log(`Success: ${success}`)
+    res.redirect("/myRecipes")
+  } catch (error) {
+    console.error(error)
+  }
+}
 

@@ -12,11 +12,13 @@ router.post('/', recipeController.filterRecipes);
 
 router.post('/rate',recipeController.updateRating)
 
-//user wants to edit a recipe from my recipes
-router.get('/editrecipe', recipeController.updateRecipes);
-
 
 //create and edit recipes route moved to myRecipes(sm).js
+
+//user wants to edit a recipe from my recipes
+// router.get('/editrecipe', recipeController.updateRecipes);
+
+
 // router.get('/create-recipe', recipeController.showCreateRecipe);
 
 // router.post('/create-recipe', recipeController.addRecipes);
