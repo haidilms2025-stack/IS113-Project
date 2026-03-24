@@ -3,13 +3,18 @@ const recipeModel = require("../models/recipeModel")
 exports.displayRecipes = async (req, res) => {
   try {
     let recipes = await recipeModel.getAllRecipes();
+    if (req.session.user) {
     const userEmail = req.session.user.email;
-    console.log(userEmail)
+
+    }
+  
     const sort = req.query.sort;
 
+    if (req.session.user) {
     recipes.forEach(recipe => { // for each recipe in the database, we will assign a hasRated variable
         recipe.hasRated = recipe.ratings.some(r => r.email === userEmail); //if the recipe's rating already has the user's email, it means they already rated it
     });
+  }
 
     // 🔃 SORT (only if user selected something)
     if (sort === "asc") {
