@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Cart</title>
+    <style>
+        .cart-item {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
+        button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shopping Cart</h1>
+    
+    <% if (cart.items && cart.items.length > 0) { %>
+        <p>You have <%= cart.items.length %> items in your cart:</p>
+        <ul style="list-style: none; padding: 0;">
+            <% cart.items.forEach((item, index) => { %>
+                <li class="cart-item">
+                    <%= index + 1 %>. <%= item %>
+                    <form method="POST" action="/cart/remove" style="display: inline;">
+                        <input type="hidden" name="item" value="<%= item %>">
+                        <button type="submit">Remove</button>
+                    </form>
+                </li>
+            <% }) %>
+        </ul>
+        
+        <form method="POST" action="/cart/clear">
+            <button type="submit">Clear Cart</button>
+        </form>
+    <% } else { %>
+        <p>Your cart is empty</p>
+    <% } %>
+    
+    <br>
+    <a href="/recipes">Continue Shopping</a>
+</body>
+</html>
