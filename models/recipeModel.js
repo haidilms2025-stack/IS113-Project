@@ -200,8 +200,8 @@ exports.updateAverageRating = async function(recipeId){
 
 
 //edit recipes casper
-exports.editRecipes = function(email, description, ingredients, steps) {
-    return recipes.updateOne({email: email}, {description : description, ingredients: ingredients, steps: steps});
+exports.editRecipes = function(title, email, description, ingredients, steps) {
+    return recipes.updateOne({title: title, email: email}, {description : description, ingredients: ingredients, steps: steps});
 }
 
 exports.findByTitle = (title) => {

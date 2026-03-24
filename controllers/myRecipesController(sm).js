@@ -114,11 +114,12 @@ exports.updateRecipes = async (req, res) => {
   let newDesc = req.body.description
   let newIngredients = req.body.ingredients
   let newSteps = req.body.steps
-  let email = req.body.email
+  let title = req.body.title
+  let email = req.session.user.email
   
 
   try {
-    let success = await myRecipesModel.editRecipes(email, newDesc, newIngredients, newSteps)
+    let success = await myRecipesModel.editRecipes(title, email, newDesc, newIngredients, newSteps)
     console.log(`Success: ${success}`)
     res.redirect("/myRecipes")
   } catch (error) {
