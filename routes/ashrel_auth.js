@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const ashrel_authController = require("../controllers/ashrel_authController")
-
+const authMiddleware = require('../middleware/auth-middleware');
 
 
 router.get("/register",ashrel_authController.displayRegister);
