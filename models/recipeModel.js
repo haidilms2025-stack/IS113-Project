@@ -182,11 +182,19 @@ exports.findRecipeByID = async function(RecipeID) {
 //add to favourites from recipes using email
 exports.addToFavourites = async function(email, recipe) {
     return users.updateOne({email:email}, {$push: {recipe: recipe}})
-}
+};
+
+exports.deleteFavourites = async (email, favName) => {
+    return users.findOneAndUpdate(
+            {email: email },
+            { $pull: { favourites: favName } },  // Pull matching string from array
+            { new: true });
+};
+
 //delete recipe by title(sm)
 exports.deleteRecipe = (title) => {
     return recipes.deleteOne({title: title})
-}
+};
 
 //Create DB for Shopping List
 

@@ -20,6 +20,8 @@ router.get('/create-recipe', recipeController.showCreateRecipe);
 router.post('/create-recipe', recipeController.addRecipes);
 
 router.post("/favourites", recipeController.updateFavourites)
+
+router.post("/delete-favourites", recipeController.deleteFavourites)
 module.exports = router;
 
 
