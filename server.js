@@ -20,6 +20,10 @@ server.use(session({
     saveUninitialized: false // Prevents a new, empty session from being saved to the store.
 }));
 
+server.use((req, res, next) => { // makes it so that every ejs file has access to the user session
+    res.locals.user = req.session.user || null;
+    next();
+});
 
 const authRoutes = require("./routes/ashrel_auth") //ash route
 const recipesRoute = require("./routes/recipeRoute.js") //hadi route
@@ -27,11 +31,14 @@ const myRecipes = require("./routes/myRecipes(sm)") //sheng ming route
 const index = require("./routes/test") //qr route
 const cartRoute = require("./routes/cartRoutes.js") //qr cart route
 
-server.use('/',index); //index
+
 server.use("/authentication", authRoutes);        // handles /login, /register ash part
 server.use('/recipes', recipesRoute) //any path that starts with recipe, we wil send it to this route
 server.use("/myRecipes", myRecipes)  //routes to recipe dashboard 
 server.use("/cart",cartRoute) // routes to cart
+server.use('/',index); //index must be last
+
+
 
 // DataBase Set UP
 // Specify the path to the environment variablef file 'config.env'
@@ -61,9 +68,4 @@ function startServer() {
 // call connectDB first and when connection is ready we start the web server
 connectDB().then(startServer);
 
-const hostname = "localhost";
-const port = 8000;
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});

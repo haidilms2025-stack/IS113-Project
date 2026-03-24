@@ -116,3 +116,13 @@ exports.loginSubmission = async (req, res) => {
         res.send("Error reading database"); // send error response
     }
 }
+
+exports.logout = (req, res) => { //logout function to logout the person from the account
+    req.session.destroy((err) => {
+        if (err) {
+            console.log(err);
+            return res.send("Error logging out");
+        }
+        res.redirect("/"); // go back to homepage
+    });
+};

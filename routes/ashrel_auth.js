@@ -8,6 +8,6 @@ router.get("/register",ashrel_authController.displayRegister);
 router.post("/register",ashrel_authController.registerSubmission);
 router.get("/login",ashrel_authController.displayLogin);
 router.post("/login",ashrel_authController.loginSubmission);
-
+router.get('/logout', ashrel_authController.logout);
 
 module.exports = router
