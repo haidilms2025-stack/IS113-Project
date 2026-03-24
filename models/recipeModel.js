@@ -199,7 +199,7 @@ exports.updateAverageRating = async function(recipeId){
 //edit recipes casper
 exports.editRecipes = async function(email, description, ingredients, steps) {
     return recipes.updateOne({email: email}, {description : description, ingredients: ingredients, steps, steps});
-} //does this one work?
+}
 
 exports.findRecipeByID = async function(RecipeID) {
     return recipes.findOne({RecipeID : RecipeID})
