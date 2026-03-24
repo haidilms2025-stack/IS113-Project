@@ -3,8 +3,13 @@ const recipeModel = require("../models/recipeModel")
 exports.displayRecipes = async (req, res) => {
   try {
     let recipes = await recipeModel.getAllRecipes();
-
+    const userEmail = req.session.user.email;
+    console.log(userEmail)
     const sort = req.query.sort;
+
+    recipes.forEach(recipe => { // for each recipe in the database, we will assign a hasRated variable
+        recipe.hasRated = recipe.ratings.some(r => r.email === userEmail); //if the recipe's rating already has the user's email, it means they already rated it
+    });
 
     // 🔃 SORT (only if user selected something)
     if (sort === "asc") {
@@ -23,7 +28,7 @@ exports.displayRecipes = async (req, res) => {
       );
     }
 
-    res.render("recipes", { recipes, titlesearch: null, sort, isSearch: false, hasRated: false });
+    res.render("recipes", { recipes, titlesearch: null, sort, isSearch: false});
 
   } catch (error) {
     console.error(error);
@@ -40,7 +45,7 @@ exports.filterRecipes = async (req, res) => {
   try {
     let recipes = await recipeModel.findRecipesByTitle(title);// fetch all the list    
     console.log(recipes)
-    res.render("recipes", { recipes, titlesearch, sort, isSearch: true, hasRated: false }); // Render the EJS form view and pass the recipes
+    res.render("recipes", { recipes, titlesearch, sort, isSearch: true}); // Render the EJS form view and pass the recipes
   } catch (error) {
     console.error(error);
     res.send("Error reading database"); // Send error message if fetching fails
@@ -64,7 +69,7 @@ exports.updateRating = async (req, res) => {
     if (existing) { //if it returns a record, means user already submitted a rating
       const recipes = await recipeModel.getAllRecipes(); // get all the recipes to display
 
-      return res.render('recipes', {recipes, titlesearch:null, sort:null, isSearch: false, hasRated: true}); //set hasrated to true
+      return res.render('recipes', {recipes, titlesearch:null, sort:null, isSearch: false}); //set hasrated to true
     } //else we add the rating
     await recipeModel.addRating(recipeId, email, rating);
     await recipeModel.updateAverageRating(recipeId);

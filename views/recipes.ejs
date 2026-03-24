@@ -126,9 +126,14 @@ for (let i = 0; i < recipes.length; i++) {
 
             <br>
 
-            <button type="button" onclick="openRating('<%= recipe._id %>')">
-                ⭐ Give A Rating
-            </button>
+              <%if(recipe.hasRated){%>
+                    <p>You have already submitted a rating!</p>
+                <%}%>
+               <% if(!recipe.hasRated) { %>
+                    <button type="button" onclick="openRating('<%= recipe._id %>')">
+                        ⭐ Give A Rating
+                    </button>
+              <% }%>
 
         </div>
     </td>
@@ -178,9 +183,7 @@ for (let i = 0; i < recipes.length; i++) {
             </div>
             
             <br>
-            <%if(recipe.hasRated){%>
-                <p>You have already submitted a rating!</p>
-            <%}%>
+          
             <button type="submit">Submit</button>
             <button type="button" onclick="closeRating()">Cancel</button>
 
