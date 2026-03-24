@@ -176,7 +176,7 @@ exports.updateAverageRating = async function(recipeId){
         throw new Error("Recipe not found");
     }
 
-    const ratingsArray = recipe.ratings; //if the recipe has no rating, then declare it as an empty array
+    const ratingsArray = recipe.ratings; 
 
     let total = 0;
 
