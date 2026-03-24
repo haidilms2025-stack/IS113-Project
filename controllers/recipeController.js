@@ -3,8 +3,9 @@ const recipeModel = require("../models/recipeModel")
 exports.displayRecipes = async (req, res) => {
   try {
     let recipes = await recipeModel.getAllRecipes();
+    let userEmail = ""
     if (req.session.user) {
-    const userEmail = req.session.user.email;
+      userEmail = req.session.user.email;
 
     }
   
