@@ -95,6 +95,7 @@ exports.loginSubmission = async (req, res) => {
             return res.render("ashrel_login", { error: "Incorrect password" })
         }
         req.session.user = {
+            _id: user._id, 
             username:user.username,
             email:user.email,
             role: user.role
