@@ -61,11 +61,12 @@ for (let i = 0; i < user.favourites.length; i++) {
                 <% }) %>
             </p>
 
-            <form method="GET" action="/recipe/<%= favourite._id %>">
+            <form method="GET" action="/recipe/<%= favourite.id %>">
                 <button type="submit">View Recipe</button>
             </form>
 
             <form method="get" action="/delete-favourites">
+                <input type="hidden" name="recipeID" value="<%=favourite.id%>">
                 <button type="submit">Remove from Favourites</button>
             </form>
             <br>

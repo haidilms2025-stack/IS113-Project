@@ -152,14 +152,14 @@ exports.viewRecipes = async (req, res) => {
 
 //Casper's code to update favourites list from haildil's recipe page
 exports.updateFavourites = async (req, res) => {
-  if (req.session.user) {
+  if(!req.session.user) {
     res.redirect("/login") //path might be wrong will fix later
   }
-  let email = req.sesion.email
+  let email = req.sesion.user.email
   let recipeID = req.body.recipeID
   try {
     //let result = await recipeModel.findRecipeByID(recipeID)
-    await recipeModel.updateFavourites(email, recipeID)
+    await recipeModel.addToFavouritesFavourites(email, recipeID)
     console.log("success!")
     res.render("favourites", { user: req.session.user })
   } catch (error) {
@@ -167,4 +167,16 @@ exports.updateFavourites = async (req, res) => {
   }
 }
 
-//
+//Casper's code to delete favourites from favourites page
+exports.deleteFavourites = async (req, res) => {
+  let email = req.sesion.user.email
+  let recipeID = req.body.recipeID
+
+  try {
+      await recipeModel.deleteFavourites(email, recipeID)
+      console.log("success!")
+      res.render("favourites", {user: req.session.user})
+  } catch (error) {
+    console.error(error)
+  }
+}
