@@ -215,14 +215,53 @@ exports.findRecipeByID = function(recipeID) {
 
 //add to favourites from recipes using email
 exports.addToFavourites = async function(email, recipe) {
-    return users.updateOne({email:email}, {$push: {recipe: recipe}})
+    return users.updateOne({email:email}, {$push: {favourites: recipe}})
 };
 
-exports.deleteFavourites = async (email, favName) => {
-    return users.findOneAndUpdate(
-            {email: email },
-            { $pull: { favourites: favName } },  // Pull matching string from array
-            { new: true });
+//check if recipe is already in favourites
+exports.isRecipeInFavourites = async function(email, recipeId) {
+    try {
+        console.log("Checking for duplicate - Email:", email, "RecipeId:", recipeId)
+        
+        const user = await users.findOne({ email: email });
+        
+        if (!user || !user.favourites) {
+            console.log("User not found or no favourites")
+            return false;
+        }
+        
+        // Compare recipe IDs as strings
+        const isDuplicate = user.favourites.some(fav => 
+            fav._id.toString() === recipeId
+        );
+        
+        console.log("Is duplicate?:", isDuplicate)
+        return isDuplicate;
+    } catch (error) {
+        console.error("Error in isRecipeInFavourites:", error)
+        return false;
+    }
+};
+
+exports.deleteFavourites = async (email, recipeId) => {
+    try {
+        console.log("Deleting recipe - Email:", email, "RecipeId:", recipeId)
+        
+        const result = await users.findOneAndUpdate(
+            { email: email },
+            { $pull: { favourites: { _id: new mongoose.Types.ObjectId(recipeId) } } },
+            { new: true }
+        );
+        
+        console.log("Delete result - User found?:", result !== null)
+        if (result) {
+            console.log("Remaining favourites count:", result.favourites?.length || 0)
+        }
+        return result;
+    } catch (error) {
+        console.error("Error in deleteFavourites:", error)
+        throw error;
+    }
 };
 
 //delete recipe by title(sm)

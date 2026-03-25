@@ -67,7 +67,7 @@ for (let i = 0; i < recipes.length; i++) {
                     <button type="submit">🛒</button>
                 </form>
 
-                <form method="POST" action="/favourites" style="display:inline;">
+                <form method="POST" action="/recipes/favourites" style="display:inline;">
                     <input type="hidden" name="recipeId" value="<%= recipe._id %>">
                     <button type="submit">❤️</button>
                 </form>
@@ -120,7 +120,7 @@ for (let i = 0; i < recipes.length; i++) {
                 <% }) %>
             </p>
 
-            <form method="GET" action="/recipe/<%= recipe._id %>">
+            <form method="GET" action="/recipes/<%= recipe._id %>">
                 <button type="submit">View Recipe</button>
             </form>
 

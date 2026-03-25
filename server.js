@@ -34,6 +34,13 @@ const cartRoute = require("./routes/cartRoutes.js") //qr cart route
 
 server.use("/authentication", authRoutes);        // handles /login, /register ash part
 server.use('/recipes', recipesRoute) //any path that starts with recipe, we wil send it to this route
+
+// Keep compatibility with old URL style /recipe/:id
+server.get('/recipe/:id', (req, res) => {
+  const recipeId = req.params.id;
+  res.redirect(`/recipes/${recipeId}`);
+});
+
 server.use("/myRecipes", myRecipes)  //routes to recipe dashboard 
 server.use("/cart",cartRoute) // routes to cart
 server.use('/',index); //index must be last

@@ -10,8 +10,15 @@ router.get('/', recipeController.displayRecipes);
 //If user wants to browse for pecific recipes, they will submit, and we will filter the recipes to display
 router.post('/', recipeController.filterRecipes);
 
-router.post('/rate',recipeController.updateRating)
+router.post('/rate', recipeController.updateRating)
 
+// More specific routes first (before :id param)
+router.get("/favourites", recipeController.displayFavourites)
+router.post("/favourites", recipeController.updateFavourites)
+router.post("/delete-favourites", recipeController.deleteFavourites)
+
+//View a single recipe by ID (must be last to avoid catching "favourites")
+router.get('/:id', recipeController.viewRecipe);
 
 //create and edit recipes route moved to myRecipes(sm).js
 
@@ -22,10 +29,6 @@ router.post('/rate',recipeController.updateRating)
 // router.get('/create-recipe', recipeController.showCreateRecipe);
 
 // router.post('/create-recipe', recipeController.addRecipes);
-
-router.post("/favourites", recipeController.updateFavourites)
-
-router.post("/delete-favourites", recipeController.deleteFavourites)
 
 module.exports = router;
 

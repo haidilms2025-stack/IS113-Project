@@ -165,30 +165,110 @@ exports.updateRating = async (req, res) => {
 //Casper's code to update favourites list from haildil's recipe page
 exports.updateFavourites = async (req, res) => {
   if(!req.session.user) {
-    res.redirect("/login") //path might be wrong will fix later
+    return res.redirect("/authentication/login")
   }
-  let email = req.sesion.user.email
-  let recipeID = req.body.recipeID
+  const email = req.session.user.email
+  const recipeID = req.body.recipeId
+  
+  console.log("Adding to favourites - Email:", email, "RecipeID:", recipeID)
+  
   try {
-    //let result = await recipeModel.findRecipeByID(recipeID)
-    await recipeModel.addToFavouritesFavourites(email, recipeID)
-    console.log("success!")
-    res.render("favourites", { user: req.session.user })
+    const recipe = await recipeModel.findRecipeByID(recipeID)
+    if (!recipe) {
+      return res.status(404).send("Recipe not found")
+    }
+    
+    // Check if recipe is already in favourites
+    const isDuplicate = await recipeModel.isRecipeInFavourites(email, recipeID)
+    console.log("Is duplicate?:", isDuplicate)
+    
+    if (isDuplicate) {
+      console.log("Recipe already in favourites, skipping add")
+      return res.redirect("/recipes/favourites")
+    }
+    
+    await recipeModel.addToFavourites(email, recipe)
+    console.log("Added to favourites successfully!")
+    res.redirect("/recipes/favourites")
   } catch (error) {
-    console.error(error)
+    console.error("Error adding to favourites:", error)
+    res.status(500).send(error.toString())
   }
 }
 
 //Casper's code to delete favourites from favourites page
 exports.deleteFavourites = async (req, res) => {
-  let email = req.sesion.user.email
-  let recipeID = req.body.recipeID
+  if(!req.session.user) {
+    return res.redirect("/authentication/login")
+  }
+  const email = req.session.user.email
+  const recipeID = req.body.recipeID
+
+  console.log("Deleting from favourites - Email:", email, "RecipeID:", recipeID)
 
   try {
-      await recipeModel.deleteFavourites(email, recipeID)
-      console.log("success!")
-      res.render("favourites", {user: req.session.user})
+      const result = await recipeModel.deleteFavourites(email, recipeID)
+      console.log("Delete result:", result)
+      
+      if (!result) {
+        console.log("Recipe not found in favourites or user not found")
+      } else {
+        console.log("Removed from favourites successfully!")
+      }
+      res.redirect("/recipes/favourites")
+  } catch (error) {
+    console.error("Error deleting from favourites:", error)
+    res.status(500).send(error.toString())
+  }
+}
+
+// View a single recipe by ID
+exports.viewRecipe = async (req, res) => {
+  try {
+    const recipeID = req.params.id
+    const recipe = await recipeModel.findRecipeByID(recipeID)
+    
+    if (!recipe) {
+      return res.status(404).send("Recipe not found")
+    }
+
+    let userEmail = ""
+    if (req.session.user) {
+      userEmail = req.session.user.email
+      recipe.hasRated = recipe.ratings.some(r => r.email === userEmail)
+    } else {
+      recipe.hasRated = false
+    }
+
+    res.render("recipe-detail", { recipe })
   } catch (error) {
     console.error(error)
+    res.status(500).send("Error fetching recipe")
+  }
+}
+
+// Display user's favourites page
+exports.displayFavourites = async (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/authentication/login")
+  }
+
+  try {
+    const email = req.session.user.email
+    const user = await recipeModel.findUserByEmail(email)
+    
+    if (!user) {
+      return res.status(404).send("User not found")
+    }
+
+    // Ensure favourites array exists
+    if (!user.favourites) {
+      user.favourites = []
+    }
+
+    res.render("favourites", { user: user })
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Error loading favourites")
   }
 }
