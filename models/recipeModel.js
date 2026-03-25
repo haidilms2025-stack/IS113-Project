@@ -163,6 +163,20 @@ exports.updateAverageRating = async function(recipeId){
     );
 };
 
+//create recipe Ronald
+exports.createRecipe = async function(title,description,image,ingridients,steps,difficulty,email,username){
+    return recipes.create({
+        title:title,
+        description:description,
+        image,image,
+        ingridients:ingridients,
+        steps:steps,
+        difficulty:difficulty,
+        email:email,
+        username:username
+    })
+}
+
 //edit recipes casper
 exports.editRecipes = async function(email, userName, newDesc, newIngredients, newSteps) {
     return recipes.updateOne({email, userName}, {newDesc, newIngredients, newSteps});
