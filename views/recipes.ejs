@@ -106,34 +106,18 @@ for (let i = 0; i < recipes.length; i++) {
 
             <p>Description: <%= recipe.description %></p>
 
-            <p>
-                <strong>Ingredients:</strong><br>
-                <% recipe.ingredients.forEach((element, index) => { %> 
-                    <%= index + 1 %>: <%= element %><br>
-                <% }) %>
-            </p>
-
-            <p>
-                <strong>Steps:</strong><br>
-                <% recipe.steps.forEach((element, index) => { %> 
-                    Step <%= index + 1 %>: <%= element %><br>
-                <% }) %>
-            </p>
+         
 
             <form method="GET" action="/recipes/<%= recipe._id %>">
                 <button type="submit">View Recipe</button>
             </form>
 
-            <br>
-
-              <%if(recipe.hasRated){%>
-                    <p>You have already submitted a rating!</p>
-                <%}%>
-               <% if(!recipe.hasRated) { %>
-                    <button type="button" onclick="openRating('<%= recipe._id %>')">
+        
+             <br>
+                    <button type="button" onclick="openRating('<%= recipe._id %>', `<%=recipe.hasRated%>`)">
                         ⭐ Give A Rating
                     </button>
-              <% }%>
+         
 
         </div>
     </td>
@@ -183,19 +167,43 @@ for (let i = 0; i < recipes.length; i++) {
             </div>
             
             <br>
-          
-            <button type="submit">Submit</button>
+
+            <p id="ratingMessage" style="color: green; display: none;">
+                You already rated this recipe
+            </p>
+            
+
+            <button type="submit" id="submitBtn">Submit</button>
+            <button type="submit" id="deleteBtn">Delete</button>
             <button type="button" onclick="closeRating()">Cancel</button>
 
         </form>
     </div>
 </div>
-</div>
+
 
 <script>
-function openRating(recipeId) {
+function openRating(recipeId,hasRated) {
+    
     document.getElementById("ratingModal").style.display = "block";
     document.getElementById("recipeIdInput").value = recipeId;
+
+    const submitBtn = document.getElementById("submitBtn");
+    const deleteBtn = document.getElementById("deleteBtn");
+    const displayMessage = document.getElementById("ratingMessage")
+
+
+    if (hasRated === "true") {
+        submitBtn.textContent = "Update";
+        deleteBtn.style.display = "inline"
+        displayMessage.style.display = "block"
+       
+    } else {
+        submitBtn.textContent = "Submit";
+        deleteBtn.style.display = "none"
+        displayMessage.style.display = "none"
+    }
+    
 }
 
 function closeRating() {

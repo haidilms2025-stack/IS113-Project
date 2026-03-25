@@ -1,5 +1,5 @@
 
-const fs = require("node:fs/promises"); 
+const fs = require("node:fs/promises");
 const filePath = "data/recipes.json";
 const mongoose = require('mongoose');
 const { ObjectId } = require("mongodb");
@@ -16,7 +16,7 @@ const { ObjectId } = require("mongodb");
 //     }catch (error){
 //         console.error("Error reading JSON from file:",error)
 //     }
-    
+
 // //return recipes
 // }
 
@@ -25,12 +25,12 @@ const recipeSchema = new mongoose.Schema({
     title: {
         type: String,
         required: [true, 'A recipe must have a title']
-        
+
     },
     description: {
         type: String,
         required: [true, 'A recipe must have a description']
-        
+
     },
     image: {
         type: String, //not required
@@ -49,15 +49,15 @@ const recipeSchema = new mongoose.Schema({
     },
     ratings: {
         type: [
-        {
-            email: String,   // store email here
-            rating: Number
-        }
-    ],
-    default: []
+            {
+                email: String,   // store email here
+                rating: Number
+            }
+        ],
+        default: []
     },
-    email:{
-        type:String,
+    email: {
+        type: String,
         required: [true, 'A recipe must have user email']
 
     },
@@ -65,26 +65,26 @@ const recipeSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    username:{
-        type:String,
-        required:[true, 'A recipe must have username']
+    username: {
+        type: String,
+        required: [true, 'A recipe must have username']
     }
 });
 
-const recipes = mongoose.model('recipes', recipeSchema,'recipes');
+const recipes = mongoose.model('recipes', recipeSchema, 'recipes');
 
 //DB For users
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: [true, 'A user must have a username'],
-        
+
     },
     email: {
         type: String,
         required: [true, 'A user must have an email'],
         unique: true
-        
+
     },
     password: {
         type: String,
@@ -99,7 +99,7 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-const users = mongoose.model('users', userSchema,'users');
+const users = mongoose.model('users', userSchema, 'users');
 
 //Put your functions below!!!!!!!!
 
@@ -108,41 +108,41 @@ const users = mongoose.model('users', userSchema,'users');
 // ------------------
 
 // CREATE user (used in register)
-exports.addUser = function(newUser){
+exports.addUser = function (newUser) {
     return users.create(newUser)
     // inserts a new user document into MongoDB
 }
 
 
 // READ all users (used in login - your current approach)
-exports.retrieveAll = function(){
+exports.retrieveAll = function () {
     return users.find()
     // returns an array of all users in the collection
 }
 
 
 // READ one user by email (used in register + login)
-exports.findUserByEmail = function(email){
+exports.findUserByEmail = function (email) {
     return users.findOne({ email: email })
     // returns ONE user object if found, otherwise null
 }
 
 //Create recipes
-exports.createRecipe = async function(newRecipe){
+exports.createRecipe = async function (newRecipe) {
     return recipes.create(newRecipe)
 }
 
 //Read all recipes
-exports.getAllRecipes = function (){
+exports.getAllRecipes = function () {
     return recipes.find();
 }
 
 //Find recipes by title
-exports.findRecipesByTitle = async function(title) {
-    
+exports.findRecipesByTitle = async function (title) {
+
     //we need to wait first for database to find all the recipes first
-   let allRecipes = await recipes.find(); 
-   //once we get all recipes, we will convert each recipe in database to lowercase and compare from there
+    let allRecipes = await recipes.find();
+    //once we get all recipes, we will convert each recipe in database to lowercase and compare from there
     return allRecipes.filter(recipe =>
         recipe.title.toLowerCase().includes(title.toLowerCase())
     );
@@ -162,6 +162,13 @@ exports.addRating = function (recipeId, email, rating) {
     );
 };
 
+exports.updateRating = function (recipeId, email, rating) {
+    return recipes.updateOne(
+        { _id: recipeId, "ratings.email": email }, //condition: find the recipe and the email coressponding to it
+        { $set: { "ratings.$.rating": rating } } // set the rating to be the new rating
+    );
+}
+
 exports.hasUserRated = function (recipeId, email) {
     return recipes.findOne({
         _id: recipeId,
@@ -169,8 +176,8 @@ exports.hasUserRated = function (recipeId, email) {
     });
 };
 
-exports.updateAverageRating = async function(recipeId){
-    const recipe = await recipes.findOne({ 
+exports.updateAverageRating = async function (recipeId) {
+    const recipe = await recipes.findOne({
         _id: recipeId //Find the record where _id = recipeId
     }); // check the databse and find recipe based on RecipeID, and store it in recipe variable
 
@@ -178,7 +185,7 @@ exports.updateAverageRating = async function(recipeId){
         throw new Error("Recipe not found");
     }
 
-    const ratingsArray = recipe.ratings; 
+    const ratingsArray = recipe.ratings;
 
     let total = 0;
 
@@ -200,41 +207,41 @@ exports.updateAverageRating = async function(recipeId){
 
 
 //edit recipes casper
-exports.editRecipes = function(title, email, description, ingredients, steps) {
-    return recipes.updateOne({title: title, email: email}, {description : description, ingredients: ingredients, steps: steps});
+exports.editRecipes = function (title, email, description, ingredients, steps) {
+    return recipes.updateOne({ title: title, email: email }, { description: description, ingredients: ingredients, steps: steps });
 }
 
 exports.findByTitle = (title) => {
-    return recipes.findOne({title: title})
+    return recipes.findOne({ title: title })
 }
 
-exports.findRecipeByID = function(recipeID) {
+exports.findRecipeByID = function (recipeID) {
     return recipes.findById(recipeID);  // Uses MongoDB's _id field
 };
 
 
 //add to favourites from recipes using email
-exports.addToFavourites = async function(email, recipe) {
-    return users.updateOne({email:email}, {$push: {favourites: recipe}})
+exports.addToFavourites = async function (email, recipe) {
+    return users.updateOne({ email: email }, { $push: { favourites: recipe } })
 };
 
 //check if recipe is already in favourites
-exports.isRecipeInFavourites = async function(email, recipeId) {
+exports.isRecipeInFavourites = async function (email, recipeId) {
     try {
         console.log("Checking for duplicate - Email:", email, "RecipeId:", recipeId)
-        
+
         const user = await users.findOne({ email: email });
-        
+
         if (!user || !user.favourites) {
             console.log("User not found or no favourites")
             return false;
         }
-        
+
         // Compare recipe IDs as strings
-        const isDuplicate = user.favourites.some(fav => 
+        const isDuplicate = user.favourites.some(fav =>
             fav._id.toString() === recipeId
         );
-        
+
         console.log("Is duplicate?:", isDuplicate)
         return isDuplicate;
     } catch (error) {
@@ -246,13 +253,13 @@ exports.isRecipeInFavourites = async function(email, recipeId) {
 exports.deleteFavourites = async (email, recipeId) => {
     try {
         console.log("Deleting recipe - Email:", email, "RecipeId:", recipeId)
-        
+
         const result = await users.findOneAndUpdate(
             { email: email },
             { $pull: { favourites: { _id: new mongoose.Types.ObjectId(recipeId) } } },
             { new: true }
         );
-        
+
         console.log("Delete result - User found?:", result !== null)
         if (result) {
             console.log("Remaining favourites count:", result.favourites?.length || 0)
@@ -266,6 +273,6 @@ exports.deleteFavourites = async (email, recipeId) => {
 
 //delete recipe by title(sm)
 exports.deleteRecipe = (title) => {
-    return recipes.deleteOne({title: title})
+    return recipes.deleteOne({ title: title })
 };
 

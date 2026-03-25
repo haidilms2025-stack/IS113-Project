@@ -67,17 +67,17 @@ exports.updateRating = async (req, res) => {
   const rating = parseInt(req.body.rating); //we need to parse the value into an integer, as of rn its a string
   const recipeId = req.body.recipeId; //get the recipeId from the rating form
   const email = req.session.user.email //get the email fro mthe session
-  console.log(email)
 
   try {
     const existing = await recipeModel.hasUserRated(recipeId, email); //check if user already rated the recipe based on their email
 
     if (existing) { //if it returns a record, means user already submitted a rating
-      const recipes = await recipeModel.getAllRecipes(); // get all the recipes to display
-
-      return res.render('recipes', {recipes, titlesearch:null, sort:null, isSearch: false}); //set hasrated to true
-    } //else we add the rating
+      await recipeModel.updateRating(recipeId, email, rating);
+    } 
+    else {
+    //else we add the rating
     await recipeModel.addRating(recipeId, email, rating);
+    }
     await recipeModel.updateAverageRating(recipeId);
 
     res.redirect('/recipes');
