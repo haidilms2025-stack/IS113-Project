@@ -130,40 +130,91 @@ exports.displayUpdate = (req,res) =>{ //displays update account page
      res.render("ashrel_update", { error: null });
 };
 exports.updateAccount = async (req, res) => {
-    let email = req.session.user.email; // identify user
+
+    // get the logged-in user's email from session (used to identify which user to update)
+    let email = req.session.user.email; 
+
+    // get new username from form, trim removes extra spaces
     let username = req.body.username?.trim();
+
+    // get new password from form, trim removes extra spaces
     let password = req.body.password?.trim();
 
+    // validation: if both fields are empty, show error
     if (!username && !password) {
         return res.render("ashrel_update", { error: "At least one field must be filled" });
     }
 
     try {
+
+        // create an empty object to store fields that need updating
         let updateData = {};
 
+        // if user provided a new username, add it to updateData
         if (username) {
             updateData.username = username;
         }
 
+        // if user provided a new password
         if (password) {
+
+            // validate password length
             if (password.length < 6) {
                 return res.render("ashrel_update", { error: "Password must be at least 6 characters" });
             }
+
+            // import bcrypt to hash password securely
             const bcrypt = require('bcrypt');
+
+            // hash the password before storing in database
             updateData.password = await bcrypt.hash(password, 10);
         }
 
+        // call model function to update user in database
+        // $set will update only the fields inside updateData
         await userModel.updateUser(email, updateData);
 
-        // update session so UI updates immediately
+        // update session so UI (e.g. navbar username) updates immediately
         if (username) {
             req.session.user.username = username;
         }
 
+        // render success page after update
         return res.render("ashrel_update_success");
 
     } catch (error) {
+
+        // log error in terminal for debugging
         console.error(error);
+
+        // show error message on update page if something fails
         return res.render("ashrel_update", { error: "Error updating account" });
+    }
+};
+exports.displayDelete = (req,res) => { //displays delete account page
+    res.render("ashrel_delete", {error: null});
+};
+// handle deletion
+exports.deleteAccount = async (req, res) => {
+    let email = req.session.user.email;
+
+    try {
+        // delete user from database
+        await userModel.deleteUser(email);
+
+        // destroy session after deletion
+        req.session.destroy((err) => {
+            if (err) {
+                console.log(err);
+                return res.send("Error deleting account");
+            }
+
+            // show success page
+            return res.render("ashrel_delete_success");
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.render("ashrel_delete", { error: "Error deleting account" });
     }
 };
