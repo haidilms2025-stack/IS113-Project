@@ -126,3 +126,44 @@ exports.logout = (req, res) => { //logout function to logout the person from the
         res.redirect("/"); // go back to homepage
     });
 };
+exports.displayUpdate = (req,res) =>{ //displays update account page
+     res.render("ashrel_update", { error: null });
+};
+exports.updateAccount = async (req, res) => {
+    let email = req.session.user.email; // identify user
+    let username = req.body.username?.trim();
+    let password = req.body.password?.trim();
+
+    if (!username && !password) {
+        return res.render("ashrel_update", { error: "At least one field must be filled" });
+    }
+
+    try {
+        let updateData = {};
+
+        if (username) {
+            updateData.username = username;
+        }
+
+        if (password) {
+            if (password.length < 6) {
+                return res.render("ashrel_update", { error: "Password must be at least 6 characters" });
+            }
+            const bcrypt = require('bcrypt');
+            updateData.password = await bcrypt.hash(password, 10);
+        }
+
+        await userModel.updateUser(email, updateData);
+
+        // update session so UI updates immediately
+        if (username) {
+            req.session.user.username = username;
+        }
+
+        return res.render("ashrel_update_success");
+
+    } catch (error) {
+        console.error(error);
+        return res.render("ashrel_update", { error: "Error updating account" });
+    }
+};
