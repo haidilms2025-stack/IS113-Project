@@ -46,3 +46,45 @@ exports.viewCart = async (req, res) => {
         res.status(500).send('Error loading cart');
     }
 };
+
+exports.removeFromCart = async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+        
+        const userID = req.session.user._id;
+        const itemName = req.body.item;  // Get item name from form
+        console.log(itemName)
+        if (!itemName) {
+            return res.redirect('/cart');
+        }
+        
+        await cartModel.deleteItem(userID, itemName);
+        
+        res.redirect('/cart');
+        
+    } catch (error) {
+        console.error('Error removing item:', error);
+        res.redirect('/cart');
+    }
+};
+
+exports.clearCart = async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+        
+        const userID = req.session.user._id;
+        
+        await cartModel.clearCart(userID);
+        
+        res.redirect('/cart');
+        
+    } catch (error) {
+        console.error('Error clearing cart:', error);
+        res.redirect('/cart');
+    }
+};
+

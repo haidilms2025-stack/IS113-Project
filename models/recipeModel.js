@@ -208,9 +208,9 @@ exports.findByTitle = (title) => {
     return recipes.findOne({title: title})
 }
 
-// exports.findRecipeByID = function(recipeID) {
-//     return recipes.findById(recipeID);  // Uses MongoDB's _id field
-// };
+exports.findRecipeByID = function(recipeID) {
+    return recipes.findById(recipeID);  // Uses MongoDB's _id field
+};
 
 
 //add to favourites from recipes using email

@@ -32,7 +32,7 @@ exports.addItems = async (userID, itemsArray) => {
                     items: { $each: itemsArray }
                 } 
             },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         );
         return cart;
     } catch (error) {
@@ -46,7 +46,7 @@ exports.deleteItem = async (userID, itemName) => {
         const cart = await shoppingList.findOneAndUpdate(
             { userID: userID },
             { $pull: { items: itemName } },
-            { new: true }
+            { returnDocument: 'after' }
         );
         return cart;
     } catch (error) {
@@ -60,7 +60,7 @@ exports.clearCart = async (userID) => {
         const cart = await shoppingList.findOneAndUpdate(
             { userID: userID },
             { $set: { items: [] } },
-            { new: true }
+            { returnDocument: 'after' }
         );
         return cart;
     } catch (error) {
