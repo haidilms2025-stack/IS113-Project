@@ -126,6 +126,16 @@ exports.findUserByEmail = function (email) {
     return users.findOne({ email: email })
     // returns ONE user object if found, otherwise null
 }
+//delete user based on an email
+exports.deleteUser = function(email){
+    return users.deleteOne({email:email})
+}
+//update user username or password based on an email
+//Update ONLY the fields inside updateData using $set, leave everything else unchanged cause they can update username or/and password
+ exports.updateUser = function(email, updateData){
+    return users.updateOne({ email: email }, { $set: updateData });
+}
+
 
 //Create recipes
 exports.createRecipe = async function (newRecipe) {
