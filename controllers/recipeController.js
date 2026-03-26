@@ -60,15 +60,17 @@ exports.filterRecipes = async (req, res) => {
 
 exports.updateRating = async (req, res) => {
 
-  if (!req.session.user) { //if the user is not logged in, they cannot give a rating, redirect them back to login
+  if (!req.session.user) { //if the user is not logged in, they cannot give a rating, redirect them  to login page
     return res.redirect("/authentication/login")
   }
 
+  const action = req.body.action
   const rating = parseInt(req.body.rating); //we need to parse the value into an integer, as of rn its a string
-  const recipeId = req.body.recipeId; //get the recipeId from the rating form
+  const recipeId = req.body.recipeId; //get the recipeId from the rating form, we will use it for updating later
   const email = req.session.user.email //get the email fro mthe session
 
   try {
+    if (action == "submitRating") {
     const existing = await recipeModel.hasUserRated(recipeId, email); //check if user already rated the recipe based on their email
 
     if (existing) { //if it returns a record, means user already submitted a rating
@@ -78,8 +80,11 @@ exports.updateRating = async (req, res) => {
     //else we add the rating
     await recipeModel.addRating(recipeId, email, rating);
     }
-    await recipeModel.updateAverageRating(recipeId);
+  } else if (action == "deleteRating") {
+      await recipeModel.deleteRating(recipeId,email)
+  }    
 
+    await recipeModel.updateAverageRating(recipeId);
     res.redirect('/recipes');
 
   } catch (error) {

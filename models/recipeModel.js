@@ -147,7 +147,7 @@ exports.getAllRecipes = function () {
     return recipes.find();
 }
 
-//Find recipes by title
+//Search recipes by title
 exports.findRecipesByTitle = async function (title) {
 
     //we need to wait first for database to find all the recipes first
@@ -179,6 +179,13 @@ exports.updateRating = function (recipeId, email, rating) {
     );
 }
 
+exports.deleteRating = function(recipeId,email) {
+    return recipes.updateOne(
+    { _id: recipeId },
+    { $pull: { ratings: { email: email } } }
+  );
+}
+
 exports.hasUserRated = function (recipeId, email) {
     return recipes.findOne({
         _id: recipeId,
@@ -188,25 +195,25 @@ exports.hasUserRated = function (recipeId, email) {
 
 exports.updateAverageRating = async function (recipeId) {
     const recipe = await recipes.findOne({
-        _id: recipeId //Find the record where _id = recipeId
-    }); // check the databse and find recipe based on RecipeID, and store it in recipe variable
+        _id: recipeId //Find the recipe to update
+    }); 
 
     if (!recipe) {
         throw new Error("Recipe not found");
     }
 
-    const ratingsArray = recipe.ratings;
+    const ratingsArray = recipe.ratings; //get all the ratings from all the users
 
     let total = 0;
 
-    for (let i = 0; i < ratingsArray.length; i++) {
+    for (let i = 0; i < ratingsArray.length; i++) { //for each rating, we add up the total
         total += ratingsArray[i].rating;
     }
 
     let avg = 0;
 
     if (ratingsArray.length > 0) {
-        avg = total / ratingsArray.length;
+        avg = total / ratingsArray.length; // we only calculate average if theres more than 1 rating
     }
 
     return recipes.updateOne(
