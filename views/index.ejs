@@ -3,16 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Our Cookbook</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f5f5;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ff7f50;
+            padding: 15px 30px;
+            color: white;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hero section */
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .hero h1 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #555;
+            font-size: 18px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background: #ff7f50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background: #ff5722;
+        }
+
+        /* Links section */
+        .links {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .links a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .links a:hover {
+            background: #eee;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Shar's Cookbook!</h1>
-    <!-- login/register -->
-    <a href="/authentication">Login/Register</a> <br><br>
-    <!-- about page -->
-     <a href="/about">About Us</a><br><br>
-     <!-- recipes -->
-     <a href="/recipes">Recipes!</a> 
-     <!-- hi -->
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div><strong>🍳 Haidil, Qing Rui, Ashrel, Sheng Ming, Casper, Ronald's Cookbook</strong></div>
+
+        <div>
+            <% if (user) { %>
+                👤 <%= user.username %>
+                <a href="/authentication/logout">Logout</a>
+                <a href="/authentication/update">Update Account</a>
+                <a href="/authentication/delete">Delete Account</a>
+            <% } else { %>
+                <a href="/authentication/register">Register</a>
+                <a href="/authentication/login">Login</a>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Welcome to our Cookbook!</h1>
+        <p>Discover, create, and share your favorite recipes 🍲</p>
+
+        <% if (!user) { %>
+            <a href="/authentication/register" class="btn">Get Started</a>
+        <% } %>
+    </div>
+
+    <!-- Main Links -->
+    <div class="links">
+        <a href="/recipes">View Recipes</a>
+        <a href="/myRecipes">Manage my recipes</a>
+    </div>
+
 </body>
 </html>

@@ -1,23 +1,50 @@
 //Importing modules
-const express = require("express");
 const dotenv = require('dotenv');
+const express = require("express");
 const mongoose = require('mongoose');
 const fs = require('fs');
+const session = require('express-session');
+dotenv.config({path: './config.env'})
 
 const server = express();
 
 server.use(express.urlencoded({ extended: true }));
 server.set("view engine", "ejs");
 
+
+const secret = process.env.SECRET;
+console.log(secret)
+server.use(session({
+    secret: secret, // sign the session ID cookie. should be a long, random, and secure string, preferably stored in an environment variable
+    resave: false, // Prevents the session from being saved back to the session store if nothing has changed.
+    saveUninitialized: false // Prevents a new, empty session from being saved to the store.
+}));
+
+server.use((req, res, next) => { // makes it so that every ejs file has access to the user session
+    res.locals.user = req.session.user || null;
+    next();
+});
+
 const authRoutes = require("./routes/ashrel_auth") //ash route
 const recipesRoute = require("./routes/recipeRoute.js") //hadi route
 const myRecipes = require("./routes/myRecipes(sm)") //sheng ming route
 const index = require("./routes/test") //qr route
+const cartRoute = require("./routes/cartRoutes.js") //qr cart route
 
-server.use('/',index); //index
+
 server.use("/authentication", authRoutes);        // handles /login, /register ash part
 server.use('/recipes', recipesRoute) //any path that starts with recipe, we wil send it to this route
+
+// Keep compatibility with old URL style /recipe/:id
+server.get('/recipe/:id', (req, res) => {
+  const recipeId = req.params.id;
+  res.redirect(`/recipes/${recipeId}`);
+});
+
 server.use("/myRecipes", myRecipes)  //routes to recipe dashboard 
+server.use("/cart",cartRoute) // routes to cart
+server.use('/',index); //index must be last
+
 
 
 // DataBase Set UP
@@ -48,9 +75,4 @@ function startServer() {
 // call connectDB first and when connection is ready we start the web server
 connectDB().then(startServer);
 
-const hostname = "localhost";
-const port = 8000;
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
