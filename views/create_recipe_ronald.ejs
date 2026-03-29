@@ -4,68 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Recipe</title>
+    <style>
+        /* Borrowed from index.ejs  */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        /* Navbar Style [cite: 29, 30, 31] */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ff7f50;
+            padding: 15px 30px;
+            color: white;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+
+        /* Form Container (Using Hero styling for consistency) [cite: 33] */
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #ff7f50;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        /* Form Elements */
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            margin-top: 15px;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        /* Buttons  */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #ff7f50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #ff5722;
+        }
+
+        .btn-secondary {
+            background: #eee;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #ddd;
+        }
+
+        .ingredient-row, .step-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 10px;
+            font-size: 20px;
+        }
+
+        #preview {
+            margin-top: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
-    <form action="/myRecipes/create-recipe" method="post">
 
-        <h1>Create Recipe</h1>
-        
-        <!-- put a hidden email for primary key -->
-        
-        <!-- create tittle for recipe -->
-        <label>Title :</label>
-        <input type="text" name="title" placeholder="Enter Title" size="30" required>
-
-        <br><br>
-
-        <!-- create description for recipe -->
-        <label>Description: </label>
-        <textarea name="description" placeholder="Enter desctiption" required></textarea>
-
-        <br><br>
-        <label>Difficulty (1-5):</label><br>
-        <div class="star-rating">
-            <input type="radio" id="star5" name="difficulty" value="5" required/><label for="star5">5★</label>
-            <input type="radio" id="star4" name="difficulty" value="4" /><label for="star4">4★</label>
-            <input type="radio" id="star3" name="difficulty" value="3" /><label for="star3">3★</label>
-            <input type="radio" id="star2" name="difficulty" value="2" /><label for="star2">2★</label>
-            <input type="radio" id="star1" name="difficulty" value="1" /><label for="star1">1★</label>
+    <div class="navbar">
+        <div><strong>🍳 Cookbook</strong></div>
+        <div>
+            <% if (user) { %>
+                👤 <%= user.username %>
+                <a href="/authentication/logout">Logout</a>
+            <% } %>
+            <a href="/">Home</a>
         </div>
+    </div>
 
-        <br><br>
-        <!-- Upload image for recipe -->
-        <label for="imageUpload">Choose an image to upload:</label>
-        <input type="text" id="imageUpload" name="image">
-        <button type="button" onclick="uploadImage()">Upload Image</button>
-        <img id="preview" src="#" alt="Image Preview" style="display:none;" required><br>
+    <div class="container">
+        <form action="/myRecipes/create-recipe" method="post">
+            <h1>Create Recipe</h1>
+            
+            <input type="hidden" name="userName" value="<%=user.username%>">
+            <input type="hidden" name="userEmail" value="<%=user.email%>">
+            
+            <label>Title</label>
+            <input type="text" name="title" placeholder="Enter Title" required>
 
+            <label>Description</label>
+            <textarea name="description" placeholder="What makes this dish special?" required></textarea>
 
-        <br><br>
+            <label>Difficulty (1-5)</label>
+            <div class="star-rating">
+                <input type="radio" id="star5" name="difficulty" value="1" required/><label for="star5">1★</label>
+                <input type="radio" id="star4" name="difficulty" value="2" /><label for="star4">2★</label>
+                <input type="radio" id="star3" name="difficulty" value="3" /><label for="star3">3★</label>
+                <input type="radio" id="star2" name="difficulty" value="4" /><label for="star2">4★</label>
+                <input type="radio" id="star1" name="difficulty" value="5" /><label for="star1">5★</label>
+            </div>
 
-        <!-- create ingredient array for recipe -->
-        <button type="button" onclick="addIngredient()">Add Ingredient</button>
-        <br><br>
-        <div id="add_ingredients">
-            <label>Ingredient: </label>
-            <input type="text" name="ingredient[]" placeholder="Enter item" required>
-        </div>
+            <label>Recipe Image URL</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="imageUpload" name="image" placeholder="Paste image URL here">
+                <button type="button" class="btn" onclick="uploadImage()">Preview</button>
+            </div>
+            <img id="preview" src="#" alt="Image Preview" style="display:none; width:300px;">
 
-        <br><br>
-        
-        <!-- create steps array for recipe -->
-        <button type="button" onclick="addStep()">Add Steps</button>
-        <br><br>
-        <div id="add_step">
-            <label>Step 1: </label>
-            <textarea name="steps[]" placeholder="Enter step" required></textarea>
-        </div>
+            <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
 
+            <div id="add_ingredients">
+                <label>Ingredients</label>
+                <div class="ingredient-row">
+                    <input type="text" name="ingredient[]" placeholder="Enter item" required>
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="addIngredient()">+ Add Ingredient</button>
 
-        <br><br><br>
-        <button type="submit">Submit</button><br><br>
-        <a href="/">Return to home page</a>
+            <div id="add_step">
+                <span>Steps</span>
+                <label>Step1:</label>
+                <div class="step-row">
+                    <textarea name="steps[]" placeholder="Step 1" required></textarea>
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="addStep()">+ Add Step</button>
 
-    </form>
+            <div style="margin-top: 40px; text-align: center;">
+                <button type="submit" class="btn" style="font-size: 18px; padding: 15px 40px;">Publish Recipe</button>
+                <br><br>
+                <a href="/" style="color: #555;">Return to home page</a>
+            </div>
+        </form>
+    </div>
 
     <script>
         let ingredientCount =1
@@ -122,7 +239,7 @@
 
             const input = document.createElement("textarea");
             input.name = "steps[]";
-            input.placeholder = "Enter step";
+            input.placeholder = "Step "+ stepCount;
 
             const removeBtn = document.createElement("button");
             removeBtn.textContent = "Remove";

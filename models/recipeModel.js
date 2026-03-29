@@ -222,6 +222,10 @@ exports.updateAverageRating = async function (recipeId) {
     );
 };
 
+//create recipe Ronald
+exports.createRecipe = async function(newRecipe){
+    return recipes.create(newRecipe)
+}
 
 //edit recipes casper
 exports.editRecipes = function (title, email, description, ingredients, steps) {
