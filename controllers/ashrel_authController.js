@@ -219,12 +219,7 @@ exports.deleteAccount = async (req, res) => {
     }
 };
 exports.adminProfile = (req, res) => {
-
-    // check if user exists and is admin
-    if (!req.session.user || req.session.user.role !== 'admin') {
-        return res.redirect('/');
-    }
-
+    
     // render admin page
     res.render('ashrel_admin_profile', {
         user: req.session.user
