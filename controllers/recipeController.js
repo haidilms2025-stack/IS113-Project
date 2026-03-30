@@ -24,21 +24,53 @@ exports.displayRecipes = async (req, res) => {
       });
     }
 
-    // 🔃 SORT (only if user selected something)
     if (sort === "asc") {
-      recipes.sort((a, b) =>
-        a.username.localeCompare(b.username)
-      );
+      recipes.sort((a, b) => {
+        const A = a.username.toLowerCase();
+        const B = b.username.toLowerCase();
+
+        if (A < B) return -1;
+        if (A > B) return 1;
+        return 0;
+      });
     }
     else if (sort === "desc") {
-      recipes.sort((a, b) =>
-        b.username.localeCompare(a.username)
-      );
+      recipes.sort((a, b) => {
+        const A = a.username.toLowerCase();
+        const B = b.username.toLowerCase();
+
+        if (A > B) return -1;
+        if (A < B) return 1;
+        return 0;
+      });
     }
-    else if (sort === "diff") {
-      recipes.sort((a, b) =>
-        a.difficulty - b.difficulty
-      );
+    else if (sort === "diffhigh") {
+      recipes.sort((a, b) => {
+        if (b.difficulty < a.difficulty) return -1;
+        if (b.difficulty > a.difficulty) return 1;
+        return 0;
+      });
+    }
+    else if (sort === "difflow") {
+      recipes.sort((a, b) => {
+        if (a.difficulty < b.difficulty) return -1;
+        if (a.difficulty > b.difficulty) return 1;
+        return 0;
+      });
+    }
+    else if (sort === "ratinghigh") {
+      recipes.sort((a, b) => {
+        if (b.avgRating < a.avgRating) return -1;
+        if (b.avgRating > a.avgRating) return 1;
+        return 0;
+      });
+    }
+    else if (sort === "ratinglow") {
+      recipes.sort((a, b) => {
+        if (a.avgRating < b.avgRating) return -1;
+        if (a.avgRating > b.avgRating) return 1;
+        return 0;
+      });
     }
 
     res.render("recipes", { recipes, titlesearch: null, sort, isSearch: false, userRating });
@@ -104,7 +136,7 @@ exports.updateRating = async (req, res) => {
 //create and update recipes controller moved to myRecipesController(sm)
 exports.showCreateRecipe = (req, res) => {
   const user = req.session.user
-  res.render('create_recipe_ronald',{user})
+  res.render('create_recipe_ronald', { user })
 }
 
 exports.addRecipes = async (req, res) => {
