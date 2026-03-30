@@ -45,7 +45,8 @@ server.get('/recipe/:id', (req, res) => {
 
 server.use("/myRecipes", myRecipes)  //routes to recipe dashboard 
 server.use("/cart",cartRoute) // routes to cart
-server.use('/',index); //index must be last
+server.use('/index.html',index); //for the deliverable
+server.use('',index); //index 
 
 
 
