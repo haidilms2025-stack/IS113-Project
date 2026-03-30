@@ -2,43 +2,57 @@
 <html>
 <head>
     <title>My Cart</title>
-    <style>
-        .cart-item {
-            padding: 10px;
-            margin: 5px 0;
-            background-color: #f5f5f5;
-            border-radius: 4px;
-        }
-        button {
-            margin-left: 10px;
-        }
-    </style>
 </head>
 <body>
     <h1>Shopping Cart</h1>
     
-    <% if (cart.items && cart.items.length > 0) { %>
-        <p>You have <%= cart.items.length %> items in your cart:</p>
-        <ul style="list-style: none; padding: 0;">
-            <% cart.items.forEach((item, index) => { %>
-                <li class="cart-item">
-                    <%= index + 1 %>. <%= item %>
-                    <form method="POST" action="/cart/remove" style="display: inline;">
-                        <input type="hidden" name="item" value="<%= item %>">
-                        <button type="submit">Remove</button>
-                    </form>
-                </li>
-            <% }) %>
-        </ul>
+    <% if (recipes && recipes.length > 0) { %>
+        <p>You have <strong><%= totalItems %></strong> items across <strong><%= recipes.length %></strong> recipes:</p>
         
+        <% recipes.forEach(recipe => { %>
+            <div>
+                <hr>
+                <div>
+                    <div>
+                        <strong>📖 <%= recipe.recipeTitle %></strong>
+                        <span>(<%= recipe.items.length %> items)</span>
+                    </div>
+                    <form method="POST" action="/cart/remove-recipe" style="display: inline;">
+                        <input type="hidden" name="recipeId" value="<%= recipe.recipeId %>">
+                        <button type="submit">Remove All</button>
+                    </form>
+                </div>
+                
+                <div>
+                    <% recipe.items.forEach(item => { %>
+                        <div>
+                            <div>
+                                <span>• <%= item.name %></span>
+                            </div>
+                            <form method="POST" action="/cart/remove-item" style="display: inline;">
+                                <input type="hidden" name="itemId" value="<%= item.itemId %>">
+                                <button type="submit">Remove</button>
+                            </form>
+                        </div>
+                        <br>
+                    <% }) %>
+                </div>
+            </div>
+        <% }) %>
+        
+        <hr>
         <form method="POST" action="/cart/clear">
-            <button type="submit">Clear Cart</button>
+            <button type="submit">Clear All Recipes</button>
         </form>
+        
     <% } else { %>
-        <p>Your cart is empty</p>
+        <div>
+            <p>Your cart is empty</p>
+            <p>Browse recipes and add ingredients to your shopping list!</p>
+        </div>
     <% } %>
     
     <br>
-    <a href="/recipes">Continue Browsing</a>
+    <a href="/recipes">Continue Shopping</a>
 </body>
 </html>

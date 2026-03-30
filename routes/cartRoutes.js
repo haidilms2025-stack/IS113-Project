@@ -5,16 +5,10 @@ const { isLoggedIn } = require('../middleware/auth-middleware');
 
 router.use(isLoggedIn);
 
-// POST route for /cart/add
-router.post('/add',cartController.addToCart);
-
-// GET route for viewing cart
-router.get('/',cartController.viewCart);
-
-// POST route for removing items
-router.post('/remove',cartController.removeFromCart); 
-
-// POST route for clearing cart
-router.post('/clear',cartController.clearCart);       
+router.post('/add', cartController.addToCart);
+router.get('/', cartController.viewCart);
+router.post('/remove-recipe', cartController.removeRecipe);
+router.post('/remove-item', cartController.removeItem);
+router.post('/clear', cartController.clearCart);
 
 module.exports = router;

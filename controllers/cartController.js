@@ -1,32 +1,42 @@
 const cartModel = require("../models/cartModel");
 const recipeModel = require("../models/recipeModel");
 
+// Add recipe to cart
 exports.addToCart = async (req, res) => {
     try {
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+        
         const userId = req.session.user._id;
         const recipeID = req.body.recipeId;
         
-        // Get recipe with ingredients
         const recipe = await recipeModel.findRecipeByID(recipeID);
-        console.log('Recipe ID from form:', recipeID);
         
         if (!recipe) {
-            console.log('recipe no have')
-            return res.redirect('');
+            return res.redirect('back');
         }
         
-        // Add ingredients to cart
-        const updatedCart = await cartModel.addItems(userId, recipe.ingredients);
+        if (!recipe.ingredients || recipe.ingredients.length === 0) {
+            return res.redirect('back');
+        }
         
-        // Redirect to cart page
+        await cartModel.addRecipeToCart(
+            userId, 
+            recipe._id, 
+            recipe.title, 
+            recipe.ingredients
+        );
+        
         res.redirect('/cart');
         
     } catch (error) {
         console.error('Error adding to cart:', error);
-        res.redirect('');
+        res.redirect('back');
     }
 };
 
+// View cart
 exports.viewCart = async (req, res) => {
     try {
         if (!req.session.user) {
@@ -34,33 +44,51 @@ exports.viewCart = async (req, res) => {
         }
         
         const userID = req.session.user._id;
-        const cart = await cartModel.displayCart(userID);
+        const cartData = await cartModel.getCartGroupedByRecipe(userID);
         
         res.render('cart', { 
-            cart: cart || { items: [] },
+            recipes: cartData.recipes || [],
+            totalItems: cartData.totalItems || 0,
             user: req.session.user
         });
         
     } catch (error) {
-        console.error(error);
+        console.error('Error viewing cart:', error);
         res.status(500).send('Error loading cart');
     }
 };
 
-exports.removeFromCart = async (req, res) => {
+// Remove entire recipe
+exports.removeRecipe = async (req, res) => {
     try {
         if (!req.session.user) {
             return res.redirect('/login');
         }
         
         const userID = req.session.user._id;
-        const itemName = req.body.item;  // Get item name from form
-        console.log(itemName)
-        if (!itemName) {
-            return res.redirect('/cart');
+        const { recipeId } = req.body;
+        
+        await cartModel.removeRecipeFromCart(userID, recipeId);
+        
+        res.redirect('/cart');
+        
+    } catch (error) {
+        console.error('Error removing recipe:', error);
+        res.redirect('/cart');
+    }
+};
+
+// Remove single item
+exports.removeItem = async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/login');
         }
         
-        await cartModel.deleteItem(userID, itemName);
+        const userID = req.session.user._id;
+        const { itemId } = req.body;
+        
+        await cartModel.removeItemFromRecipe(userID, itemId);
         
         res.redirect('/cart');
         
@@ -70,6 +98,7 @@ exports.removeFromCart = async (req, res) => {
     }
 };
 
+// Clear cart
 exports.clearCart = async (req, res) => {
     try {
         if (!req.session.user) {
@@ -77,7 +106,6 @@ exports.clearCart = async (req, res) => {
         }
         
         const userID = req.session.user._id;
-        
         await cartModel.clearCart(userID);
         
         res.redirect('/cart');
@@ -87,4 +115,3 @@ exports.clearCart = async (req, res) => {
         res.redirect('/cart');
     }
 };
-

@@ -1,56 +1,107 @@
-const fs = require("node:fs/promises"); 
-const filePath = "data/recipes.json";
 const mongoose = require('mongoose');
-const { ObjectId } = require("mongodb");
 
-// Create Schema
-const shoppingListSchema = new mongoose.Schema({
-  userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  items: { type: Array, default: [] },
+// Cart item schema (no checked field)
+const cartItemSchema = new mongoose.Schema({
+    name: { type: String, required: true },  // Ingredient name
+    recipeId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Recipe', 
+        required: true 
+    },
+    recipeTitle: { type: String, required: true }  // Store recipe title for display
 });
 
-// Check if model exists before creating (prevents OverwriteModelError)
-const shoppingList = mongoose.models.shoppingList || mongoose.model('shoppingList', shoppingListSchema, 'shoppingList');
+const shoppingListSchema = new mongoose.Schema({
+    userID: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User', 
+        required: true 
+    },
+    items: [cartItemSchema]
+}, {
+    timestamps: true
+});
 
-// Display cart
-exports.displayCart = async (userID) => {
-    try {
-        const cart = await shoppingList.findOne({ userID: userID });
-        return cart;
-    } catch (error) {
-        throw new Error(`Error displaying cart: ${error.message}`);
-    }
-};
+const shoppingList = mongoose.models.shoppingList || mongoose.model('shoppingList', shoppingListSchema);
 
-// Add items to cart
-exports.addItems = async (userID, itemsArray) => {
+// Add recipe to cart
+exports.addRecipeToCart = async (userID, recipeId, recipeTitle, ingredients) => {
     try {
+        const cartItems = ingredients.map(ingredient => ({
+            name: ingredient,
+            recipeId: recipeId,
+            recipeTitle: recipeTitle
+        }));
+
         const cart = await shoppingList.findOneAndUpdate(
             { userID: userID },
-            { 
-                $push: { 
-                    items: { $each: itemsArray }
-                } 
-            },
+            { $push: { items: { $each: cartItems } } },
             { upsert: true, returnDocument: 'after' }
         );
         return cart;
     } catch (error) {
-        throw new Error(`Error adding items: ${error.message}`);
+        throw new Error(`Error adding recipe to cart: ${error.message}`);
     }
 };
 
-// Delete item from cart
-exports.deleteItem = async (userID, itemName) => {
+// Get cart grouped by recipe
+exports.getCartGroupedByRecipe = async (userID) => {
+    try {
+        const cart = await shoppingList.findOne({ userID: userID });
+        
+        if (!cart) return { recipes: [] };
+        
+        const recipesMap = new Map();
+        
+        cart.items.forEach(item => {
+            const recipeId = item.recipeId.toString();
+            if (!recipesMap.has(recipeId)) {
+                recipesMap.set(recipeId, {
+                    recipeId: item.recipeId,
+                    recipeTitle: item.recipeTitle,
+                    items: []
+                });
+            }
+            recipesMap.get(recipeId).items.push({
+                name: item.name,
+                itemId: item._id
+            });
+        });
+        
+        return {
+            recipes: Array.from(recipesMap.values()),
+            totalItems: cart.items.length
+        };
+    } catch (error) {
+        throw new Error(`Error getting cart: ${error.message}`);
+    }
+};
+
+// Remove entire recipe from cart
+exports.removeRecipeFromCart = async (userID, recipeId) => {
     try {
         const cart = await shoppingList.findOneAndUpdate(
             { userID: userID },
-            { $pull: { items: itemName } },
+            { $pull: { items: { recipeId: recipeId } } },
             { returnDocument: 'after' }
         );
         return cart;
     } catch (error) {
-        throw new Error(`Error deleting item: ${error.message}`);
+        throw new Error(`Error removing recipe: ${error.message}`);
+    }
+};
+
+// Remove single item from a recipe
+exports.removeItemFromRecipe = async (userID, itemId) => {
+    try {
+        const cart = await shoppingList.findOneAndUpdate(
+            { userID: userID },
+            { $pull: { items: { _id: itemId } } },
+            { returnDocument: 'after' }
+        );
+        return cart;
+    } catch (error) {
+        throw new Error(`Error removing item: ${error.message}`);
     }
 };
 
@@ -65,5 +116,14 @@ exports.clearCart = async (userID) => {
         return cart;
     } catch (error) {
         throw new Error(`Error clearing cart: ${error.message}`);
+    }
+};
+
+// Display cart (simple version)
+exports.displayCart = async (userID) => {
+    try {
+        return await shoppingList.findOne({ userID: userID });
+    } catch (error) {
+        throw new Error(`Error displaying cart: ${error.message}`);
     }
 };
