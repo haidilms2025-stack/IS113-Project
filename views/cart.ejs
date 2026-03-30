@@ -208,13 +208,11 @@
             <strong>🍳 Our Cookbook</strong>
         </div>
         <div>
-            <% if (user) { %>
                 👤 <%= user.username %>
                 <a href="/authentication/logout">Logout</a>
-            <% } else { %>
-                <a href="/authentication/login">Login</a>
-                <a href="/authentication/register">Register</a>
-            <% } %>
+                <a href="/authentication/update">Update Account</a>
+                <a href="/authentication/delete">Delete Account</a>
+
         </div>
     </div>
 
