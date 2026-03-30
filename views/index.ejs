@@ -6,13 +6,13 @@
     <title>Our Cookbook</title>
 
     <style>
+        /* CSS (no comments as requested) */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             background: #f5f5f5;
         }
 
-        /* Navbar */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -33,7 +33,11 @@
             text-decoration: underline;
         }
 
-        /* Hero section */
+        .admin-badge {
+            color: gold;
+            font-weight: bold;
+        }
+
         .hero {
             text-align: center;
             padding: 80px 20px;
@@ -50,7 +54,6 @@
             font-size: 18px;
         }
 
-        /* Buttons */
         .btn {
             display: inline-block;
             margin: 10px;
@@ -65,7 +68,6 @@
             background: #ff5722;
         }
 
-        /* Links section */
         .links {
             text-align: center;
             margin-top: 40px;
@@ -89,37 +91,73 @@
 </head>
 <body>
 
-    <!-- Navbar -->
+    <!-- Navbar section: shows app title + user-related actions -->
     <div class="navbar">
-        <div><strong>🍳 Haidil, Qing Rui, Ashrel, Sheng Ming, Casper, Ronald's Cookbook</strong></div>
 
+        <!-- Left side: application title -->
         <div>
+            <strong>🍳 Haidil, Qing Rui, Ashrel, Sheng Ming, Casper, Ronald's Cookbook</strong>
+        </div>
+
+        <!-- Right side: dynamic content depending on login status -->
+        <div>
+
+            <!-- Check if user is logged in -->
             <% if (user) { %>
-                👤 <%= user.username %>
+
+                <!-- If user is admin, show admin badge -->
+                <% if (user.role === 'admin') { %>
+                    <span class="admin-badge">👑 ADMIN</span>: <%= user.username %>
+                <% } else { %>
+                    <!-- Otherwise show normal user -->
+                    👤 <%= user.username %>
+                <% } %>
+
+                <!-- Common actions available to all logged-in users -->
                 <a href="/authentication/logout">Logout</a>
                 <a href="/authentication/update">Update Account</a>
                 <a href="/authentication/delete">Delete Account</a>
+
+                <!-- Show Admin Panel button ONLY if user is admin -->
+                <% if (user.role === 'admin') { %>
+                    <a href="/authentication/admin-profile">Admin Panel</a>
+                <% } %>
+
             <% } else { %>
+
+                <!-- If user is NOT logged in, show auth options -->
                 <a href="/authentication/register">Register</a>
                 <a href="/authentication/login">Login</a>
+
             <% } %>
         </div>
     </div>
 
-    <!-- Hero Section -->
+    <!-- Hero section: main landing content -->
     <div class="hero">
+
+        <!-- Main heading -->
         <h1>Welcome to our Cookbook!</h1>
+
+        <!-- Short description -->
         <p>Discover, create, and share your favorite recipes 🍲</p>
 
+        <!-- If user is not logged in, show call-to-action button -->
         <% if (!user) { %>
             <a href="/authentication/register" class="btn">Get Started</a>
         <% } %>
+
     </div>
 
-    <!-- Main Links -->
+    <!-- Main navigation links -->
     <div class="links">
+
+        <!-- Link to view all recipes -->
         <a href="/recipes">View Recipes</a>
+
+        <!-- Link to manage user's own recipes -->
         <a href="/myRecipes">Manage my recipes</a>
+
     </div>
 
 </body>
