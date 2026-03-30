@@ -20,10 +20,10 @@
             <tr>
                 <th>Ingredients:</th><td>
                     <ol id="ingredient-list">
-                        <% result.ingredients.forEach( (ingredient) => { %>
+                        <% result.ingredients.forEach((ingredient) => { %>
                             <li>
                                 <input type="text" name="ingredients[]" value="<%= ingredient %>" required>
-                                <button type="button" onclick="removeStep(this)">Delete</button>
+                                <button type="button" onclick="removeIngredient(this)">Delete</button>
                             </li>
                         <%})%>
                     </ol>
@@ -40,7 +40,7 @@
                                 <input type="text" name="steps[]" value="<%= step %>" required>
                                 <button type="button" onclick="removeStep(this)">Delete</button>
                             </li>
-                            <% }) %>
+                        <% }) %>
                     </ol>
                     <button type="button" onclick="addStep()">+ Add Step</button>
                 </td>
@@ -78,7 +78,7 @@
         }
 
         //remove ingredient
-        function removeIngredient(){
+        function removeIngredient(buttonElement){
             const listItem = buttonElement.parentElement;
             listItem.remove(); // Removes ingredient from the page
         }
