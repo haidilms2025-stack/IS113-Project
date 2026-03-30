@@ -266,21 +266,12 @@
             if (imageUrl) {
                 // 3. Set the image source to the provided link 
                 preview.src = imageUrl;
-
-                //image loads properly
-                preview.onload = () => {
-                    // 4. Make the image visible 
-                    preview.style.display = 'block';
         
-                    // Set a consistent width
-                    preview.style.width = '300px';
-                }
-
-                //image fails to load due to broken url
-                preview.onerror = () => {
-                    preview.style.display = 'none'
-                    alert("Image failed to load!")
-                }
+                // 4. Make the image visible 
+                preview.style.display = 'block';
+        
+                // Set a consistent width
+                preview.style.width = '300px';
             } 
         }
 

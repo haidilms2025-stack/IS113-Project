@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Browse Recipes</title>
 
@@ -64,7 +63,7 @@
             background: white;
             border-radius: 10px;
             padding: 15px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             transition: 0.2s;
         }
 
@@ -96,156 +95,161 @@
 
 <body>
 
-    <!-- Navbar -->
-    <div class="navbar">
-        <!-- Left side: application title -->
-        <div>
-            <strong>🍳 Haidil, Qing Rui, Ashrel, Sheng Ming, Casper, Ronald's Cookbook</strong>
-        </div>
+<!-- Navbar -->
+<div class="navbar">
 
-        <!-- Right side: dynamic content depending on login status -->
-        <div>
-
-            <!-- Check if user is logged in -->
-            <% if (user) { %>
-
-                <!-- If user is admin, show admin badge -->
-                <% if (user.role==='admin' ) { %>
-                    <span class="admin-badge">👑 ADMIN</span>: <%= user.username %>
-                        <% } else { %>
-                            <!-- Otherwise show normal user -->
-                            👤 <%= user.username %>
-                                <% } %>
-
-                                    <!-- Common actions available to all logged-in users -->
-                                    <a href="/authentication/logout">Logout</a>
-                                    <a href="/authentication/update">Update Account</a>
-                                    <a href="/authentication/delete">Delete Account</a>
-
-                                    <!-- Show Admin Panel button ONLY if user is admin -->
-                                    <% if (user.role==='admin' ) { %>
-                                        <a href="/authentication/admin-profile">Admin Panel</a>
-                                        <% } %>
-
-                                            <% } else { %>
-
-                                                <!-- If user is NOT logged in, show auth options -->
-                                                <a href="/authentication/register">Register</a>
-                                                <a href="/authentication/login">Login</a>
-
-                                                <% } %>
-        </div>
+    <!-- Left side -->
+    <div>
+        <a href="/">Home</a>
+        <a href="/recipes">Recipes</a>
+        <a href="/cart">🛒 Cart</a>
+        <a href="/myRecipes">Dashboard</a>
     </div>
 
-    <div class="container">
+    <!-- Right side -->
+    <div>
 
-        <h1>Browse Recipes</h1>
+        <% if (user) { %>
 
-        <!-- Search -->
-        <form method="POST" action="/recipes">
-            <input type="text" name="titlesearch" value="<%= titlesearch ? titlesearch : '' %>"
-                placeholder="Search recipes">
-            <button class="btn" type="submit">Search</button>
-
-            <input type="hidden" name="sort" value="<%= sort ? sort : '' %>">
-
-            <button class="btn" type="button" onclick="window.location='/recipes'">Reset</button>
-        </form>
-
-        <br>
-
-        <!-- Sort -->
-        <form method="GET" action="/recipes">
-            Sort by:
-            <select name="sort">
-                <option value="asc" <%=sort==='asc' ? 'selected' : '' %>>Author (A-Z)</option>
-                <option value="desc" <%=sort==='desc' ? 'selected' : '' %>>Author (Z-A)</option>
-                <option value="diffhigh" <%=sort==='diffhigh' ? 'selected' : '' %>>Difficulty (High → Low)</option>
-                <option value="difflow" <%=sort==='difflow' ? 'selected' : '' %>>Difficulty (Low → High)</option>
-                <option value="ratinghigh" <%=sort==='ratinghigh' ? 'selected' : '' %>>Rating (High → Low)</option>
-                <option value="ratinglow" <%=sort==='ratinglow' ? 'selected' : '' %>>Rating (Low → High)</option>
-            </select>
-
-            <button class="btn" type="submit">Apply</button>
-        </form>
-
-        <hr>
-
-        <% if (isSearch && titlesearch) { %>
-            <h2>Showing results for "<%= titlesearch %>"</h2>
+            <% if (user.role === 'admin') { %>
+                <span class="admin-badge">👑 ADMIN</span>: <%= user.username %>
+            <% } else { %>
+                👤 <%= user.username %>
             <% } %>
 
-                <!-- Recipes -->
-                <div class="recipes-grid">
+            <a href="/authentication/logout">Logout</a>
+            <a href="/authentication/update">Update Account</a>
+            <a href="/authentication/delete">Delete Account</a>
 
-                    <% recipes.forEach(recipe=> { %>
+            <% if (user.role === 'admin') { %>
+                <a href="/authentication/admin-profile">Admin Panel</a>
+            <% } %>
 
-                        <div class="card">
+        <% } else { %>
 
-                            <img src="<%= recipe.image %>" alt="recipe image">
+            <a href="/authentication/register">Register</a>
+            <a href="/authentication/login">Login</a>
 
-                            <h3>
-                                <%= recipe.title %>
-                            </h3>
-
-                            <p><strong>Author:</strong>
-                                <%= recipe.username %>
-                            </p>
-
-                            <p>
-                                <strong>Rating:</strong>
-                                <% let stars="" ; if (recipe.avgRating) { let fullStars=Math.round(recipe.avgRating);
-                                    for (let j=0; j < fullStars; j++) { stars +="⭐" ; } } else { stars="No Rating" ; }
-                                    %>
-                                    <%= stars %>
-                            </p>
-
-                            <p>
-                                <strong>Difficulty:</strong>
-                                <% let fire="" ; for (let j=0; j < recipe.difficulty; j++) { fire +="🔥" ; } %>
-                                    <%= fire %>
-                            </p>
-
-                            <p>
-                                <%= recipe.description %>
-                            </p>
-
-                            <br>
-
-                            <form method="GET" action="/recipes/<%= recipe._id %>">
-                                <button class="btn">View</button>
-                            </form>
-
-                            <form method="POST" action="/cart/add">
-                                <input type="hidden" name="recipeId" value="<%= recipe._id %>">
-                                <button class="btn">🛒</button>
-                            </form>
-
-                            <form method="POST" action="/recipes/favourites">
-                                <input type="hidden" name="recipeId" value="<%= recipe._id %>">
-                                <button class="btn">❤️</button>
-                            </form>
-
-                            <br><br>
-
-                            <button class="btn" onclick="openRating('<%= recipe._id %>', `<%=recipe.hasRated%>`)">
-                                ⭐ Rate
-                            </button>
-
-                        </div>
-
-                        <% }) %>
-
-                </div>
-
-                <% if (recipes.length===0) { %>
-                    <p>No recipes found.</p>
-                    <% } %>
+        <% } %>
 
     </div>
+</div>
 
-    <!-- Rating Modal -->
-    <div id="ratingModal" style="
+<div class="container">
+
+<h1>Browse Recipes</h1>
+
+<!-- Search -->
+<form method="POST" action="/recipes">
+    <input type="text" name="titlesearch" value="<%= titlesearch ? titlesearch : '' %>" placeholder="Search recipes">
+    <button class="btn" type="submit">Search</button>
+
+    <input type="hidden" name="sort" value="<%= sort ? sort : '' %>">
+
+    <button class="btn" type="button" onclick="window.location='/recipes'">Reset</button>
+</form>
+
+<br>
+
+<!-- Sort -->
+<form method="GET" action="/recipes">
+    Sort by:
+    <select name="sort">
+        <option value="asc"<%= sort === 'asc' ? 'selected' : '' %>>Author (A-Z)</option>
+        <option value="desc"<%= sort === 'desc' ? 'selected' : '' %>>Author (Z-A)</option>
+        <option value="diffhigh"<%= sort === 'diffhigh' ? 'selected' : '' %>>Difficulty (High → Low)</option>
+        <option value="difflow"<%= sort === 'difflow' ? 'selected' : '' %>>Difficulty (Low → High)</option>
+        <option value="ratinghigh"<%= sort === 'ratinghigh' ? 'selected' : '' %>>Rating (High → Low)</option>
+        <option value="ratinglow"<%= sort === 'ratinglow' ? 'selected' : '' %>>Rating (Low → High)</option>
+    </select>
+
+    <button class="btn" type="submit">Apply</button>
+</form>
+
+<hr>
+
+<% if (isSearch && titlesearch) { %>
+    <h2>Showing results for "<%= titlesearch %>"</h2>
+<% } %>
+
+<!-- Recipes -->
+<div class="recipes-grid">
+
+<% recipes.forEach(recipe => { %>
+
+<div class="card">
+
+    <img src="<%= recipe.image %>" alt="recipe image">
+
+    <h3><%= recipe.title %></h3>
+
+    <p><strong>Author:</strong> <%= recipe.username %></p>
+
+    <p>
+        <strong>Rating:</strong>
+        <%
+            let stars = "";
+            if (recipe.avgRating) {
+                let fullStars = Math.round(recipe.avgRating);
+                for (let j = 0; j < fullStars; j++) {
+                    stars += "⭐";
+                }
+            } else {
+                stars = "No Rating";
+            }
+        %>
+        <%= stars %>
+    </p>
+
+    <p>
+        <strong>Difficulty:</strong>
+        <%
+            let fire = "";
+            for (let j = 0; j < recipe.difficulty; j++) {
+                fire += "🔥";
+            }
+        %>
+        <%= fire %>
+    </p>
+
+    <p><%= recipe.description %></p>
+
+    <br>
+
+    <form method="GET" action="/recipes/<%= recipe._id %>">
+        <button class="btn">View</button>
+    </form>
+
+    <form method="POST" action="/cart/add">
+        <input type="hidden" name="recipeId" value="<%= recipe._id %>">
+        <button class="btn">🛒</button>
+    </form>
+
+    <form method="POST" action="/recipes/favourites">
+        <input type="hidden" name="recipeId" value="<%= recipe._id %>">
+        <button class="btn">❤️</button>
+    </form>
+
+    <br><br>
+
+    <button class="btn" onclick="openRating('<%= recipe._id %>', `<%=recipe.hasRated%>`)">
+        ⭐ Rate
+    </button>
+
+</div>
+
+<% }) %>
+
+</div>
+
+<% if (recipes.length === 0) { %>
+    <p>No recipes found.</p>
+<% } %>
+
+</div>
+
+<!-- Rating Modal -->
+<div id="ratingModal" style="
     display:none;
     position:fixed;
     top:0; left:0;
@@ -253,7 +257,7 @@
     background:rgba(0,0,0,0.5);
 ">
 
-        <div style="
+    <div style="
         background:white;
         padding:20px;
         margin:10% auto;
@@ -261,59 +265,58 @@
         text-align:center;
         border-radius:10px;
     ">
-            <h2>Rate this recipe</h2>
+        <h2>Rate this recipe</h2>
 
-            <form id="ratingForm" method="POST" action="recipes/rate">
+        <form id="ratingForm" method="POST" action="recipes/rate">
+            
+            <input type="hidden" name="recipeId" id="recipeIdInput">
 
-                <input type="hidden" name="recipeId" id="recipeIdInput">
+            <div>
+                <input type="radio" name="rating" value="1"> ⭐ Poor<br>
+                <input type="radio" name="rating" value="2"> ⭐⭐ Fair<br>
+                <input type="radio" name="rating" value="3"> ⭐⭐⭐ Good<br>
+                <input type="radio" name="rating" value="4"> ⭐⭐⭐⭐ Very Good<br>
+                <input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐ Excellent
+            </div>
+            
+            <br>
 
-                <div>
-                    <input type="radio" name="rating" value="1"> ⭐<br>
-                    <input type="radio" name="rating" value="2"> ⭐⭐<br>
-                    <input type="radio" name="rating" value="3"> ⭐⭐⭐<br>
-                    <input type="radio" name="rating" value="4"> ⭐⭐⭐⭐<br>
-                    <input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐
-                </div>
+            <p id="ratingMessage" style="color: green; display: none;">
+                You already rated this recipe
+            </p>
 
-                <br>
+            <button class="btn" type="submit" name="action" value="submitRating" id="submitBtn">Submit</button>
+            <button class="btn" type="submit" name="action" value="deleteRating" id="deleteBtn">Delete</button>
+            <button class="btn" type="button" onclick="closeRating()">Cancel</button>
 
-                <p id="ratingMessage" style="color: green; display: none;">
-                    You already rated this recipe
-                </p>
-
-                <button class="btn" type="submit" name="action" value="submitRating" id="submitBtn">Submit</button>
-                <button class="btn" type="submit" name="action" value="deleteRating" id="deleteBtn">Delete</button>
-                <button class="btn" type="button" onclick="closeRating()">Cancel</button>
-
-            </form>
-        </div>
+        </form>
     </div>
+</div>
 
-    <script>
-        function openRating(recipeId, hasRated) {
-            document.getElementById("ratingModal").style.display = "block";
-            document.getElementById("recipeIdInput").value = recipeId;
+<script>
+function openRating(recipeId, hasRated) {
+    document.getElementById("ratingModal").style.display = "block";
+    document.getElementById("recipeIdInput").value = recipeId;
 
-            const submitBtn = document.getElementById("submitBtn");
-            const deleteBtn = document.getElementById("deleteBtn");
-            const displayMessage = document.getElementById("ratingMessage");
+    const submitBtn = document.getElementById("submitBtn");
+    const deleteBtn = document.getElementById("deleteBtn");
+    const displayMessage = document.getElementById("ratingMessage");
 
-            if (hasRated === "true") {
-                submitBtn.textContent = "Update";
-                deleteBtn.style.display = "inline";
-                displayMessage.style.display = "block";
-            } else {
-                submitBtn.textContent = "Submit";
-                deleteBtn.style.display = "none";
-                displayMessage.style.display = "none";
-            }
-        }
+    if (hasRated === "true") {
+        submitBtn.textContent = "Update";
+        deleteBtn.style.display = "inline";
+        displayMessage.style.display = "block";
+    } else {
+        submitBtn.textContent = "Submit";
+        deleteBtn.style.display = "none";
+        displayMessage.style.display = "none";
+    }
+}
 
-        function closeRating() {
-            document.getElementById("ratingModal").style.display = "none";
-        }
-    </script>
+function closeRating() {
+    document.getElementById("ratingModal").style.display = "none";
+}
+</script>
 
 </body>
-
 </html>
