@@ -100,10 +100,41 @@
 
 <!-- Navbar -->
 <div class="navbar">
+
+    <!-- Left side -->
     <div>
         <a href="/">Home</a>
         <a href="/recipes">Recipes</a>
+        <a href="/cart">🛒 Cart</a>
         <a href="/myRecipes">Dashboard</a>
+    </div>
+
+    <!-- Right side -->
+    <div>
+
+        <% if (user) { %>
+
+            <% if (user.role === 'admin') { %>
+                <span class="admin-badge">👑 ADMIN</span>: <%= user.username %>
+            <% } else { %>
+                👤 <%= user.username %>
+            <% } %>
+
+            <a href="/authentication/logout">Logout</a>
+            <a href="/authentication/update">Update Account</a>
+            <a href="/authentication/delete">Delete Account</a>
+
+            <% if (user.role === 'admin') { %>
+                <a href="/authentication/admin-profile">Admin Panel</a>
+            <% } %>
+
+        <% } else { %>
+
+            <a href="/authentication/register">Register</a>
+            <a href="/authentication/login">Login</a>
+
+        <% } %>
+
     </div>
 </div>
 

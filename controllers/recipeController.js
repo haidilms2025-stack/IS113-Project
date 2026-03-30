@@ -99,10 +99,6 @@ exports.filterRecipes = async (req, res) => {
 
 exports.updateRating = async (req, res) => {
 
-  if (!req.session.user) { //if the user is not logged in, they cannot give a rating, redirect them  to login page
-    return res.redirect("/authentication/login")
-  }
-
   const action = req.body.action
   const rating = parseInt(req.body.rating); //we need to parse the value into an integer, as of rn its a string
   const recipeId = req.body.recipeId; //get the recipeId from the rating form, we will use it for updating later
@@ -135,9 +131,6 @@ exports.updateRating = async (req, res) => {
 
 exports.updateReviews = async (req, res) => {
 
-  if (!req.session.user) { //if the user is not logged in, they cannot give a rating, redirect them  to login page
-    return res.redirect("/authentication/login")
-  }
 
   const action = req.body.action;
   const review = req.body.review; 
