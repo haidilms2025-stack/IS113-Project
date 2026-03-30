@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 
-// Cart item schema (no checked field)
+// Cart item schema
 const cartItemSchema = new mongoose.Schema({
-    name: { type: String, required: true },  // Ingredient name
+    name: { type: String, required: true },
     recipeId: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Recipe', 
         required: true 
     },
-    recipeTitle: { type: String, required: true }  // Store recipe title for display
+    recipeTitle: { type: String, required: true }
 });
 
 const shoppingListSchema = new mongoose.Schema({
@@ -44,32 +44,36 @@ exports.addRecipeToCart = async (userID, recipeId, recipeTitle, ingredients) => 
     }
 };
 
-// Get cart grouped by recipe
+// Get cart grouped by recipe (using Object instead of Map)
 exports.getCartGroupedByRecipe = async (userID) => {
     try {
         const cart = await shoppingList.findOne({ userID: userID });
         
         if (!cart) return { recipes: [] };
         
-        const recipesMap = new Map();
+        const recipesObj = {};  // Using object instead of Map
         
         cart.items.forEach(item => {
             const recipeId = item.recipeId.toString();
-            if (!recipesMap.has(recipeId)) {
-                recipesMap.set(recipeId, {
+            
+            // If this recipe doesn't exist in the object, create it
+            if (!recipesObj[recipeId]) {
+                recipesObj[recipeId] = {
                     recipeId: item.recipeId,
                     recipeTitle: item.recipeTitle,
                     items: []
-                });
+                };
             }
-            recipesMap.get(recipeId).items.push({
+            
+            // Add the item to the recipe's items array
+            recipesObj[recipeId].items.push({
                 name: item.name,
                 itemId: item._id
             });
         });
         
         return {
-            recipes: Array.from(recipesMap.values()),
+            recipes: Object.values(recipesObj),  // Convert object to array
             totalItems: cart.items.length
         };
     } catch (error) {
