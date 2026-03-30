@@ -27,7 +27,10 @@
         <select name="sort">
             <option value="asc"<%= sort === 'asc' ? 'selected' : '' %>>Author (A-Z)</option>
             <option value="desc"<%= sort === 'desc' ? 'selected' : '' %>>Author (Z-A)</option>
-            <option value="diff"<%= sort === 'diff' ? 'selected' : '' %>>Difficulty</option>
+            <option value="diffhigh"<%= sort === 'diffhigh' ? 'selected' : '' %>>Difficulty(Highest to Lowest)</option>
+            <option value="difflow"<%= sort === 'difflow' ? 'selected' : '' %>>Difficulty(Lowest to Highest)</option>
+            <option value="ratinghigh"<%= sort === 'ratinghigh' ? 'selected' : '' %>>Rating(Highest to Lowest)</option>
+            <option value="ratinglow"<%= sort === 'ratinglow' ? 'selected' : '' %>>Rating(Lowest to Highest)</option>
         </select>
 
         <button type="submit">Apply</button>
