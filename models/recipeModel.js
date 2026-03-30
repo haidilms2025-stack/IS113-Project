@@ -307,11 +307,12 @@ exports.deleteRecipe = (title) => {
 };
 
 exports.addReview = (recipeId, email, review) => {
+    console.log(recipeId, email, review)
     return recipes.updateOne(
         { _id: recipeId },
         {
             $push: {
-                ratings: {
+                reviews: {
                     email: email,
                     review: review
                 }

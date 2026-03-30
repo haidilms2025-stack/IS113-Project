@@ -257,7 +257,7 @@
     <div class="modal-content">
         <h2>Review this recipe</h2>
         <form id="reviewForm" name="reviewForm" method="POST" action="/recipes/review">
-            <input type="hidden" name="recipeId" id="recipeIdInput">
+            <input type="hidden" name="recipeId" id="reviewIdInput">
             
             <div class="recipe-review">
                     <textarea name="review" placeholder="Please input you review Here!" required></textarea>
@@ -281,7 +281,7 @@ function closeRating() {
 }
 function openReview(recipeId){
     document.getElementById("reviewModal").classList.add("active");
-    document.getElementById("recipeIdInput").value = recipeId;
+    document.getElementById("reviewIdInput").value = recipeId;
 }
 function closeReview() {
     document.getElementById("reviewModal").classList.remove("active");

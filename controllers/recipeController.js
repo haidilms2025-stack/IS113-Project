@@ -149,7 +149,7 @@ exports.updateReviews = async (req, res) => {
   try {
       if (action == "submitReview") {
       const existing = await recipeModel.hasUserReviewed(recipeId, email); 
-
+      console.log(existing,action,review,recipeId,email)
         if (existing) { //if it returns a record, means user already submitted a review
           await recipeModel.updateReview(recipeId, email, review);
         } else { //else we add the review
