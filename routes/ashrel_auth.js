@@ -13,4 +13,5 @@ router.get('/update', authMiddleware.isLoggedIn, ashrel_authController.displayUp
 router.post('/update', authMiddleware.isLoggedIn, ashrel_authController.updateAccount);
 router.get('/delete', authMiddleware.isLoggedIn, ashrel_authController.displayDelete);
 router.post('/delete', authMiddleware.isLoggedIn, ashrel_authController.deleteAccount);
+router.get('/admin-profile', authMiddleware.isAdmin, ashrel_authController.adminProfile);
 module.exports = router
