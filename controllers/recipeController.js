@@ -311,8 +311,11 @@ exports.viewRecipe = async (req, res) => {
     if (req.session.user) { // if user is logged in
       userEmail = req.session.user.email // change userEmail to the user's email
       recipe.hasRated = recipe.ratings.some(r => r.email === userEmail) //return true if user's email(unique) is inside ratings 
+      recipe.hasReviewed = recipe.reviews.some(r => r.email === userEmail)
+       
     } else {
       recipe.hasRated = false //if no user log in, then is default havent rate yet 
+      recipe.hasReviewed = false
     }
 
     res.render("recipe-detail", { recipe }) // render recipe-detail.ejs with recipe
