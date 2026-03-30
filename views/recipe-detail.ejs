@@ -211,8 +211,13 @@
         <h3>Reviews</h3>
         <% if(recipe.reviews.length === 0){ %>
             <div class="review-item">No Review</div>
-        <% } else {} %>
-        
+        <% } else { %>
+        <% recipe.reviews.forEach(review => { %>
+            <div class="review-item">
+                <strong><%= review.username %>:</strong>
+                <p><%= review.review %></p>
+            </div>
+        <% })} %>
     </div>
 
     <div class="rating-section">
@@ -299,6 +304,8 @@ document.getElementById("ratingModal").addEventListener("click", function(event)
         closeRating();
     }
 });
+
+
 </script>
 </body>
 </html>

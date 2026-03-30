@@ -220,14 +220,14 @@ exports.updateReviews = async (req, res) => {
       const existing = await recipeModel.hasUserReviewed(recipeId, email); 
       
         if (existing) { //if it returns a record, means user already submitted a review
-          await recipeModel.updateReview(recipeId, email, review);
+          await recipeModel.updateReview(recipeId, email, username, review);
         } else { //else we add the review
           await recipeModel.addReview(recipeId, email, username, review);
         }
     } else if (action == "deleteReview") {
       await recipeModel.deleteReview(recipeId,email)
     }    
-    res.redirect('/recipes');
+    res.redirect(`/recipes/${recipeId}?`);
   } catch (error) {
     console.error(error);
     res.send(error.toString());
