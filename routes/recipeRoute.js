@@ -12,6 +12,7 @@ router.post('/', recipeController.filterRecipes);
 
 router.post('/rate', recipeController.updateRating)
 
+/router.post('/review', recipeController.updateReviews)
 // More specific routes first (before :id param)
 router.get("/favourites", recipeController.displayFavourites)
 router.post("/favourites", recipeController.updateFavourites)

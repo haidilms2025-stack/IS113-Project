@@ -135,6 +135,37 @@ exports.addRecipes = async (req, res) => {
 
 }
 
+exports.updateReviews = async (req, res) => {
+
+  if (!req.session.user) { //if the user is not logged in, they cannot give a rating, redirect them  to login page
+    return res.redirect("/authentication/login")
+  }
+
+  const action = req.body.action
+  const review = req.body.review; 
+  const recipeId = req.body.recipeId; //get the recipeId from the rating form, we will use it for updating later
+  const email = req.session.user.email //get the email fro mthe session
+
+  try {
+      if (action == "submitReview") {
+      const existing = await recipeModel.hasUserReviewed(recipeId, email); 
+
+        if (existing) { //if it returns a record, means user already submitted a review
+          await recipeModel.updateReview(recipeId, email, review);
+        } else { //else we add the review
+          await recipeModel.addReview(recipeId, email, review);
+        }
+    } else if (action == "deleteReview") {
+      await recipeModel.deleteReview(recipeId,email)
+    }    
+    res.redirect('/recipes');
+  } catch (error) {
+    console.error(error);
+    res.send(error.toString());
+  }
+
+}
+
 // exports.updateRecipes = async (req, res) => {
 
 //   //Casper's Code goes here

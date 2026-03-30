@@ -67,6 +67,10 @@
             background-color: #f9f9f9;
             border-left: 4px solid #4CAF50;
         }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
         button {
             padding: 10px 20px;
             border: none;
@@ -210,6 +214,13 @@
             <button class="btn-primary" onclick="openRating('<%= recipe._id %>')">⭐ Give A Rating</button>
         <% } %>
     </div>
+    <div class="review-section">
+        <% if(recipe.hasReviewed) { %>
+            <p><strong>✓ You have already reviewed this recipe!</strong></p>
+        <% } else { %>
+            <button class="btn-primary" onclick="openReview('<%= recipe._id %>')">Give A Review</button>
+        <% } %>
+    </div>
 </div>
 
 <div id="ratingModal" class="modal">
@@ -242,6 +253,22 @@
         </form>
     </div>
 </div>
+<div id="reviewModal" class="modal">
+    <div class="modal-content">
+        <h2>Review this recipe</h2>
+        <form id="reviewForm" name="reviewForm" method="POST" action="/recipes/review">
+            <input type="hidden" name="recipeId" id="recipeIdInput">
+            
+            <div class="recipe-review">
+                    <textarea name="review" placeholder="Please input you review Here!" required></textarea>
+                </div>  
+            <br>
+            <button type="submit" name="action" value="submitReview" class="btn-primary">Submit Review</button>
+            <button type="submit" name="action" value="deleteReview" id="deleteBtn">Delete Review</button>
+            <button type="button" class="btn-secondary" onclick="closeReview()">Close</button>
+        </form>
+    </div>
+</div>
 
 <script>
 function openRating(recipeId) {
@@ -251,6 +278,13 @@ function openRating(recipeId) {
 
 function closeRating() {
     document.getElementById("ratingModal").classList.remove("active");
+}
+function openReview(recipeId){
+    document.getElementById("reviewModal").classList.add("active");
+    document.getElementById("recipeIdInput").value = recipeId;
+}
+function closeReview() {
+    document.getElementById("reviewModal").classList.remove("active");
 }
 
 // Close modal when clicking outside of it
