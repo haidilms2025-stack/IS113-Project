@@ -30,7 +30,7 @@
             font-weight: bold;
         }
 
-        /* Form Container (Using Hero styling for consistency) [cite: 33] */
+
         .container {
             max-width: 800px;
             margin: 40px auto;
@@ -54,7 +54,7 @@
             margin-top: 15px;
         }
 
-        input[type="text"], textarea, select {
+        input[type="text"], select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -62,11 +62,26 @@
             box-sizing: border-box; /* Ensures padding doesn't affect width */
         }
 
-        textarea {
-            height: 100px;
-            resize: vertical;
+        #steps_list {
+            padding-left: 30px; 
+            margin-top: 10px;
         }
-
+        .step-row {
+            display: list-item; 
+            list-style-type: decimal; /* Ensures 1, 2, 3... numbering */
+            margin-bottom: 20px;
+            padding-left: 10px;
+        }
+        .step-row textarea {
+            width: 80%; /* Adjusted to leave space for the button */
+            vertical-align: middle;
+            display: inline-block;
+        }
+        .step-row .btn-secondary {
+            vertical-align: middle;
+            margin-left: 10px;
+            width: auto;
+        }        
         /* Buttons  */
         .btn {
             display: inline-block;
@@ -233,7 +248,6 @@
             // Select the ordered list
             const container = document.getElementById("steps_list");
             
-
             const li = document.createElement("li"); // Wrap in a div for a new line
             li.className = "step-row";
 
