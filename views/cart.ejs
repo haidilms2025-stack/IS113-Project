@@ -203,18 +203,45 @@
 </head>
 <body>
 
-    <div class="navbar">
-        <div>
-            <strong>🍳 Our Cookbook</strong>
-        </div>
-        <div>
-                👤 <%= user.username %>
-                <a href="/authentication/logout">Logout</a>
-                <a href="/authentication/update">Update Account</a>
-                <a href="/authentication/delete">Delete Account</a>
+    <!-- Navbar -->
+<div class="navbar">
 
-        </div>
+    <!-- Left side -->
+    <div>
+        <a href="/">Home</a>
+        <a href="/recipes">Recipes</a>
+        <a href="/cart">🛒 Cart</a>
+        <a href="/myRecipes">Dashboard</a>
     </div>
+
+    <!-- Right side -->
+    <div>
+
+        <% if (user) { %>
+
+            <% if (user.role === 'admin') { %>
+                <span class="admin-badge">👑 ADMIN</span>: <%= user.username %>
+            <% } else { %>
+                👤 <%= user.username %>
+            <% } %>
+
+            <a href="/authentication/logout">Logout</a>
+            <a href="/authentication/update">Update Account</a>
+            <a href="/authentication/delete">Delete Account</a>
+
+            <% if (user.role === 'admin') { %>
+                <a href="/authentication/admin-profile">Admin Panel</a>
+            <% } %>
+
+        <% } else { %>
+
+            <a href="/authentication/register">Register</a>
+            <a href="/authentication/login">Login</a>
+
+        <% } %>
+
+    </div>
+</div>
 
     <div class="container">
         <% if (recipes && recipes.length > 0) { %>
