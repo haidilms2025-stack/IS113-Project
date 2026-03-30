@@ -280,7 +280,6 @@
             if (imageUrl) {
                 //Set the image source to the provided link 
                 preview.src = imageUrl;
-<<<<<<< Updated upstream
 
                 //Image loaded successfully
                 preview.onload = function () {
@@ -295,23 +294,6 @@
                 preview.style.display = 'none';
                 alert("Image failed to load!");
                 };  
-=======
-                
-                //image loaded properly
-                preview.onload = () => {
-                    // 4. Make the image visible 
-                    preview.style.display = 'block';
-        
-                    // Set a consistent width
-                    preview.style.width = '300px';
-                }
-                
-                //image failed to load
-                preview.onerror = () => {
-                    preview.style.display = 'none';
-                    alert("Image failed to load!");
-                }
->>>>>>> Stashed changes
             } 
         }
 
