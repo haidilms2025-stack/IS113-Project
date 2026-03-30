@@ -6,12 +6,14 @@ const fs = require('fs');
 const session = require('express-session');
 dotenv.config({path: './config.env'})
 
+//initialise server object
 const server = express();
 
+//parse post request and render ejs as view engine
 server.use(express.urlencoded({ extended: true }));
 server.set("view engine", "ejs");
 
-
+//use secret key from config folder
 const secret = process.env.SECRET;
 console.log(secret)
 server.use(session({
