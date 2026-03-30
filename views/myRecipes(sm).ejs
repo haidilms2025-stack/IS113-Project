@@ -27,7 +27,7 @@
                             <tr>
                                 <td><%= recipe.title %></td>
                                 <td><%= recipe.description %></td>
-                                <td><%= recipe.image %></td>
+                                <td> <img src="<%= recipe.image %>" alt=""></td>
                                 <td>
                                     <ul>
                                         <% recipe.ingredients.forEach((ingredient) => { %>

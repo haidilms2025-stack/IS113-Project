@@ -228,8 +228,8 @@ exports.createRecipe = async function(newRecipe){
 }
 
 //edit recipes casper
-exports.editRecipes = function (title, email, description, ingredients, steps) {
-    return recipes.updateOne({ title: title, email: email }, { description: description, ingredients: ingredients, steps: steps });
+exports.editRecipes = function (title, email, description, ingredients, steps, image) {
+    return recipes.updateOne({ title: title, email: email }, { description: description, ingredients: ingredients, steps: steps, image: image});
 }
 
 exports.findByTitle = (title) => {
