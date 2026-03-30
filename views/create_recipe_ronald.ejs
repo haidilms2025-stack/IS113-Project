@@ -257,21 +257,29 @@
             }
         
         function uploadImage(){
-            // 1. Get the URL string from the text input
+            //Get the URL string from the text input
             const imageUrl = document.getElementById('imageUpload').value;
     
-            // 2. Select the preview image element
+            //Select the preview image element
             const preview = document.getElementById('preview');
 
             if (imageUrl) {
-                // 3. Set the image source to the provided link 
+                //Set the image source to the provided link 
                 preview.src = imageUrl;
-        
-                // 4. Make the image visible 
+
+                //Image loaded successfully
+                preview.onload = function () {
+                //Make the image visible
                 preview.style.display = 'block';
-        
                 // Set a consistent width
                 preview.style.width = '300px';
+                };
+                
+                // Image failed to load ❌
+                preview.onerror = function () {
+                preview.style.display = 'none';
+                alert("Image failed to load!");
+                };  
             } 
         }
 

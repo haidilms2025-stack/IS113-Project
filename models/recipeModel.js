@@ -56,6 +56,16 @@ const recipeSchema = new mongoose.Schema({
         ],
         default: []
     },
+    reviews: {
+            type: [
+                {
+                    email: String,   // store email here
+                    username:String,
+                    review: String
+                }
+            ],
+            default: []
+        },
     email: {
         type: String,
         required: [true, 'A recipe must have user email']
@@ -298,3 +308,38 @@ exports.deleteRecipe = (title) => {
     return recipes.deleteOne({ title: title })
 };
 
+exports.addReview = (recipeId, email, review) => {
+    console.log(recipeId, email, review)
+    return recipes.updateOne(
+        { _id: recipeId },
+        {
+            $push: {
+                reviews: {
+                    email: email,
+                    review: review
+                }
+            }
+        }
+    );
+};
+
+exports.updateReview = function (recipeId, email, review) {
+    return recipes.updateOne(
+        { _id: recipeId, "reviews.email": email }, //condition: find the recipe and the email coressponding to it
+        { $set: { "reviews.$.review": review } } // set the rating to be the new rating
+    );
+}
+
+exports.deleteReview = function (recipeId,email) {
+    return recipes.updateOne(
+    { _id: recipeId },
+    { $pull: { reviews: { email: email } } }
+  );
+}
+
+exports.hasUserReviewed = function (recipeId, email) {
+    return recipes.findOne({
+        _id: recipeId,
+        "reviews.email": email
+    });
+};

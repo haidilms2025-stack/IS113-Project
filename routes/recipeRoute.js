@@ -12,7 +12,7 @@ router.get('/', recipeController.displayRecipes);
 router.post('/', recipeController.filterRecipes);
 
 router.post('/rate',authMiddleware.isLoggedIn, recipeController.updateRating)
-
+router.post('/review', recipeController.updateReviews)
 // More specific routes first (before :id param)
 router.get("/favourites", authMiddleware.isLoggedIn,recipeController.displayFavourites)
 router.post("/favourites", authMiddleware.isLoggedIn,recipeController.updateFavourites)
