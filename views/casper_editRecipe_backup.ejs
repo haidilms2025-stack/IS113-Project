@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Update Recipe</title>
+</head>
+<body>
+    <%  if(result){ %>
+    <h3>Update recipe </h3>
+    <form action="/myRecipes/edit-recipe" method="POST">
+        <table border="1">
+            <tr>
+                <th>Title :</th><td><%= result.title %></td>
+            </tr>
+            <tr>
+                <th>Image: </th>
+                <td>
+                    <p>Current image:</p>
+                    <img src="<%= result.image %>" id="preview" alt="Image Preview"><br><br>
+                    <input type="text" id="imageUpload" name="image" placeholder="Paste new image URL here">
+                    <button type="button" class="btn" onclick="uploadImage()">Preview</button>
+            
+                </td>
+
+                
+            </tr>
+            <tr>
+                <th>Description:</th><td><input type="text" name="description" value = "<%= result.description %>"></td>
+            </tr>
+            <tr>
+                <th>Ingredients:</th><td>
+                    <ol id="ingredient-list">
+                        <% result.ingredients.forEach((ingredient) => { %>
+                            <li>
+                                <input type="text" name="ingredients[]" value="<%= ingredient %>" required>
+                                <button type="button" onclick="removeIngredient(this)">Delete</button>
+                            </li>
+                        <%})%>
+                    </ol>
+                    <button type="button" onclick="addIngredient()">Add Ingredient</button>
+                </td>
+            </tr>
+            
+            <tr>
+                <th>Steps:</th>
+                <td>
+                    <ol id="step-list">
+                        <% result.steps.forEach((step)=> { %>
+                            <li>
+                                <input type="text" name="steps[]" value="<%= step %>" required>
+                                <button type="button" onclick="removeStep(this)">Delete</button>
+                            </li>
+                        <% }) %>
+                    </ol>
+                    <button type="button" onclick="addStep()">+ Add Step</button>
+                </td>
+            </tr>
+            
+            <input type="hidden" name="title" value="<%= result.title %>">
+            <tr>
+                <td colspan="2"><button type="submit">Update Recipe</button></td>
+            </tr>
+        </table>
+     
+        
+    </form>
+     <% } %>
+    <script>
+        // Function to remove step
+        function removeStep(buttonElement) {
+            // 'buttonElement.parentElement' gets <li> tag containing the button and input
+            const listItem = buttonElement.parentElement;
+            listItem.remove(); // Removes step from the page
+        }
+
+        // Function to add new blank step
+        function addStep() {
+            const list = document.getElementById('step-list');
+            const newListItem = document.createElement('li');
+
+            // Create the inner HTML for the new step, matching the EJS structure
+            newListItem.innerHTML = `
+                <input type="text" name="steps[]" value="" required>
+                <button type="button" onclick="removeStep(this)">Delete</button>
+            `;
+
+            list.appendChild(newListItem);
+        }
+
+        //remove ingredient
+        function removeIngredient(buttonElement){
+            const listItem = buttonElement.parentElement;
+            listItem.remove(); // Removes ingredient from the page
+        }
+
+        //add ingredient
+        function addIngredient() {
+            const list = document.getElementById('ingredient-list');
+            const newListItem = document.createElement('li');
+
+            // Create the inner HTML for the new step, matching the EJS structure
+            newListItem.innerHTML = `
+                <input type="text" name="ingredients[]" value="" required>
+                <button type="button" onclick="removeIngredient(this)">Delete</button>
+            `;
+
+            list.appendChild(newListItem);
+        }
+
+        function uploadImage(){
+            // 1. Get the URL string from the text input
+            const imageUrl = document.getElementById('imageUpload').value;
+    
+            // 2. Select the preview image element
+            const preview = document.getElementById('preview');
+
+            if (imageUrl) {
+                // 3. Set the image source to the provided link 
+                preview.src = imageUrl;
+
+                //image loads properly
+                preview.onload = () => {
+                    // 4. Make the image visible 
+                    preview.style.display = 'block';
+        
+                    // Set a consistent width
+                    preview.style.width = '300px';
+                }
+
+                //image fails to load due to broken url
+                preview.onerror = () => {
+                    preview.style.display = 'none'
+                    alert("Image failed to load!")
+                }
+            } 
+        }
+
+
+    </script>
+
+<br><br>
+
+        
+   
+    
+</body>
+</html>

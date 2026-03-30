@@ -1,146 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Update Recipe</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f5f5;
+        }
+
+        /* Navbar (same as index) */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ff7f50;
+            padding: 15px 30px;
+            color: white;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        /* Inputs */
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #ff7f50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #ff5722;
+        }
+
+        .btn-secondary {
+            background: #ccc;
+            color: black;
+        }
+
+        /* Lists */
+        li {
+            margin-bottom: 8px;
+        }
+
+        img {
+            width: 200px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
+
 <body>
-    <%  if(result){ %>
-    <h3>Update recipe </h3>
+
+<!-- Navbar -->
+<div class="navbar">
+    <div>
+        <a href="/">Home</a>
+        <a href="/recipes">Recipes</a>
+        <a href="/myRecipes">Dashboard</a>
+    </div>
+</div>
+
+<div class="container">
+
+<% if(result){ %>
+
+    <h2>Update Recipe</h2>
+
     <form action="/myRecipes/edit-recipe" method="POST">
-        <table border="1">
-            <tr>
-                <th>Title :</th><td><%= result.title %></td>
-            </tr>
-            <tr>
-                <th>Image: </th>
-                <td>
-                    <p>Current image:</p>
-                    <img src="<%= result.image %>" alt=""><br><br>
-                    <input type="text" id="imageUpload" name="image" placeholder="Paste new image URL here">
-                    <button type="button" class="btn" onclick="uploadImage()">Preview</button>
-                    <img id="preview" src="#" alt="Image Preview" style="display:none; width:300px;">
-                </td>
 
-                
-            </tr>
-            <tr>
-                <th>Description:</th><td><input type="text" name="description" value = "<%= result.description %>"></td>
-            </tr>
-            <tr>
-                <th>Ingredients:</th><td>
-                    <ol id="ingredient-list">
-                        <% result.ingredients.forEach((ingredient) => { %>
-                            <li>
-                                <input type="text" name="ingredients[]" value="<%= ingredient %>" required>
-                                <button type="button" onclick="removeIngredient(this)">Delete</button>
-                            </li>
-                        <%})%>
-                    </ol>
-                    <button type="button" onclick="addIngredient()">Add Ingredient</button>
-                </td>
-            </tr>
-            
-            <tr>
-                <th>Steps:</th>
-                <td>
-                    <ol id="step-list">
-                        <% result.steps.forEach((step)=> { %>
-                            <li>
-                                <input type="text" name="steps[]" value="<%= step %>" required>
-                                <button type="button" onclick="removeStep(this)">Delete</button>
-                            </li>
-                        <% }) %>
-                    </ol>
-                    <button type="button" onclick="addStep()">+ Add Step</button>
-                </td>
-            </tr>
-            
-            <input type="hidden" name="title" value="<%= result.title %>">
-            <tr>
-                <td colspan="2"><button type="submit">Update Recipe</button></td>
-            </tr>
-        </table>
-     
-        
+        <p><strong>Title:</strong> <%= result.title %></p>
+
+        <!-- Image -->
+        <p>Current Image:</p>
+        <img src="<%= result.image %>" id="preview">
+
+        <input type="text" id="imageUpload" name="image" placeholder="Paste new image URL here" value = "<%= result.image %>">
+        <button type="button" class="btn" onclick="uploadImage()">Preview</button>
+        <button type = "button" onclick= "document.getElementById('imageUpload').value = ''">Clear image</button><br><br>
+
+        <!-- Description -->
+        <label>Description</label>
+        <input type="text" name="description" value="<%= result.description %>"><br>
+
+        <!-- Ingredients -->
+        <label>Ingredients</label>
+        <ol id="ingredient-list">
+            <% result.ingredients.forEach((ingredient) => { %>
+                <li>
+                    <input type="text" name="ingredients[]" value="<%= ingredient %>" required>
+                    <button type="button" class="btn btn-secondary" onclick="removeIngredient(this)">Delete</button>
+                </li>
+            <% }) %>
+        </ol>
+        <button type="button" class="btn" onclick="addIngredient()">+ Add Ingredient</button><br><br>
+
+        <!-- Steps -->
+        <label>Steps</label>
+        <ol id="step-list">
+            <% result.steps.forEach((step)=> { %>
+                <li>
+                    <input type="text" name="steps[]" value="<%= step %>" required>
+                    <button type="button" class="btn btn-secondary" onclick="removeStep(this)">Delete</button>
+                </li>
+            <% }) %>
+        </ol>
+        <button type="button" class="btn" onclick="addStep()">+ Add Step</button>
+
+        <input type="hidden" name="title" value="<%= result.title %>">
+
+        <br><br>
+        <button type="submit" class="btn">Update Recipe</button>
+
     </form>
-     <% } %>
-    <script>
-        // Function to remove step
-        function removeStep(buttonElement) {
-            // 'buttonElement.parentElement' gets <li> tag containing the button and input
-            const listItem = buttonElement.parentElement;
-            listItem.remove(); // Removes step from the page
+
+<% } %>
+
+</div>
+
+<script>
+function removeStep(buttonElement) {
+    buttonElement.parentElement.remove();
+}
+
+function addStep() {
+    const list = document.getElementById('step-list');
+    const li = document.createElement('li');
+    li.innerHTML = `
+        <input type="text" name="steps[]" required>
+        <button type="button" class="btn btn-secondary" onclick="removeStep(this)">Delete</button>
+    `;
+    list.appendChild(li);
+}
+
+function removeIngredient(buttonElement){
+    buttonElement.parentElement.remove();
+}
+
+function addIngredient() {
+    const list = document.getElementById('ingredient-list');
+    const li = document.createElement('li');
+    li.innerHTML = `
+        <input type="text" name="ingredients[]" required>
+        <button type="button" class="btn btn-secondary" onclick="removeIngredient(this)">Delete</button>
+    `;
+    list.appendChild(li);
+}
+
+function uploadImage(){
+    const imageUrl = document.getElementById('imageUpload').value;
+    const preview = document.getElementById('preview');
+
+    if (imageUrl) {
+        preview.src = imageUrl;
+
+        //image loaded properly
+        preview.onload = () => {
+            preview.style.display = 'block';
         }
 
-        // Function to add new blank step
-        function addStep() {
-            const list = document.getElementById('step-list');
-            const newListItem = document.createElement('li');
-
-            // Create the inner HTML for the new step, matching the EJS structure
-            newListItem.innerHTML = `
-                <input type="text" name="steps[]" value="" required>
-                <button type="button" onclick="removeStep(this)">Delete</button>
-            `;
-
-            list.appendChild(newListItem);
+        //image failed to load
+        preview.onerror = () => {
+            preview.style.display = 'none';
+            alert("Image failed to load!");
         }
+    }
 
-        //remove ingredient
-        function removeIngredient(buttonElement){
-            const listItem = buttonElement.parentElement;
-            listItem.remove(); // Removes ingredient from the page
-        }
+    preview.style.display = 'none'
+}
+</script>
 
-        //add ingredient
-        function addIngredient() {
-            const list = document.getElementById('ingredient-list');
-            const newListItem = document.createElement('li');
-
-            // Create the inner HTML for the new step, matching the EJS structure
-            newListItem.innerHTML = `
-                <input type="text" name="ingredients[]" value="" required>
-                <button type="button" onclick="removeIngredient(this)">Delete</button>
-            `;
-
-            list.appendChild(newListItem);
-        }
-
-        function uploadImage(){
-            // 1. Get the URL string from the text input
-            const imageUrl = document.getElementById('imageUpload').value;
-    
-            // 2. Select the preview image element
-            const preview = document.getElementById('preview');
-
-            if (imageUrl) {
-                // 3. Set the image source to the provided link 
-                preview.src = imageUrl;
-
-                //image loads properly
-                preview.onload = () => {
-                    // 4. Make the image visible 
-                    preview.style.display = 'block';
-        
-                    // Set a consistent width
-                    preview.style.width = '300px';
-                }
-
-                //image fails to load due to broken url
-                preview.onerror = () => {
-                    preview.style.display = 'none'
-                    alert("Image failed to load!")
-                }
-            } 
-        }
-
-
-    </script>
-
-<br><br>
-
-        
-   
-    
 </body>
 </html>
