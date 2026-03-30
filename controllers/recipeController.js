@@ -170,7 +170,7 @@ exports.addRecipes = async (req, res) => {
 
 //Casper's code to update favourites list from haildil's recipe page
 exports.updateFavourites = async (req, res) => {
-  if(!req.session.user) {
+  if(!req.session.user) { // no log in then kena sent back to login page L bozo
     return res.redirect("/authentication/login")
   }
   const email = req.session.user.email
@@ -179,23 +179,23 @@ exports.updateFavourites = async (req, res) => {
   console.log("Adding to favourites - Email:", email, "RecipeID:", recipeID)
   
   try {
-    const recipe = await recipeModel.findRecipeByID(recipeID)
+    const recipe = await recipeModel.findRecipeByID(recipeID) // from the models page
     if (!recipe) {
-      return res.status(404).send("Recipe not found")
+      return res.status(404).send("Recipe not found") // if cannot find recipe send this
     }
     
     // Check if recipe is already in favourites
-    const isDuplicate = await recipeModel.isRecipeInFavourites(email, recipeID)
-    console.log("Is duplicate?:", isDuplicate)
+    const isDuplicate = await recipeModel.isRecipeInFavourites(email, recipeID) // using thing from recipe mode page
+    console.log("Is duplicate?:", isDuplicate) //check if got duplicate anot
     
     if (isDuplicate) {
       console.log("Recipe already in favourites, skipping add")
-      return res.redirect("/recipes/favourites")
+      return res.redirect("/recipes/favourites") //if duplicate then dont add, jusr redirect to fav page
     }
     
-    await recipeModel.addToFavourites(email, recipe)
-    console.log("Added to favourites successfully!")
-    res.redirect("/recipes/favourites")
+    await recipeModel.addToFavourites(email, recipe) //if not then add to favourites using the thing from models page
+    console.log("Added to favourites successfully!") //if it works then send this
+    res.redirect("/recipes/favourites") // reload page
   } catch (error) {
     console.error("Error adding to favourites:", error)
     res.status(500).send(error.toString())
@@ -204,7 +204,7 @@ exports.updateFavourites = async (req, res) => {
 
 //Casper's code to delete favourites from favourites page
 exports.deleteFavourites = async (req, res) => {
-  if(!req.session.user) {
+  if(!req.session.user) { // no log in then kena sent back to login page L bozo
     return res.redirect("/authentication/login")
   }
   const email = req.session.user.email
@@ -213,15 +213,15 @@ exports.deleteFavourites = async (req, res) => {
   console.log("Deleting from favourites - Email:", email, "RecipeID:", recipeID)
 
   try {
-      const result = await recipeModel.deleteFavourites(email, recipeID)
+      const result = await recipeModel.deleteFavourites(email, recipeID) //from recipe.model
       console.log("Delete result:", result)
       
       if (!result) {
-        console.log("Recipe not found in favourites or user not found")
+        console.log("Recipe not found in favourites or user not found") //if cannot find recipe or user the send this
       } else {
-        console.log("Removed from favourites successfully!")
+        console.log("Removed from favourites successfully!") // if not send this
       }
-      res.redirect("/recipes/favourites")
+      res.redirect("/recipes/favourites") //reload the fav page
   } catch (error) {
     console.error("Error deleting from favourites:", error)
     res.status(500).send(error.toString())
@@ -232,21 +232,21 @@ exports.deleteFavourites = async (req, res) => {
 exports.viewRecipe = async (req, res) => {
   try {
     const recipeID = req.params.id
-    const recipe = await recipeModel.findRecipeByID(recipeID)
+    const recipe = await recipeModel.findRecipeByID(recipeID) //find one recipe using its id
     
     if (!recipe) {
-      return res.status(404).send("Recipe not found")
+      return res.status(404).send("Recipe not found") // good ol error 404
     }
 
-    let userEmail = ""
-    if (req.session.user) {
-      userEmail = req.session.user.email
-      recipe.hasRated = recipe.ratings.some(r => r.email === userEmail)
+    let userEmail = "" // initialise email is empty string
+    if (req.session.user) { // if user is logged in
+      userEmail = req.session.user.email // change userEmail to the user's email
+      recipe.hasRated = recipe.ratings.some(r => r.email === userEmail) //return true if user's email(unique) is inside ratings 
     } else {
-      recipe.hasRated = false
+      recipe.hasRated = false //if no user log in, then is default havent rate yet 
     }
 
-    res.render("recipe-detail", { recipe })
+    res.render("recipe-detail", { recipe }) // render recipe-detail.ejs with recipe
   } catch (error) {
     console.error(error)
     res.status(500).send("Error fetching recipe")
