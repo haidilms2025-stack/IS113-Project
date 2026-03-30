@@ -215,11 +215,8 @@
         <% } %>
     </div>
     <div class="review-section">
-        <% if(recipe.hasReviewed) { %>
-            <p><strong>✓ You have already reviewed this recipe!</strong></p>
-        <% } else { %>
             <button class="btn-primary" onclick="openReview('<%= recipe._id %>')">Give A Review</button>
-        <% } %>
+        
     </div>
 </div>
 
@@ -263,7 +260,8 @@
                     <textarea name="review" placeholder="Please input you review Here!" required></textarea>
                 </div>  
             <br>
-            <button type="submit" name="action" value="submitReview" class="btn-primary">Submit Review</button>
+            <button type="submit" name="action" value="submitReview" class="btn-primary">
+            <%= recipe.hasReviewed? "Update Review":" Submit Review" %> </button>
             <button type="submit" name="action" value="deleteReview" id="deleteBtn">Delete Review</button>
             <button type="button" class="btn-secondary" onclick="closeReview()">Close</button>
         </form>

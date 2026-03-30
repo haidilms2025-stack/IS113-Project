@@ -141,19 +141,19 @@ exports.updateReviews = async (req, res) => {
     return res.redirect("/authentication/login")
   }
 
-  const action = req.body.action
+  const action = req.body.action;
   const review = req.body.review; 
   const recipeId = req.body.recipeId; //get the recipeId from the rating form, we will use it for updating later
-  const email = req.session.user.email //get the email fro mthe session
-
+  const email = req.session.user.email; //get the email fro mthe session
+  const username = req.session.user.username;
   try {
       if (action == "submitReview") {
       const existing = await recipeModel.hasUserReviewed(recipeId, email); 
-      console.log(existing,action,review,recipeId,email)
+      
         if (existing) { //if it returns a record, means user already submitted a review
           await recipeModel.updateReview(recipeId, email, review);
         } else { //else we add the review
-          await recipeModel.addReview(recipeId, email, review);
+          await recipeModel.addReview(recipeId, email, username, review);
         }
     } else if (action == "deleteReview") {
       await recipeModel.deleteReview(recipeId,email)
@@ -273,9 +273,13 @@ exports.viewRecipe = async (req, res) => {
     if (req.session.user) {
       userEmail = req.session.user.email
       recipe.hasRated = recipe.ratings.some(r => r.email === userEmail)
+      recipe.hasReviewed = recipe.reviews.some(r => r.email === userEmail)
     } else {
       recipe.hasRated = false
+      recipe.hasReviewed = false
     }
+
+
 
     res.render("recipe-detail", { recipe })
   } catch (error) {

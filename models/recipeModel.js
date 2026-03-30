@@ -60,6 +60,7 @@ const recipeSchema = new mongoose.Schema({
         type: [
             {
                 email: String,   // store email here
+                username:String,
                 review: String
             }
         ],
@@ -167,13 +168,14 @@ exports.findRecipesByTitle = async function (title) {
     );
 }
 
-exports.addRating = function (recipeId, email, rating) {
+exports.addRating = function (recipeId, email, username, rating) {
     return recipes.updateOne(
         { _id: recipeId },
         {
             $push: {
                 ratings: {
                     email: email,
+                    username: username,
                     rating: rating
                 }
             }
