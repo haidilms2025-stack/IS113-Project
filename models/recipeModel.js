@@ -57,15 +57,15 @@ const recipeSchema = new mongoose.Schema({
         default: []
     },
     reviews: {
-        type: [
-            {
-                email: String,   // store email here
-                username:String,
-                review: String
-            }
-        ],
-        default: []
-    },
+            type: [
+                {
+                    email: String,   // store email here
+                    username:String,
+                    review: String
+                }
+            ],
+            default: []
+        },
     email: {
         type: String,
         required: [true, 'A recipe must have user email']
@@ -239,8 +239,8 @@ exports.createRecipe = async function(newRecipe){
 }
 
 //edit recipes casper
-exports.editRecipes = function (title, email, description, ingredients, steps) {
-    return recipes.updateOne({ title: title, email: email }, { description: description, ingredients: ingredients, steps: steps });
+exports.editRecipes = function (title, email, description, ingredients, steps, image) {
+    return recipes.updateOne({ title: title, email: email }, { description: description, ingredients: ingredients, steps: steps, image: image});
 }
 
 exports.findByTitle = (title) => {
@@ -255,26 +255,27 @@ exports.findRecipeByID = function (recipeID) {
 //add to favourites from recipes using email
 exports.addToFavourites = async function (email, recipe) {
     return users.updateOne({ email: email }, { $push: { favourites: recipe } })
+    //push the recipe into the favourites array of the user document with the matching email
 };
 
 //check if recipe is already in favourites
 exports.isRecipeInFavourites = async function (email, recipeId) {
     try {
-        console.log("Checking for duplicate - Email:", email, "RecipeId:", recipeId)
+        console.log("Checking for duplicate - Email:", email, "RecipeId:", recipeId) //check if function is called with correct values
 
-        const user = await users.findOne({ email: email });
+        const user = await users.findOne({ email: email }); // async function to search mongo for user with matching email
 
-        if (!user || !user.favourites) {
+        if (!user || !user.favourites) {    //if user not found or user no favs, return false
             console.log("User not found or no favourites")
             return false;
         }
 
         // Compare recipe IDs as strings
-        const isDuplicate = user.favourites.some(fav =>
-            fav._id.toString() === recipeId
+        const isDuplicate = user.favourites.some(fav => //for a recipe in user's favs, 
+            fav._id.toString() === recipeId // check if recipe id when turned to a string is same as recipe id being sent
         );
 
-        console.log("Is duplicate?:", isDuplicate)
+        console.log("Is duplicate?:", isDuplicate) //shows on console if its duplicate
         return isDuplicate;
     } catch (error) {
         console.error("Error in isRecipeInFavourites:", error)
@@ -284,17 +285,17 @@ exports.isRecipeInFavourites = async function (email, recipeId) {
 
 exports.deleteFavourites = async (email, recipeId) => {
     try {
-        console.log("Deleting recipe - Email:", email, "RecipeId:", recipeId)
+        console.log("Deleting recipe - Email:", email, "RecipeId:", recipeId) // check for correct vlaues 
 
-        const result = await users.findOneAndUpdate(
+        const result = await users.findOneAndUpdate( //find a user with same email, update 
             { email: email },
-            { $pull: { favourites: { _id: new mongoose.Types.ObjectId(recipeId) } } },
+            { $pull: { favourites: { _id: new mongoose.Types.ObjectId(recipeId) } } }, // update by pulling the recipe with same id from the mongo array
             { new: true }
         );
 
-        console.log("Delete result - User found?:", result !== null)
+        console.log("Delete result - User found?:", result !== null) // check if user is found
         if (result) {
-            console.log("Remaining favourites count:", result.favourites?.length || 0)
+            console.log("Remaining favourites count:", result.favourites?.length || 0) // check how many favs left
         }
         return result;
     } catch (error) {

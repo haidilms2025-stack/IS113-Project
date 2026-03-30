@@ -101,7 +101,7 @@ exports.loginSubmission = async (req, res) => {
             role: user.role
         }
         if (user.role == 'admin') {
-            return res.redirect('/admin-profile');
+            return res.render("ashrel_admin_profile", {user: req.session.user});
         }
         else {
             return res.redirect('/');
@@ -217,4 +217,11 @@ exports.deleteAccount = async (req, res) => {
         console.error(error);
         return res.render("ashrel_delete", { error: "Error deleting account" });
     }
+};
+exports.adminProfile = (req, res) => {
+    
+    // render admin page
+    res.render('ashrel_admin_profile', {
+        user: req.session.user
+    });
 };

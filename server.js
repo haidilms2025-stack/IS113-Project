@@ -6,12 +6,14 @@ const fs = require('fs');
 const session = require('express-session');
 dotenv.config({path: './config.env'})
 
+//initialise server object
 const server = express();
 
+//parse post request and render ejs as view engine
 server.use(express.urlencoded({ extended: true }));
 server.set("view engine", "ejs");
 
-
+//use secret key from config folder
 const secret = process.env.SECRET;
 console.log(secret)
 server.use(session({
@@ -43,7 +45,8 @@ server.get('/recipe/:id', (req, res) => {
 
 server.use("/myRecipes", myRecipes)  //routes to recipe dashboard 
 server.use("/cart",cartRoute) // routes to cart
-server.use('/',index); //index must be last
+server.use('/index.html',index); //for the deliverable
+server.use('',index); //index 
 
 
 

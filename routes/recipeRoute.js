@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router();
 const recipeController = require("../controllers/recipeController")
+const authMiddleware = require('../middleware/auth-middleware');
 
 //Haidil's Code 
 
@@ -10,13 +11,12 @@ router.get('/', recipeController.displayRecipes);
 //If user wants to browse for pecific recipes, they will submit, and we will filter the recipes to display
 router.post('/', recipeController.filterRecipes);
 
-router.post('/rate', recipeController.updateRating)
-
-/router.post('/review', recipeController.updateReviews)
+router.post('/rate',authMiddleware.isLoggedIn, recipeController.updateRating)
+router.post('/review', recipeController.updateReviews)
 // More specific routes first (before :id param)
-router.get("/favourites", recipeController.displayFavourites)
-router.post("/favourites", recipeController.updateFavourites)
-router.post("/delete-favourites", recipeController.deleteFavourites)
+router.get("/favourites", authMiddleware.isLoggedIn,recipeController.displayFavourites)
+router.post("/favourites", authMiddleware.isLoggedIn,recipeController.updateFavourites)
+router.post("/delete-favourites", authMiddleware.isLoggedIn,recipeController.deleteFavourites)
 
 //View a single recipe by ID (must be last to avoid catching "favourites")
 router.get('/:id', recipeController.viewRecipe);

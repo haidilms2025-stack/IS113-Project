@@ -4,37 +4,76 @@ exports.displayRecipes = async (req, res) => {
   try {
     let recipes = await recipeModel.getAllRecipes();
     let userEmail = ""
+    let userRating = ""
     if (req.session.user) {
       userEmail = req.session.user.email;
 
     }
-  
+
     const sort = req.query.sort;
 
     if (req.session.user) {
-    recipes.forEach(recipe => { // for each recipe in the database, we will assign a hasRated variable
+      recipes.forEach(recipe => { // for each recipe in the database, we will assign a hasRated variable
         recipe.hasRated = recipe.ratings.some(r => r.email === userEmail); //if the recipe's rating already has the user's email, it means they already rated it
-    });
-  }
 
-    // 🔃 SORT (only if user selected something)
+        const userRatingObj = recipe.ratings.find(r =>
+          r.email === userEmail
+        );
+
+        recipe.userRating = userRatingObj ? userRatingObj.value : null;
+      });
+    }
+
     if (sort === "asc") {
-      recipes.sort((a, b) =>
-        a.username.localeCompare(b.username)
-      );
+      recipes.sort((a, b) => {
+        const A = a.username.toLowerCase();
+        const B = b.username.toLowerCase();
+
+        if (A < B) return -1;
+        if (A > B) return 1;
+        return 0;
+      });
     }
     else if (sort === "desc") {
-      recipes.sort((a, b) =>
-        b.username.localeCompare(a.username)
-      );
+      recipes.sort((a, b) => {
+        const A = a.username.toLowerCase();
+        const B = b.username.toLowerCase();
+
+        if (A > B) return -1;
+        if (A < B) return 1;
+        return 0;
+      });
     }
-    else if (sort === "diff") {
-      recipes.sort((a, b) =>
-        a.difficulty - b.difficulty
-      );
+    else if (sort === "diffhigh") {
+      recipes.sort((a, b) => {
+        if (b.difficulty < a.difficulty) return -1;
+        if (b.difficulty > a.difficulty) return 1;
+        return 0;
+      });
+    }
+    else if (sort === "difflow") {
+      recipes.sort((a, b) => {
+        if (a.difficulty < b.difficulty) return -1;
+        if (a.difficulty > b.difficulty) return 1;
+        return 0;
+      });
+    }
+    else if (sort === "ratinghigh") {
+      recipes.sort((a, b) => {
+        if (b.avgRating < a.avgRating) return -1;
+        if (b.avgRating > a.avgRating) return 1;
+        return 0;
+      });
+    }
+    else if (sort === "ratinglow") {
+      recipes.sort((a, b) => {
+        if (a.avgRating < b.avgRating) return -1;
+        if (a.avgRating > b.avgRating) return 1;
+        return 0;
+      });
     }
 
-    res.render("recipes", { recipes, titlesearch: null, sort, isSearch: false});
+    res.render("recipes", { recipes, titlesearch: null, sort, isSearch: false, userRating });
 
   } catch (error) {
     console.error(error);
@@ -51,7 +90,7 @@ exports.filterRecipes = async (req, res) => {
   try {
     let recipes = await recipeModel.findRecipesByTitle(title);// fetch all the list    
     console.log(recipes)
-    res.render("recipes", { recipes, titlesearch, sort, isSearch: true}); // Render the EJS form view and pass the recipes
+    res.render("recipes", { recipes, titlesearch, sort, isSearch: true }); // Render the EJS form view and pass the recipes
   } catch (error) {
     console.error(error);
     res.send("Error reading database"); // Send error message if fetching fails
@@ -71,18 +110,18 @@ exports.updateRating = async (req, res) => {
 
   try {
     if (action == "submitRating") {
-    const existing = await recipeModel.hasUserRated(recipeId, email); //check if user already rated the recipe based on their email
+      const existing = await recipeModel.hasUserRated(recipeId, email); //check if user already rated the recipe based on their email
 
-    if (existing) { //if it returns a record, means user already submitted a rating
-      await recipeModel.updateRating(recipeId, email, rating);
-    } 
-    else {
-    //else we add the rating
-    await recipeModel.addRating(recipeId, email, rating);
+      if (existing) { //if it returns a record, means user already submitted a rating
+        await recipeModel.updateRating(recipeId, email, rating);
+      }
+      else {
+        //else we add the rating
+        await recipeModel.addRating(recipeId, email, rating);
+      }
+    } else if (action == "deleteRating") {
+      await recipeModel.deleteRating(recipeId, email)
     }
-  } else if (action == "deleteRating") {
-      await recipeModel.deleteRating(recipeId,email)
-  }    
 
     await recipeModel.updateAverageRating(recipeId);
     res.redirect('/recipes');
@@ -94,10 +133,40 @@ exports.updateRating = async (req, res) => {
 
 }
 
+exports.updateReviews = async (req, res) => {
+
+  if (!req.session.user) { //if the user is not logged in, they cannot give a rating, redirect them  to login page
+    return res.redirect("/authentication/login")
+  }
+
+  const action = req.body.action;
+  const review = req.body.review; 
+  const recipeId = req.body.recipeId; //get the recipeId from the rating form, we will use it for updating later
+  const email = req.session.user.email; //get the email fro mthe session
+  const username = req.session.user.username;
+  try {
+      if (action == "submitReview") {
+      const existing = await recipeModel.hasUserReviewed(recipeId, email); 
+      
+        if (existing) { //if it returns a record, means user already submitted a review
+          await recipeModel.updateReview(recipeId, email, review);
+        } else { //else we add the review
+          await recipeModel.addReview(recipeId, email, username, review);
+        }
+    } else if (action == "deleteReview") {
+      await recipeModel.deleteReview(recipeId,email)
+    }    
+    res.redirect('/recipes');
+  } catch (error) {
+    console.error(error);
+    res.send(error.toString());
+  }
+
+}
 //create and update recipes controller moved to myRecipesController(sm)
 exports.showCreateRecipe = (req, res) => {
   const user = req.session.user
-  res.render('create_recipe_ronald',{user})
+  res.render('create_recipe_ronald', { user })
 }
 
 exports.addRecipes = async (req, res) => {
@@ -201,32 +270,32 @@ exports.updateReviews = async (req, res) => {
 
 //Casper's code to update favourites list from haildil's recipe page
 exports.updateFavourites = async (req, res) => {
-  if(!req.session.user) {
+  if(!req.session.user) { // no log in then kena sent back to login page L bozo
     return res.redirect("/authentication/login")
   }
   const email = req.session.user.email
   const recipeID = req.body.recipeId
-  
+
   console.log("Adding to favourites - Email:", email, "RecipeID:", recipeID)
-  
+
   try {
-    const recipe = await recipeModel.findRecipeByID(recipeID)
+    const recipe = await recipeModel.findRecipeByID(recipeID) // from the models page
     if (!recipe) {
-      return res.status(404).send("Recipe not found")
+      return res.status(404).send("Recipe not found") // if cannot find recipe send this
     }
-    
+
     // Check if recipe is already in favourites
-    const isDuplicate = await recipeModel.isRecipeInFavourites(email, recipeID)
-    console.log("Is duplicate?:", isDuplicate)
+    const isDuplicate = await recipeModel.isRecipeInFavourites(email, recipeID) // using thing from recipe mode page
+    console.log("Is duplicate?:", isDuplicate) //check if got duplicate anot
     
     if (isDuplicate) {
       console.log("Recipe already in favourites, skipping add")
-      return res.redirect("/recipes/favourites")
+      return res.redirect("/recipes/favourites") //if duplicate then dont add, jusr redirect to fav page
     }
     
-    await recipeModel.addToFavourites(email, recipe)
-    console.log("Added to favourites successfully!")
-    res.redirect("/recipes/favourites")
+    await recipeModel.addToFavourites(email, recipe) //if not then add to favourites using the thing from models page
+    console.log("Added to favourites successfully!") //if it works then send this
+    res.redirect("/recipes/favourites") // reload page
   } catch (error) {
     console.error("Error adding to favourites:", error)
     res.status(500).send(error.toString())
@@ -235,7 +304,7 @@ exports.updateFavourites = async (req, res) => {
 
 //Casper's code to delete favourites from favourites page
 exports.deleteFavourites = async (req, res) => {
-  if(!req.session.user) {
+  if(!req.session.user) { // no log in then kena sent back to login page L bozo
     return res.redirect("/authentication/login")
   }
   const email = req.session.user.email
@@ -244,15 +313,15 @@ exports.deleteFavourites = async (req, res) => {
   console.log("Deleting from favourites - Email:", email, "RecipeID:", recipeID)
 
   try {
-      const result = await recipeModel.deleteFavourites(email, recipeID)
+      const result = await recipeModel.deleteFavourites(email, recipeID) //from recipe.model
       console.log("Delete result:", result)
       
       if (!result) {
-        console.log("Recipe not found in favourites or user not found")
+        console.log("Recipe not found in favourites or user not found") //if cannot find recipe or user the send this
       } else {
-        console.log("Removed from favourites successfully!")
+        console.log("Removed from favourites successfully!") // if not send this
       }
-      res.redirect("/recipes/favourites")
+      res.redirect("/recipes/favourites") //reload the fav page
   } catch (error) {
     console.error("Error deleting from favourites:", error)
     res.status(500).send(error.toString())
@@ -263,25 +332,21 @@ exports.deleteFavourites = async (req, res) => {
 exports.viewRecipe = async (req, res) => {
   try {
     const recipeID = req.params.id
-    const recipe = await recipeModel.findRecipeByID(recipeID)
+    const recipe = await recipeModel.findRecipeByID(recipeID) //find one recipe using its id
     
     if (!recipe) {
-      return res.status(404).send("Recipe not found")
+      return res.status(404).send("Recipe not found") // good ol error 404
     }
 
-    let userEmail = ""
-    if (req.session.user) {
-      userEmail = req.session.user.email
-      recipe.hasRated = recipe.ratings.some(r => r.email === userEmail)
-      recipe.hasReviewed = recipe.reviews.some(r => r.email === userEmail)
+    let userEmail = "" // initialise email is empty string
+    if (req.session.user) { // if user is logged in
+      userEmail = req.session.user.email // change userEmail to the user's email
+      recipe.hasRated = recipe.ratings.some(r => r.email === userEmail) //return true if user's email(unique) is inside ratings 
     } else {
-      recipe.hasRated = false
-      recipe.hasReviewed = false
+      recipe.hasRated = false //if no user log in, then is default havent rate yet 
     }
 
-
-
-    res.render("recipe-detail", { recipe })
+    res.render("recipe-detail", { recipe }) // render recipe-detail.ejs with recipe
   } catch (error) {
     console.error(error)
     res.status(500).send("Error fetching recipe")
@@ -297,7 +362,7 @@ exports.displayFavourites = async (req, res) => {
   try {
     const email = req.session.user.email
     const user = await recipeModel.findUserByEmail(email)
-    
+
     if (!user) {
       return res.status(404).send("User not found")
     }

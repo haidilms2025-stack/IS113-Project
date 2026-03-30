@@ -1,44 +1,297 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Cart</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Shopping Cart</title>
+
     <style>
-        .cart-item {
-            padding: 10px;
-            margin: 5px 0;
-            background-color: #f5f5f5;
-            border-radius: 4px;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f5f5;
         }
-        button {
-            margin-left: 10px;
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ff7f50;
+            padding: 15px 30px;
+            color: white;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .cart-header {
+            background: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .cart-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .cart-header p {
+            color: #555;
+            font-size: 16px;
+        }
+
+        .recipe-box {
+            background: white;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .recipe-header {
+            background: #ff7f50;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .recipe-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .recipe-title span {
+            font-size: 14px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .remove-recipe-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .remove-recipe-btn:hover {
+            background: #c82333;
+        }
+
+        .items-list {
+            padding: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .remove-item-btn {
+            background: #ffc107;
+            color: #333;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .remove-item-btn:hover {
+            background: #e0a800;
+        }
+
+        .cart-footer {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .clear-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .clear-btn:hover {
+            background: #5a6268;
+        }
+
+        .continue-btn {
+            display: inline-block;
+            background: #ff7f50;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .continue-btn:hover {
+            background: #ff5722;
+        }
+
+        .empty-cart {
+            background: white;
+            text-align: center;
+            padding: 60px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .empty-cart p {
+            color: #555;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart .btn {
+            display: inline-block;
+            background: #ff7f50;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .empty-cart .btn:hover {
+            background: #ff5722;
         }
     </style>
 </head>
 <body>
-    <h1>Shopping Cart</h1>
-    
-    <% if (cart.items && cart.items.length > 0) { %>
-        <p>You have <%= cart.items.length %> items in your cart:</p>
-        <ul style="list-style: none; padding: 0;">
-            <% cart.items.forEach((item, index) => { %>
-                <li class="cart-item">
-                    <%= index + 1 %>. <%= item %>
-                    <form method="POST" action="/cart/remove" style="display: inline;">
-                        <input type="hidden" name="item" value="<%= item %>">
-                        <button type="submit">Remove</button>
-                    </form>
-                </li>
+
+    <!-- Navbar -->
+<div class="navbar">
+
+    <!-- Left side -->
+    <div>
+        <a href="/">Home</a>
+        <a href="/recipes">Recipes</a>
+        <a href="/cart">🛒 Cart</a>
+        <a href="/myRecipes">Dashboard</a>
+    </div>
+
+    <!-- Right side -->
+    <div>
+
+        <% if (user) { %>
+
+            <% if (user.role === 'admin') { %>
+                <span class="admin-badge">👑 ADMIN</span>: <%= user.username %>
+            <% } else { %>
+                👤 <%= user.username %>
+            <% } %>
+
+            <a href="/authentication/logout">Logout</a>
+            <a href="/authentication/update">Update Account</a>
+            <a href="/authentication/delete">Delete Account</a>
+
+            <% if (user.role === 'admin') { %>
+                <a href="/authentication/admin-profile">Admin Panel</a>
+            <% } %>
+
+        <% } else { %>
+
+            <a href="/authentication/register">Register</a>
+            <a href="/authentication/login">Login</a>
+
+        <% } %>
+
+    </div>
+</div>
+
+    <div class="container">
+        <% if (recipes && recipes.length > 0) { %>
+            <div class="cart-header">
+                <h1>🛒 My Shopping Cart</h1>
+                <p>You have <strong><%= totalItems %></strong> items across <strong><%= recipes.length %></strong> recipes</p>
+            </div>
+
+            <% recipes.forEach(recipe => { %>
+                <div class="recipe-box">
+                    <div class="recipe-header">
+                        <div class="recipe-title">
+                            📖 <%= recipe.recipeTitle %> 
+                            <span>(<%= recipe.items.length %> items)</span>
+                        </div>
+                        <form method="POST" action="/cart/remove-recipe" style="display: inline;">
+                            <input type="hidden" name="recipeId" value="<%= recipe.recipeId %>">
+                            <button type="submit" class="remove-recipe-btn">Remove All</button>
+                        </form>
+                    </div>
+                    
+                    <div class="items-list">
+                        <% recipe.items.forEach(item => { %>
+                            <div class="cart-item">
+                                <span class="item-name">• <%= item.name %></span>
+                                <form method="POST" action="/cart/remove-item" style="display: inline;">
+                                    <input type="hidden" name="itemId" value="<%= item.itemId %>">
+                                    <button type="submit" class="remove-item-btn">Remove</button>
+                                </form>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
             <% }) %>
-        </ul>
-        
-        <form method="POST" action="/cart/clear">
-            <button type="submit">Clear Cart</button>
-        </form>
-    <% } else { %>
-        <p>Your cart is empty</p>
-    <% } %>
-    
-    <br>
-    <a href="/recipes">Continue Browsing</a>
+
+            <div class="cart-footer">
+                <form method="POST" action="/cart/clear" style="display: inline;">
+                    <button type="submit" class="clear-btn">Clear All Recipes</button>
+                </form>
+                <a href="/recipes" class="continue-btn">Continue Shopping</a>
+            </div>
+
+        <% } else { %>
+            <div class="empty-cart">
+                <p>Your cart is empty</p>
+                <p>Browse recipes and add ingredients to your shopping list!</p>
+                <a href="/recipes" class="btn">Browse Recipes</a>
+            </div>
+        <% } %>
+    </div>
+
 </body>
 </html>
