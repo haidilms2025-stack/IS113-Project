@@ -122,14 +122,14 @@
 
         <!-- Ingredients -->
         <label>Ingredients</label>
-        <ol id="ingredient-list">
+        <ul id="ingredient-list">
             <% result.ingredients.forEach((ingredient) => { %>
                 <li>
                     <input type="text" name="ingredients[]" value="<%= ingredient %>" required>
                     <button type="button" class="btn btn-secondary" onclick="removeIngredient(this)">Delete</button>
                 </li>
             <% }) %>
-        </ol>
+        </ul>
         <button type="button" class="btn" onclick="addIngredient()">+ Add Ingredient</button><br><br>
 
         <!-- Steps -->

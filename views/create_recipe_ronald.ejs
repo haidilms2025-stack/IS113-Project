@@ -188,8 +188,8 @@
                 <span>Steps</span>
                 <ol id="steps_list">
                     <li class="step-row">
-                    <textarea name="steps[]" placeholder="Step description" required></textarea>
-                </li>
+                        <textarea name="steps[]" placeholder="Step description" required></textarea>
+                    </li>
                 </ol>
                 
             </div>
@@ -283,16 +283,16 @@
 
                 //Image loaded successfully
                 preview.onload = function () {
-                //Make the image visible
-                preview.style.display = 'block';
-                // Set a consistent width
-                preview.style.width = '300px';
+                    //Make the image visible
+                    preview.style.display = 'block';
+                    // Set a consistent width
+                    preview.style.width = '300px';
                 };
                 
                 // Image failed to load 
                 preview.onerror = function () {
-                preview.style.display = 'none';
-                alert("Image failed to load!");
+                    preview.style.display = 'none';
+                    alert("Image failed to load!");
                 };  
             } 
             preview.style.display = 'none';
