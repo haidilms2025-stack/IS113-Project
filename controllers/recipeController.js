@@ -26,8 +26,8 @@ exports.displayRecipes = async (req, res) => {
 
     if (sort === "asc") {
       recipes.sort((a, b) => {
-        const A = a.username.toLowerCase();
-        const B = b.username.toLowerCase();
+        const A = a.title.toLowerCase();
+        const B = b.title.toLowerCase();
 
         if (A < B) return -1;
         if (A > B) return 1;
@@ -36,8 +36,8 @@ exports.displayRecipes = async (req, res) => {
     }
     else if (sort === "desc") {
       recipes.sort((a, b) => {
-        const A = a.username.toLowerCase();
-        const B = b.username.toLowerCase();
+        const A = a.title.toLowerCase();
+        const B = b.title.toLowerCase();
 
         if (A > B) return -1;
         if (A < B) return 1;
