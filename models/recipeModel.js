@@ -227,9 +227,6 @@ exports.updateAverageRating = async function (recipeId) {
         avg = total / ratingsArray.length; // we only calculate average if theres more than 1 rating
     }
 
-    console.log("avgRating:", avg);
-
-
     return recipes.updateOne(
         { _id: recipeId },
         { $set: { avgRating: avg } }
@@ -311,6 +308,10 @@ exports.deleteFavourites = async (email, recipeId) => {
 exports.deleteRecipe = (title, email) => {
     return recipes.deleteOne({ title: title, email: email })
 };
+
+exports.deleteAllRecipes = (email) => {
+    return recipes.deleteMany({email: email})
+}
 
 exports.addReview = (recipeId, email, username, review) => {
     console.log(recipeId, email, review)
