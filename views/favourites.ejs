@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Favourite Recipes</title>
     <style>
@@ -8,35 +9,34 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #ff7f50;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
         }
-        
+
         .header {
             color: white;
             margin-bottom: 40px;
             text-align: center;
         }
-        
+
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
         }
-        
+
         .header p {
             font-size: 1.1em;
             opacity: 0.9;
         }
-        
+
         .no-favourites {
             background: white;
             padding: 40px;
@@ -44,24 +44,24 @@
             text-align: center;
             color: #666;
         }
-        
+
         .no-favourites a {
             color: #667eea;
             text-decoration: none;
             font-weight: bold;
         }
-        
+
         .no-favourites a:hover {
             text-decoration: underline;
         }
-        
+
         .recipes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
             margin-bottom: 30px;
         }
-        
+
         .recipe-card {
             background: white;
             border-radius: 8px;
@@ -69,23 +69,23 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
+
         .recipe-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
-        
+
         .recipe-image {
             width: 100%;
             height: 200px;
             object-fit: cover;
             overflow: hidden;
         }
-        
+
         .recipe-content {
             padding: 20px;
         }
-        
+
         .recipe-title {
             font-size: 1.3em;
             margin-bottom: 8px;
@@ -94,28 +94,28 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        
+
         .recipe-author {
             color: #666;
             font-size: 0.9em;
             margin-bottom: 10px;
         }
-        
+
         .recipe-meta {
             display: flex;
             justify-content: space-between;
             margin-bottom: 15px;
             font-size: 0.9em;
         }
-        
+
         .difficulty {
             color: #e74c3c;
         }
-        
+
         .rating {
             color: #f39c12;
         }
-        
+
         .description {
             color: #555;
             font-size: 0.9em;
@@ -125,21 +125,41 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .recipe-actions {
             display: flex;
             gap: 10px;
         }
-        
+
         .recipe-actions button,
         .recipe-actions form {
             flex: 1;
         }
-        
+
         .recipe-actions form {
             display: flex;
         }
-        
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ff7f50;
+            padding: 15px 30px;
+            color: white;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
         .recipe-actions button {
             padding: 10px 15px;
             border: none;
@@ -150,27 +170,16 @@
             transition: background-color 0.3s ease;
             text-align: center;
         }
-        
+
         .btn-view {
-            background-color: #667eea;
-            color: white;
-            flex: 2;
+            background-color:#ff7f50;
         }
-        
-        .btn-view:hover {
-            background-color: #5568d3;
-        }
-        
+
         .btn-remove {
-            background-color: #e74c3c;
-            color: white;
-            flex: 1;
+            background-color: #ff7f50;
         }
-        
-        .btn-remove:hover {
-            background-color: #c0392b;
-        }
-        
+
+
         .back-button {
             display: inline-block;
             margin-bottom: 20px;
@@ -181,7 +190,7 @@
             border-radius: 4px;
             transition: background-color 0.3s ease;
         }
-        
+
         .back-button:hover {
             background-color: rgba(255, 255, 255, 0.3);
         }
@@ -195,75 +204,101 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="nav-buttons">
-            <a href="/recipes" class="back-button">← Back to Recipes</a>
-            <a href="/" class="back-button">🏠 Main Menu</a>
-        </div>
-        
-        <div class="header">
-            <h1>❤️ <%= user.username %>'s Favourite Recipes</h1>
-            <p><%= user.favourites.length %> recipe<%= user.favourites.length !== 1 ? 's' : '' %> saved</p>
+
+    <div class="navbar">
+
+        <div>
+            <a href="/">Home</a>
+            <a href="/recipes">Recipes</a>
+            <a href="/cart">🛒 Cart</a>
+            <a href="/myRecipes">Dashboard</a>
         </div>
 
-        <% if (user.favourites.length === 0) { %>
+        <div>
+            <% if (user) { %>
+
+                <% if (user.role==='admin' ) { %>
+                    <span>👑 ADMIN</span>: <%= user.username %>
+                        <% } else { %>
+                            👤 <%= user.username %>
+                                <% } %>
+
+                                    <a href="/authentication/logout">Logout</a>
+                                    <a href="/authentication/update">Update</a>
+                                    <a href="/authentication/delete">Delete</a>
+
+                                    <% } else { %>
+
+                                        <a href="/authentication/register">Register</a>
+                                        <a href="/authentication/login">Login</a>
+
+                                        <% } %>
+        </div>
+
+    </div>
+    <div class="container">
+        
+
+        <div class="header">
+            <h1>❤️ <%= user.username %>'s Favourite Recipes</h1>
+            <p>
+                <%= user.favourites.length %> recipe<%= user.favourites.length !==1 ? 's' : '' %> saved
+            </p>
+        </div>
+
+        <% if (user.favourites.length===0) { %>
             <div class="no-favourites">
                 <h2>No Favourites Yet</h2>
-                <p>You haven't added any recipes to your favourites. <a href="/recipes">Browse recipes</a> and add your favourites!</p>
+                <p>You haven't added any recipes to your favourites. <a href="/recipes">Browse recipes</a> and add your
+                    favourites!</p>
             </div>
-        <% } else { %>
-            <div class="recipes-grid">
-                <% user.favourites.forEach((favourite) => { %>
-                    <div class="recipe-card">
-                        <img src="<%= favourite.image %>" alt="<%= favourite.title %>" class="recipe-image">
-                        
-                        <div class="recipe-content">
-                            <h3 class="recipe-title" title="<%= favourite.title %>"><%= favourite.title %></h3>
-                            <p class="recipe-author">By <%= favourite.username %></p>
-                            
-                            <div class="recipe-meta">
-                                <span class="difficulty">
-                                    <%
-                                        let fire = "";
-                                        for (let j = 0; j < favourite.difficulty; j++) {
-                                            fire += "🔥";
-                                        }
-                                    %>
-                                    <%= fire %>
-                                </span>
-                                <span class="rating">
-                                    <%
-                                        let stars = "";
-                                        if (favourite.avgRating) {
-                                            let fullStars = Math.round(favourite.avgRating);
-                                            for (let j = 0; j < fullStars; j++) {
-                                                stars += "⭐";
-                                            }
-                                        } else {
-                                            stars = "No rating";
-                                        }
-                                    %>
-                                    <%= stars %>
-                                </span>
-                            </div>
-                            
-                            <p class="description"><%= favourite.description %></p>
-                            
-                            <div class="recipe-actions">
-                                <form method="GET" action="/recipe/<%= favourite._id %>" style="flex: 2;">
-                                    <button type="submit" class="btn-view">View Recipe</button>
-                                </form>
-                                
-                                <form method="POST" action="/recipes/delete-favourites" style="flex: 1;">
-                                    <input type="hidden" name="recipeID" value="<%= favourite._id %>">
-                                    <button type="submit" class="btn-remove">Remove</button>
-                                </form>
+            <% } else { %>
+                <div class="recipes-grid">
+                    <% user.favourites.forEach((favourite)=> { %>
+                        <div class="recipe-card">
+                            <img src="<%= favourite.image %>" alt="<%= favourite.title %>" class="recipe-image">
+
+                            <div class="recipe-content">
+                                <h3 class="recipe-title" title="<%= favourite.title %>">
+                                    <%= favourite.title %>
+                                </h3>
+                                <p class="recipe-author">By <%= favourite.username %>
+                                </p>
+
+                                <div class="recipe-meta">
+                                    <span class="difficulty">
+                                        <% let fire="" ; for (let j=0; j < favourite.difficulty; j++) { fire +="🔥" ; }
+                                            %>
+                                            <%= fire %>
+                                    </span>
+                                    <span class="rating">
+                                        <% let stars="" ; if (favourite.avgRating) { let
+                                            fullStars=Math.round(favourite.avgRating); for (let j=0; j < fullStars; j++)
+                                            { stars +="⭐" ; } } else { stars="No rating" ; } %>
+                                            <%= stars %>
+                                    </span>
+                                </div>
+
+                                <p class="description">
+                                    <%= favourite.description %>
+                                </p>
+
+                                <div class="recipe-actions">
+                                    <form method="GET" action="/recipe/<%= favourite._id %>" style="flex: 2;">
+                                        <button type="submit" class="btn-view">View Recipe</button>
+                                    </form>
+
+                                    <form method="POST" action="/recipes/delete-favourites" style="flex: 1;">
+                                        <input type="hidden" name="recipeID" value="<%= favourite._id %>">
+                                        <button type="submit" class="btn-remove">Remove</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <% }) %>
-            </div>
-        <% } %>
+                        <% }) %>
+                </div>
+                <% } %>
     </div>
 </body>
+
 </html>

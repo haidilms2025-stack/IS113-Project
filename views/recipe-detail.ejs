@@ -65,7 +65,7 @@
             margin: 10px 0;
             padding: 10px;
             background-color: #f9f9f9;
-            border-left: 4px solid #4CAF50;
+            border-left: 4px solid #ff7f50;
         }
         textarea {
             height: 100px;
@@ -80,28 +80,31 @@
             transition: background-color 0.3s;
         }
         .btn-primary {
-            background-color: #4CAF50;
+            background-color:#ff7f50;
             color: white;
         }
         .btn-primary:hover {
-            background-color: #45a049;
+            background-color: #ff7f50;
         }
         .btn-secondary {
-            background-color: #2196F3;
+            background-color:#ff7f50;
             color: white;
         }
+
+        
         .btn-secondary:hover {
-            background-color: #0b7dda;
+            background-color: #ff7f50;
         }
         .btn-danger {
-            background-color: #f44336;
+            background-color:#ff7f50;
             color: white;
         }
         .btn-danger:hover {
-            background-color: #da190b;
+            background-color:#ff7f50;
         }
         .rating-section {
             margin: 20px 0;
+            
         }
         .modal {
             display: none;
@@ -147,7 +150,9 @@
                 <input type="hidden" name="recipeId" value="<%= recipe._id %>">
                 <button class="btn-secondary" type="submit">❤️ Add to Favourites</button>
             </form>
-            <button class="btn-secondary" onclick="history.back()">← Back</button>
+            <form method="get" action="/recipes">
+            <button class="btn-secondary">← Back</button>
+            </form>
         </div>
     </div>
 
@@ -221,7 +226,7 @@
     </div>
 
     <div class="rating-section">
-        <button class="btn" onclick="openRating('<%= recipe._id %>', `<%=recipe.hasRated%>`)">
+        <button class="btn" style="background-color: #ff7f50; color: #f5f5f5;" onclick="openRating('<%= recipe._id %>', `<%=recipe.hasRated%>`)">
         ⭐ Rate
     </button>
     </div>
@@ -266,7 +271,9 @@
                 You already rated this recipe
             </p>
 
-            <button class="btn" type="submit" name="action" value="submitRating" id="submitBtn">Submit</button>
+            <p id="errorMsg" style="color:red;"></p>
+
+            <button class="btn" type="submit" name="action" value="submitRating" onclick="return validateRating()" id="submitBtn">Submit</button>
             <button class="btn" type="submit" name="action" value="deleteRating" id="deleteBtn">Delete</button>
             <button class="btn" type="button" onclick="closeRating()">Cancel</button>
 
@@ -277,7 +284,7 @@
 <div id="reviewModal" class="modal">
     <div class="modal-content">
         <h2>Review this recipe</h2>
-        <form id="reviewForm" name="reviewForm" method="POST" action="/recipes/review">
+        <form id="reviewForm" name="reviewForm" method="POST" action="../recipes/review">
             <input type="hidden" name="recipeId" id="reviewIdInput">
             
             <div class="recipe-review">
