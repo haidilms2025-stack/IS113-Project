@@ -168,15 +168,14 @@ exports.findRecipesByTitle = async function (title) {
     );
 }
 
-exports.addRating = function (recipeId, email, rating) {
-
-    console.log("rating being saved:", rating)
+exports.addRating = function (recipeId, email, username, rating) {
     return recipes.updateOne(
         { _id: recipeId },
         {
             $push: {
                 ratings: {
                     email: email,
+                    username: username,
                     rating: rating
                 }
             }
@@ -218,11 +217,8 @@ exports.updateAverageRating = async function (recipeId) {
 
     let total = 0;
 
-    console.log("ratingsArray:", ratingsArray);
     for (let i = 0; i < ratingsArray.length; i++) { //for each rating, we add up the total
-        console.log("raw value:", ratingsArray[i].rating);
         total += ratingsArray[i].rating;
-        
     }
 
     let avg = 0;
@@ -230,8 +226,6 @@ exports.updateAverageRating = async function (recipeId) {
     if (ratingsArray.length > 0) {
         avg = total / ratingsArray.length; // we only calculate average if theres more than 1 rating
     }
-
-    console.log("avgRating", avg)
 
     return recipes.updateOne(
         { _id: recipeId },
@@ -314,6 +308,10 @@ exports.deleteFavourites = async (email, recipeId) => {
 exports.deleteRecipe = (title, email) => {
     return recipes.deleteOne({ title: title, email: email })
 };
+
+exports.deleteAllRecipes = (email) => {
+    return recipes.deleteMany({email: email})
+}
 
 exports.addReview = (recipeId, email, username, review) => {
     console.log(recipeId, email, review)
