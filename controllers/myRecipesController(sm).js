@@ -75,7 +75,7 @@ exports.addRecipes = async (req, res) => {
   let difficulty = req.body.difficulty; // get difficulty
   let username = req.session.user.username; //get username
   let email = req.session.user.email; //get email
-  const existingTitle = myRecipesModel.findUserRecipeTitle(email,title);
+  const existingTitle = await myRecipesModel.findUserRecipeTitle(email,title);
   let errorArr =[];
   let cleanIngredients=[];
   let cleanSteps=[];
@@ -84,16 +84,12 @@ exports.addRecipes = async (req, res) => {
   title = title.trim();
   description = description.trim();
   if(ingredients){
-    console.log(ingredients);
   ingredients = ingredients.map(item => item.trim());
   cleanIngredients = ingredients.filter(item => item !== "");
-  console.log(cleanIngredients)
   }
   if(steps){
-  console.log(steps);
   steps = steps.map(item => item.trim());
-  cleanSteps = steps.filter(item => item !== "");
-  console.log(cleanSteps)
+  cleanSteps = steps.filter(item => item !== ""); 
   }
 
   if(!title){
@@ -118,7 +114,7 @@ exports.addRecipes = async (req, res) => {
   //check if any field is empty
   //if empty, go back to create recipe page, else create the recipe
   if(errorArr.length > 0){ 
-    console.log(errorArr)
+    
     let newrecipe={
       title: title,
       description: description,

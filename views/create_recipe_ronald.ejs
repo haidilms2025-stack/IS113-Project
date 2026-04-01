@@ -29,7 +29,9 @@
             margin-left: 15px;
             font-weight: bold;
         }
-
+        .navbar a:hover {
+            text-decoration: underline;
+        }
         #errorArr {
             background-color: #ffebee; /* Light red background */
             border: 1px solid #ffcdd2; /* Soft red border */
@@ -162,7 +164,13 @@
 <body>
 
     <div class="navbar">
-        <div><strong>🍳 Cookbook</strong></div>
+        <div>        
+        <a href="/">Home</a>
+        <a href="/recipes">Recipes</a>
+        <a href="/cart">🛒 Cart</a>
+        <a href="/myRecipes">Dashboard</a>
+        <a href="/recipes/favourites">Favourites</a>
+        </div>
         <div>
             <% if (user) { %>
                 👤 <%= user.username %>
