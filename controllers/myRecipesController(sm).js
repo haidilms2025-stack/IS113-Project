@@ -71,11 +71,11 @@ exports.addRecipes = async (req, res) => {
   let image = req.body.image;// get image
   let ingredients = req.body.ingredient; // get ingridients
   let steps = req.body.steps;// get steps
-  let difficulty = req.body.difficulty
-  let username = req.session.user.username
-  let email = req.session.user.email
+  let difficulty = req.body.difficulty// get difficulty
+  let username = req.session.user.username//get username
+  let email = req.session.user.email //get email
 
-  //cleaning up ingredients and steps arrays
+  //cleaning up all the values
   title = title.trim();
   description = description.trim();
   ingredients = ingredients.map(item => item.trim());
@@ -83,7 +83,9 @@ exports.addRecipes = async (req, res) => {
   steps = steps.map(item => item.trim());
   const cleanSteps = steps.filter(item => item !== "");
 
-  if(!title || !description || !difficulty ||cleanSteps.length == 0 ||cleanIngredients.length == 0){
+  //check if any field is empty
+  //if empty, go back to create recipe page, else create the recipe
+  if(!title || !description || !difficulty ||cleanSteps.length == 0 ||cleanIngredients.length == 0){ 
     let newrecipe={
       title: title,
       description: description,
@@ -92,7 +94,7 @@ exports.addRecipes = async (req, res) => {
       steps: cleanSteps,
       difficulty: difficulty,
     }
-    console.log(newrecipe)
+    //console.log(newrecipe)
     res.render('create_recipe_ronald',{recipe:newrecipe})
   }else{
   let newRecipe = {
