@@ -246,6 +246,10 @@ exports.findByTitle = (title) => {
     return recipes.findOne({ title: title })
 }
 
+exports.findUserRecipeTitle = (email, title) => {
+    return recipes.findOne({email:email, title:title})
+}
+
 exports.findRecipeByID = function (recipeID) {
     return recipes.findById(recipeID);  // Uses MongoDB's _id field
 };
