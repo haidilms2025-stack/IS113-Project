@@ -8,15 +8,10 @@ A full-stack web application for users to view food recipes, rate & comment on r
 - **Customer Reviews**: Feel free to comment and rate the many recipes on our page!
 - **Upload recipes**: Upload your own recipes for the world to enjoy!
 - **Manage Recipes**: Not satisfied with your recipes? You can amend them!
-
--**Search Bar**: Search for your favourite foods!
-
--**Sorting**: Sort the page by author’s name of your recipe, difficulty level, or ratings!
-
+- **Search Bar**: Search for your favourite foods!
+- **Sorting**: Sort the page by author’s name of your recipe, difficulty level, or ratings!
 - **Favorite Recipes**:  Have recipes that you simply love? Favourite them!
-
--**Shopping Cart**: Have a bunch of recipes you want to cook? Add ingredients from various recipes into your shopping list, and use it on your next trip to the store!
-
+- **Shopping Cart**: Have a bunch of recipes you want to cook? Add ingredients from various recipes into your shopping list, and use it on your next trip to the store!
 - **User Account**: Create User Account and Log In/Out
 
 ## Tech Stack
@@ -105,11 +100,10 @@ IS113-Project/
 
    npm start
 
-    npm run dev
-
+   npm run dev
 5. Open your browser
 
-    http://localhost:3000
+   http://localhost:3000
 
 ## Usage
 
