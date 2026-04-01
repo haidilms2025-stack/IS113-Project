@@ -286,7 +286,7 @@
             <br>
             <button type="submit" name="action" value="submitReview" class="btn-primary">
             <%= recipe.hasReviewed? "Update Review":" Submit Review" %> </button>
-            <button type="submit" name="action" value="deleteReview" id="deleteBtn">Delete Review</button>
+            <button type="submit" name="action" value="deleteReview" id="deleteBtn" formnovalidate>Delete Review</button>
             <button type="button" class="btn-secondary" onclick="closeReview()">Close</button>
         </form>
     </div>

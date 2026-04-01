@@ -18,8 +18,6 @@ const shoppingListSchema = new mongoose.Schema({
         required: true 
     },
     items: [cartItemSchema]
-}, {
-    timestamps: true
 });
 
 const shoppingList = mongoose.models.shoppingList || mongoose.model('shoppingList', shoppingListSchema);
