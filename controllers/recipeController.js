@@ -100,13 +100,10 @@ exports.filterRecipes = async (req, res) => {
 exports.updateRating = async (req, res) => {
 
   const action = req.body.action
-  const rating = parseInt(req.body.rating); //we need to parse the value into an integer, as of rn its a string
+  const rating = Number(req.body.rating); //we need to parse the value into an integer, as of rn its a string
   const recipeId = req.body.recipeId; //get the recipeId from the rating form, we will use it for updating later
   const email = req.session.user.email //get the email fro mthe session
 
-  if (!rating && action != 'deleteRating') {
-    return res.status(400).send("Please select a rating");
-  }
 
   try {
     if (action == "submitRating") {
@@ -117,6 +114,7 @@ exports.updateRating = async (req, res) => {
       }
       else {
         //else we add the rating
+        console.log(rating)
         await recipeModel.addRating(recipeId, email, rating);
       }
     } else if (action == "deleteRating") {
