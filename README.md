@@ -103,7 +103,7 @@ IS113-Project/
    npm run dev
 5. Open your browser
 
-   http://localhost:3000
+   http://localhost:8000
 
 ## Usage
 
