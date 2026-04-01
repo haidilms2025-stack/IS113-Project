@@ -30,7 +30,7 @@
             font-weight: bold;
         }
 
-        /* Form Container (Using Hero styling for consistency) [cite: 33] */
+
         .container {
             max-width: 800px;
             margin: 40px auto;
@@ -47,14 +47,14 @@
         }
 
         /* Form Elements */
-        label {
+        label, span {
             display: block;
             font-weight: bold;
             margin-bottom: 8px;
             margin-top: 15px;
         }
 
-        input[type="text"], textarea, select {
+        input[type="text"], select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -62,11 +62,26 @@
             box-sizing: border-box; /* Ensures padding doesn't affect width */
         }
 
-        textarea {
-            height: 100px;
-            resize: vertical;
+        #steps_list {
+            padding-left: 30px; 
+            margin-top: 10px;
         }
-
+        .step-row {
+            display: list-item; 
+            list-style-type: decimal; /* Ensures 1, 2, 3... numbering */
+            margin-bottom: 20px;
+            padding-left: 10px;
+        }
+        .step-row textarea {
+            width: 80%; /* Adjusted to leave space for the button */
+            vertical-align: middle;
+            display: inline-block;
+        }
+        .step-row .btn-secondary {
+            vertical-align: middle;
+            margin-left: 10px;
+            width: auto;
+        }        
         /* Buttons  */
         .btn {
             display: inline-block;
@@ -95,7 +110,7 @@
             background: #ddd;
         }
 
-        .ingredient-row, .step-row {
+        .ingredient-row {
             display: flex;
             gap: 10px;
             align-items: center;
@@ -167,12 +182,16 @@
             </div>
             <button type="button" class="btn btn-secondary" onclick="addIngredient()">+ Add Ingredient</button>
 
+            <br><br>
+
             <div id="add_step">
                 <span>Steps</span>
-                <label>Step1:</label>
-                <div class="step-row">
-                    <textarea name="steps[]" placeholder="Step 1" required></textarea>
-                </div>
+                <ol id="steps_list">
+                    <li class="step-row">
+                        <textarea name="steps[]" placeholder="Step description" required></textarea>
+                    </li>
+                </ol>
+                
             </div>
             <button type="button" class="btn btn-secondary" onclick="addStep()">+ Add Step</button>
 
@@ -185,8 +204,7 @@
     </div>
 
     <script>
-        let ingredientCount =1
-        let stepCount=1
+        //let ingredientCount =1
         function addIngredient() {
             //ingredientCount ++
 
@@ -226,34 +244,30 @@
             }
         
         function addStep() {
-            stepCount ++
 
-            // Change getElementByName to getElementById
-            const container = document.getElementById("add_step");
+            // Select the ordered list
+            const container = document.getElementById("steps_list");
             
-
-            const div = document.createElement("div"); // Wrap in a div for a new line
-            div.className = "step-row";
-            const label = document.createElement("label");// wrap a label 
-            label.textContent = "Step " + stepCount + ": ";//fill the label
+            const li = document.createElement("li"); // Wrap in a div for a new line
+            li.className = "step-row";
 
             const input = document.createElement("textarea");
             input.name = "steps[]";
-            input.placeholder = "Step "+ stepCount;
+            input.placeholder = "Step description";
 
             const removeBtn = document.createElement("button");
             removeBtn.textContent = "Remove";
             removeBtn.type = "button";
+            removeBtn.className = "btn-secondary"; // Optional: reuse your CSS class
             removeBtn.style.marginLeft = "10px";
 
             removeBtn.onclick = function() {
-            div.remove();
-            }
+            li.remove();
+            };
 
-            div.appendChild(label)
-            div.appendChild(input);
-            div.appendChild(removeBtn);
-            container.appendChild(div);
+            li.appendChild(input);
+            li.appendChild(removeBtn);
+            container.appendChild(li);
             }
         
         function uploadImage(){
@@ -266,39 +280,23 @@
             if (imageUrl) {
                 //Set the image source to the provided link 
                 preview.src = imageUrl;
-<<<<<<< Updated upstream
 
                 //Image loaded successfully
                 preview.onload = function () {
-                //Make the image visible
-                preview.style.display = 'block';
-                // Set a consistent width
-                preview.style.width = '300px';
-                };
-                
-                // Image failed to load ❌
-                preview.onerror = function () {
-                preview.style.display = 'none';
-                alert("Image failed to load!");
-                };  
-=======
-                
-                //image loaded properly
-                preview.onload = () => {
-                    // 4. Make the image visible 
+                    //Make the image visible
                     preview.style.display = 'block';
-        
                     // Set a consistent width
                     preview.style.width = '300px';
-                }
+                };
                 
-                //image failed to load
-                preview.onerror = () => {
+                // Image failed to load 
+                preview.onerror = function () {
                     preview.style.display = 'none';
                     alert("Image failed to load!");
-                }
->>>>>>> Stashed changes
+                };  
             } 
+            preview.style.display = 'none';
+
         }
 
 

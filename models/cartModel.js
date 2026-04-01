@@ -44,14 +44,14 @@ exports.addRecipeToCart = async (userID, recipeId, recipeTitle, ingredients) => 
     }
 };
 
-// Get cart grouped by recipe (using Object instead of Map)
+// Get cart grouped by recipe 
 exports.getCartGroupedByRecipe = async (userID) => {
     try {
         const cart = await shoppingList.findOne({ userID: userID });
         
         if (!cart) return { recipes: [] };
         
-        const recipesObj = {};  // Using object instead of Map
+        const recipesObj = {};  
         
         cart.items.forEach(item => {
             const recipeId = item.recipeId.toString();
@@ -120,14 +120,5 @@ exports.clearCart = async (userID) => {
         return cart;
     } catch (error) {
         throw new Error(`Error clearing cart: ${error.message}`);
-    }
-};
-
-// Display cart (simple version)
-exports.displayCart = async (userID) => {
-    try {
-        return await shoppingList.findOne({ userID: userID });
-    } catch (error) {
-        throw new Error(`Error displaying cart: ${error.message}`);
     }
 };

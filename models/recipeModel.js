@@ -168,13 +168,14 @@ exports.findRecipesByTitle = async function (title) {
     );
 }
 
-exports.addRating = function (recipeId, email, rating) {
+exports.addRating = function (recipeId, email, username, rating) {
     return recipes.updateOne(
         { _id: recipeId },
         {
             $push: {
                 ratings: {
                     email: email,
+                    username: username,
                     rating: rating
                 }
             }
@@ -307,11 +308,11 @@ exports.deleteFavourites = async (email, recipeId) => {
 };
 
 //delete recipe by title(sm)
-exports.deleteRecipe = (title) => {
-    return recipes.deleteOne({ title: title })
+exports.deleteRecipe = (title, email) => {
+    return recipes.deleteOne({ title: title, email: email })
 };
 
-exports.addReview = (recipeId, email, review) => {
+exports.addReview = (recipeId, email, username, review) => {
     console.log(recipeId, email, review)
     return recipes.updateOne(
         { _id: recipeId },
@@ -319,6 +320,7 @@ exports.addReview = (recipeId, email, review) => {
             $push: {
                 reviews: {
                     email: email,
+                    username:username,
                     review: review
                 }
             }
@@ -326,10 +328,10 @@ exports.addReview = (recipeId, email, review) => {
     );
 };
 
-exports.updateReview = function (recipeId, email, review) {
+exports.updateReview = function (recipeId, email, username, review ) {
     return recipes.updateOne(
         { _id: recipeId, "reviews.email": email }, //condition: find the recipe and the email coressponding to it
-        { $set: { "reviews.$.review": review } } // set the rating to be the new rating
+        { $set: { "reviews.$.review": review, "reviews.$.username":username } } // set the rating to be the new rating
     );
 }
 

@@ -4,9 +4,6 @@ const recipeModel = require("../models/recipeModel");
 // Add recipe to cart
 exports.addToCart = async (req, res) => {
     try {
-        if (!req.session.user) {
-            return res.redirect('/login');
-        }
         
         const userId = req.session.user._id;
         const recipeID = req.body.recipeId;
@@ -39,9 +36,6 @@ exports.addToCart = async (req, res) => {
 // View cart
 exports.viewCart = async (req, res) => {
     try {
-        if (!req.session.user) {
-            return res.redirect('/login');
-        }
         
         const userID = req.session.user._id;
         const cartData = await cartModel.getCartGroupedByRecipe(userID);
@@ -61,10 +55,7 @@ exports.viewCart = async (req, res) => {
 // Remove entire recipe
 exports.removeRecipe = async (req, res) => {
     try {
-        if (!req.session.user) {
-            return res.redirect('/login');
-        }
-        
+
         const userID = req.session.user._id;
         const { recipeId } = req.body;
         
@@ -81,10 +72,7 @@ exports.removeRecipe = async (req, res) => {
 // Remove single item
 exports.removeItem = async (req, res) => {
     try {
-        if (!req.session.user) {
-            return res.redirect('/login');
-        }
-        
+
         const userID = req.session.user._id;
         const { itemId } = req.body;
         
@@ -101,10 +89,7 @@ exports.removeItem = async (req, res) => {
 // Clear cart
 exports.clearCart = async (req, res) => {
     try {
-        if (!req.session.user) {
-            return res.redirect('/login');
-        }
-        
+
         const userID = req.session.user._id;
         await cartModel.clearCart(userID);
         

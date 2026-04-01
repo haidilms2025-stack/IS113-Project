@@ -53,15 +53,15 @@
             font-weight: bold;
             color: #333;
         }
-        .ingredients, .steps {
+        .ingredients, .steps, .reviews {
             margin: 30px 0;
         }
-        .ingredients h3, .steps h3 {
+        .ingredients h3, .steps h3, .reviews h3 {
             border-bottom: 2px solid #ddd;
             padding-bottom: 10px;
             margin-bottom: 15px;
         }
-        .ingredient-item, .step-item {
+        .ingredient-item, .step-item, .review-item {
             margin: 10px 0;
             padding: 10px;
             background-color: #f9f9f9;
@@ -207,6 +207,19 @@
         <% }) %>
     </div>
 
+    <div class="reviews">
+        <h3>Reviews</h3>
+        <% if(recipe.reviews.length === 0){ %>
+            <div class="review-item">No Review</div>
+        <% } else { %>
+        <% recipe.reviews.forEach(review => { %>
+            <div class="review-item">
+                <strong><%= review.username %>:</strong>
+                <p><%= review.review %></p>
+            </div>
+        <% })} %>
+    </div>
+
     <div class="rating-section">
         <button class="btn" onclick="openRating('<%= recipe._id %>', `<%=recipe.hasRated%>`)">
         ⭐ Rate
@@ -316,6 +329,8 @@ document.getElementById("ratingModal").addEventListener("click", function(event)
         closeRating();
     }
 });
+
+
 </script>
 </body>
 </html>
