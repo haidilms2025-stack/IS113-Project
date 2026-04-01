@@ -226,6 +226,9 @@ exports.updateAverageRating = async function (recipeId) {
         avg = total / ratingsArray.length; // we only calculate average if theres more than 1 rating
     }
 
+    console.log("avgRating:", avg);
+
+
     return recipes.updateOne(
         { _id: recipeId },
         { $set: { avgRating: avg } }

@@ -190,7 +190,7 @@
         <%
             let stars = "";
             if (recipe.avgRating) {
-                let fullStars = Math.round(recipe.avgRating);
+                let fullStars = Math.floor(recipe.avgRating);
                 for (let j = 0; j < fullStars; j++) {
                     stars += "⭐";
                 }
@@ -248,7 +248,6 @@
 
 </div>
 
-<!-- Rating Modal -->
 <div id="ratingModal" style="
     display:none;
     position:fixed;
@@ -267,7 +266,7 @@
     ">
         <h2>Rate this recipe</h2>
 
-        <form id="ratingForm" method="POST" action="recipes/rate">
+        <form id="ratingForm" method="POST" action="recipes/rate" on>
             
             <input type="hidden" name="recipeId" id="recipeIdInput">
 
@@ -285,7 +284,9 @@
                 You already rated this recipe
             </p>
 
-            <button class="btn" type="submit" name="action" value="submitRating" id="submitBtn">Submit</button>
+            <p id="errorMsg" style="color:red;"></p>
+
+            <button class="btn" type="submit" name="action" value="submitRating" onclick="return validateRating()" id="submitBtn">Submit</button>
             <button class="btn" type="submit" name="action" value="deleteRating" id="deleteBtn">Delete</button>
             <button class="btn" type="button" onclick="closeRating()">Cancel</button>
 
@@ -315,6 +316,20 @@ function openRating(recipeId, hasRated) {
 
 function closeRating() {
     document.getElementById("ratingModal").style.display = "none";
+}
+
+function validateRating() {
+    const rating = document.querySelector('input[name="rating"]:checked');
+    const errorMsg = document.getElementById("errorMsg");
+
+    if (!rating) {
+        errorMsg.textContent = "Please select a rating first.";
+        return false;
+    }
+
+    errorMsg.textContent = "";
+    return true;
+
 }
 </script>
 

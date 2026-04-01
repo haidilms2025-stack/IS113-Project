@@ -208,44 +208,55 @@
     </div>
 
     <div class="rating-section">
-        <% if(recipe.hasRated) { %>
-            <p><strong>✓ You have already rated this recipe!</strong></p>
-        <% } else { %>
-            <button class="btn-primary" onclick="openRating('<%= recipe._id %>')">⭐ Give A Rating</button>
-        <% } %>
+        <button class="btn" onclick="openRating('<%= recipe._id %>', `<%=recipe.hasRated%>`)">
+        ⭐ Rate
+    </button>
     </div>
     <div class="review-section">
             <button class="btn-primary" onclick="openReview('<%= recipe._id %>')">Give A Review</button>
     </div>
 </div>
 
-<div id="ratingModal" class="modal">
-    <div class="modal-content">
+<div id="ratingModal" style="
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.5);
+">
+
+    <div style="
+        background:white;
+        padding:20px;
+        margin:10% auto;
+        width:300px;
+        text-align:center;
+        border-radius:10px;
+    ">
         <h2>Rate this recipe</h2>
-        <form id="ratingForm" method="POST" action="/recipes/rate">
-            <input type="hidden" name="recipeId" id="recipeIdInput">
+
+        <form id="ratingForm" method="POST" action="recipes/rate">
             
-            <div class="rating-options">
-                <label>
-                    <input type="radio" name="rating" value="1"> ⭐ Poor
-                </label>
-                <label>
-                    <input type="radio" name="rating" value="2"> ⭐⭐ Fair
-                </label>
-                <label>
-                    <input type="radio" name="rating" value="3"> ⭐⭐⭐ Good
-                </label>
-                <label>
-                    <input type="radio" name="rating" value="4"> ⭐⭐⭐⭐ Very Good
-                </label>
-                <label>
-                    <input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐ Excellent
-                </label>
+            <input type="hidden" name="recipeId" id="recipeIdInput">
+
+            <div>
+                <input type="radio" name="rating" value="1"> ⭐ Poor<br>
+                <input type="radio" name="rating" value="2"> ⭐⭐ Fair<br>
+                <input type="radio" name="rating" value="3"> ⭐⭐⭐ Good<br>
+                <input type="radio" name="rating" value="4"> ⭐⭐⭐⭐ Very Good<br>
+                <input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐ Excellent
             </div>
             
             <br>
-            <button type="submit" class="btn-primary">Submit Rating</button>
-            <button type="button" class="btn-secondary" onclick="closeRating()">Cancel</button>
+
+            <p id="ratingMessage" style="color: green; display: none;">
+                You already rated this recipe
+            </p>
+
+            <button class="btn" type="submit" name="action" value="submitRating" id="submitBtn">Submit</button>
+            <button class="btn" type="submit" name="action" value="deleteRating" id="deleteBtn">Delete</button>
+            <button class="btn" type="button" onclick="closeRating()">Cancel</button>
+
         </form>
     </div>
 </div>
@@ -269,13 +280,27 @@
 </div>
 
 <script>
-function openRating(recipeId) {
-    document.getElementById("ratingModal").classList.add("active");
+function openRating(recipeId, hasRated) {
+    document.getElementById("ratingModal").style.display = "block";
     document.getElementById("recipeIdInput").value = recipeId;
+
+    const submitBtn = document.getElementById("submitBtn");
+    const deleteBtn = document.getElementById("deleteBtn");
+    const displayMessage = document.getElementById("ratingMessage");
+
+    if (hasRated === "true") {
+        submitBtn.textContent = "Update";
+        deleteBtn.style.display = "inline";
+        displayMessage.style.display = "block";
+    } else {
+        submitBtn.textContent = "Submit";
+        deleteBtn.style.display = "none";
+        displayMessage.style.display = "none";
+    }
 }
 
 function closeRating() {
-    document.getElementById("ratingModal").classList.remove("active");
+    document.getElementById("ratingModal").style.display = "none";
 }
 function openReview(recipeId){
     document.getElementById("reviewModal").classList.add("active");

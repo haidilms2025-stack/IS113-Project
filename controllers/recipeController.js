@@ -104,6 +104,10 @@ exports.updateRating = async (req, res) => {
   const recipeId = req.body.recipeId; //get the recipeId from the rating form, we will use it for updating later
   const email = req.session.user.email //get the email fro mthe session
 
+  if (!rating && action != 'deleteRating') {
+    return res.status(400).send("Please select a rating");
+  }
+
   try {
     if (action == "submitRating") {
       const existing = await recipeModel.hasUserRated(recipeId, email); //check if user already rated the recipe based on their email
