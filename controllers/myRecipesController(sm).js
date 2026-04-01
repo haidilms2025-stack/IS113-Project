@@ -33,6 +33,7 @@ exports.displayRecipes = async (req, res) => {
 //delete selected recipes by title from user dashboard
 exports.removeRecipe = async(req, res) => {
     let titles = normalizeToArray(req.body.titles)
+    let email = req.session.user.email
     console.log(titles)
     
     if (titles.length == 0){
@@ -41,7 +42,7 @@ exports.removeRecipe = async(req, res) => {
     
     try {
         for (let title of titles) {
-            let success = await myRecipesModel.deleteRecipe(title)
+            let success = await myRecipesModel.deleteRecipe(title, email)
             console.log(success)
         }
         res.redirect("/myRecipes")
@@ -108,9 +109,6 @@ exports.viewRecipes = async (req, res) => {
 
 
 exports.updateRecipes = async (req, res) => {
-
-  //Casper's Code goes here
-  //const recipes = await recipeModel.getAllRecipes();
   let newDesc = req.body.description
   let newIngredients = req.body.ingredients
   let image = req.body.image

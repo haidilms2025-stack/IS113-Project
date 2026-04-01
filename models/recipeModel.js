@@ -305,8 +305,8 @@ exports.deleteFavourites = async (email, recipeId) => {
 };
 
 //delete recipe by title(sm)
-exports.deleteRecipe = (title) => {
-    return recipes.deleteOne({ title: title })
+exports.deleteRecipe = (title, email) => {
+    return recipes.deleteOne({ title: title, email: email })
 };
 
 exports.addReview = (recipeId, email, username, review) => {

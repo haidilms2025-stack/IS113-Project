@@ -289,12 +289,14 @@
                 preview.style.width = '300px';
                 };
                 
-                // Image failed to load ❌
+                // Image failed to load 
                 preview.onerror = function () {
                 preview.style.display = 'none';
                 alert("Image failed to load!");
                 };  
             } 
+            preview.style.display = 'none';
+
         }
 
 
