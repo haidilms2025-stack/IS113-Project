@@ -76,6 +76,8 @@ exports.addRecipes = async (req, res) => {
   let email = req.session.user.email
 
   //cleaning up ingredients and steps arrays
+  title = title.trim();
+  description = description.trim();
   ingredients = ingredients.map(item => item.trim());
   const cleanIngredients = ingredients.filter(item => item !== "");
   steps = steps.map(item => item.trim());

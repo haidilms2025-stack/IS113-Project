@@ -158,6 +158,7 @@ exports.updateReviews = async (req, res) => {
 
 }
 //create and update recipes controller moved to myRecipesController(sm)
+/*
 exports.showCreateRecipe = (req, res) => {
   const user = req.session.user
   res.render('create_recipe_ronald', { user })
@@ -197,7 +198,7 @@ exports.addRecipes = async (req, res) => {
   }
 
 }
-
+*/
 exports.updateReviews = async (req, res) => {
 
   if (!req.session.user) { //if the user is not logged in, they cannot give a rating, redirect them  to login page
