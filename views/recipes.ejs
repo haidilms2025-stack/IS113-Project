@@ -179,8 +179,9 @@
 
 <div class="card">
 
+    <% if(recipe.image){%>
     <img src="<%= recipe.image %>" alt="recipe image">
-
+    <%}%>
     <h3><%= recipe.title %></h3>
 
     <p><strong>Author:</strong> <%= recipe.username %></p>
