@@ -1,3 +1,4 @@
+//import recipe model 
 const myRecipesModel = require("../models/recipeModel.js")
 
 
@@ -30,7 +31,7 @@ exports.displayRecipes = async (req, res) => {
 }
 
 
-//delete selected recipes by title from user dashboard
+//delete selected recipes by title and email from user dashboard
 exports.removeRecipe = async(req, res) => {
     let titles = normalizeToArray(req.body.titles)
     let email = req.session.user.email
@@ -53,7 +54,7 @@ exports.removeRecipe = async(req, res) => {
 }
 
 
-//add recipe code
+//display add create recipe page
 exports.showCreateRecipe = (req, res) => {
   let recipe={
     ingredients:[],
@@ -62,6 +63,8 @@ exports.showCreateRecipe = (req, res) => {
   res.render('create_recipe_ronald',{recipe})
 }
 
+
+//add recipe
 exports.addRecipes = async (req, res) => {
   let title = req.body.title;// get title
   let description = req.body.description;// get description
@@ -110,7 +113,7 @@ exports.addRecipes = async (req, res) => {
 }
 
 
-//edit recipe
+//display edit recipes
 exports.viewRecipes = async (req, res) => {
     let title = req.query.title;
     console.log(title);
@@ -124,6 +127,7 @@ exports.viewRecipes = async (req, res) => {
 }
 
 
+//update recipes
 exports.updateRecipes = async (req, res) => {
   let newDesc = req.body.description
   let newIngredients = req.body.ingredients
