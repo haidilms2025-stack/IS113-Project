@@ -168,14 +168,13 @@ exports.findRecipesByTitle = async function (title) {
     );
 }
 
-exports.addRating = function (recipeId, email, username, rating) {
+exports.addRating = function (recipeId, email, rating) {
     return recipes.updateOne(
         { _id: recipeId },
         {
             $push: {
                 ratings: {
                     email: email,
-                    username: username,
                     rating: rating
                 }
             }

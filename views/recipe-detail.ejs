@@ -248,7 +248,7 @@
     ">
         <h2>Rate this recipe</h2>
 
-        <form id="ratingForm" method="POST" action="recipes/rate">
+        <form id="ratingForm" method="POST" action="../recipes/rate">
             
             <input type="hidden" name="recipeId" id="recipeIdInput">
 
@@ -329,6 +329,20 @@ document.getElementById("ratingModal").addEventListener("click", function(event)
         closeRating();
     }
 });
+
+function validateRating() {
+    const rating = document.querySelector('input[name="rating"]:checked');
+    const errorMsg = document.getElementById("errorMsg");
+
+    if (!rating) {
+        errorMsg.textContent = "Please select a rating first.";
+        return false;
+    }
+
+    errorMsg.textContent = "";
+    return true;
+
+}
 
 
 </script>

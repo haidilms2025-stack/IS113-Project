@@ -114,7 +114,6 @@ exports.updateRating = async (req, res) => {
       }
       else {
         //else we add the rating
-        console.log(rating)
         await recipeModel.addRating(recipeId, email, rating);
       }
     } else if (action == "deleteRating") {
