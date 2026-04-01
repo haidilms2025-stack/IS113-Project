@@ -55,7 +55,11 @@ exports.removeRecipe = async(req, res) => {
 
 //add recipe code
 exports.showCreateRecipe = (req, res) => {
-  res.render('create_recipe_ronald')
+  let recipe={
+    ingredients:[],
+    steps:[]
+  }
+  res.render('create_recipe_ronald',{recipe})
 }
 
 exports.addRecipes = async (req, res) => {
@@ -74,6 +78,18 @@ exports.addRecipes = async (req, res) => {
   steps = steps.map(item => item.trim());
   const cleanSteps = steps.filter(item => item !== "");
 
+  if(!title || !description || !difficulty ||cleanSteps.length == 0 ||cleanIngredients.length == 0){
+    let newrecipe={
+      title: title,
+      description: description,
+      image: image,
+      ingredients: cleanIngredients,
+      steps: cleanSteps,
+      difficulty: difficulty,
+    }
+    console.log(newrecipe)
+    res.render('create_recipe_ronald',{recipe:newrecipe})
+  }else{
   let newRecipe = {
     title: title,
     description: description,
@@ -90,7 +106,7 @@ exports.addRecipes = async (req, res) => {
   } catch (error) {
     console.log(error)
   }
-
+  }
 }
 
 
