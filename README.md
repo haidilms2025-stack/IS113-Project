@@ -161,7 +161,7 @@ IS113-Project/
 - POST / authentication/update - Shows account successfully updated page
 - GET /authentication/delete - Shows delete account page
 - POST /authentication/delete - Shows account delete successfully account page
-- Get /authentication/logout - Logs out the user from their account
+- GET /authentication/logout - Logs out the user from their account
 - GET /authentication/admin-profile - Shows admin panel page
 
 ### Manage Recipes
