@@ -72,7 +72,7 @@ exports.addRecipes = async (req, res) => {
   let image = req.body.image; // get image
   let ingredients = req.body.ingredient; // get ingridients
   let steps = req.body.steps; // get steps
-  let difficulty = req.body.difficulty; // get difficulty
+  let difficulty = Number(req.body.difficulty); // get difficulty
   let username = req.session.user.username; //get username
   let email = req.session.user.email; //get email
   const existingTitle = await myRecipesModel.findUserRecipeTitle(email,title);

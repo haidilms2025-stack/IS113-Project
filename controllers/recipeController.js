@@ -14,13 +14,14 @@ exports.displayRecipes = async (req, res) => {
 
     if (req.session.user) {
       recipes.forEach(recipe => { // for each recipe in the database, we will assign a hasRated variable
-        recipe.hasRated = recipe.ratings.some(r => r.email === userEmail); //if the recipe's rating already has the user's email, it means they already rated it
-
-        const userRatingObj = recipe.ratings.find(r =>
-          r.email === userEmail
-        );
-
-        recipe.userRating = userRatingObj ? userRatingObj.value : null;
+        // check hasRated
+        recipe.hasRated = false
+        for (let i = 0; i < recipe.ratings.length; i++) {
+          if (recipe.ratings[i].email === userEmail) {
+            recipe.hasRated = true
+            break
+          }
+        }
       });
     }
 
@@ -211,28 +212,28 @@ exports.updateReviews = async (req, res) => {
   const email = req.session.user.email; //get the email from the session
   const username = req.session.user.username; //get the username from the session
 
-  try{
-    if(action == "deleteReview"){
-    await recipeModel.deleteReview(recipeId,email)
+  try {
+    if (action == "deleteReview") {
+      await recipeModel.deleteReview(recipeId, email)
     }
-  }catch{
+  } catch {
     console.error(error);
     res.send(error.toString());
   }
   review = review.trim();
-  if(!review){
+  if (!review) {
     return res.redirect(`/recipes/${recipeId}?`)
   }
   try {
-      if (action == "submitReview") {
-      const existing = await recipeModel.hasUserReviewed(recipeId, email); 
-      
-        if (existing) { //if it returns a record, means user already submitted a review
-          await recipeModel.updateReview(recipeId, email, username, review);
-        } else { //else we add the review
-          await recipeModel.addReview(recipeId, email, username, review);
-        }
-    } 
+    if (action == "submitReview") {
+      const existing = await recipeModel.hasUserReviewed(recipeId, email);
+
+      if (existing) { //if it returns a record, means user already submitted a review
+        await recipeModel.updateReview(recipeId, email, username, review);
+      } else { //else we add the review
+        await recipeModel.addReview(recipeId, email, username, review);
+      }
+    }
     res.redirect(`/recipes/${recipeId}?`);
   } catch (error) {
     console.error(error);
@@ -276,7 +277,7 @@ exports.updateReviews = async (req, res) => {
 
 //Casper's code to update favourites list from haildil's recipe page
 exports.updateFavourites = async (req, res) => {
-  if(!req.session.user) { // no log in then kena sent back to login page L bozo
+  if (!req.session.user) { // no log in then kena sent back to login page L bozo
     return res.redirect("/authentication/login")
   }
   const email = req.session.user.email
@@ -293,12 +294,12 @@ exports.updateFavourites = async (req, res) => {
     // Check if recipe is already in favourites
     const isDuplicate = await recipeModel.isRecipeInFavourites(email, recipeID) // using thing from recipe mode page
     console.log("Is duplicate?:", isDuplicate) //check if got duplicate anot
-    
+
     if (isDuplicate) {
       console.log("Recipe already in favourites, skipping add")
       return res.redirect("/recipes/favourites") //if duplicate then dont add, jusr redirect to fav page
     }
-    
+
     await recipeModel.addToFavourites(email, recipe) //if not then add to favourites using the thing from models page
     console.log("Added to favourites successfully!") //if it works then send this
     res.redirect("/recipes/favourites") // reload page
@@ -310,7 +311,7 @@ exports.updateFavourites = async (req, res) => {
 
 //Casper's code to delete favourites from favourites page
 exports.deleteFavourites = async (req, res) => {
-  if(!req.session.user) { // no log in then kena sent back to login page L bozo
+  if (!req.session.user) { // no log in then kena sent back to login page L bozo
     return res.redirect("/authentication/login")
   }
   const email = req.session.user.email
@@ -319,15 +320,15 @@ exports.deleteFavourites = async (req, res) => {
   console.log("Deleting from favourites - Email:", email, "RecipeID:", recipeID)
 
   try {
-      const result = await recipeModel.deleteFavourites(email, recipeID) //from recipe.model
-      console.log("Delete result:", result)
-      
-      if (!result) {
-        console.log("Recipe not found in favourites or user not found") //if cannot find recipe or user the send this
-      } else {
-        console.log("Removed from favourites successfully!") // if not send this
-      }
-      res.redirect("/recipes/favourites") //reload the fav page
+    const result = await recipeModel.deleteFavourites(email, recipeID) //from recipe.model
+    console.log("Delete result:", result)
+
+    if (!result) {
+      console.log("Recipe not found in favourites or user not found") //if cannot find recipe or user the send this
+    } else {
+      console.log("Removed from favourites successfully!") // if not send this
+    }
+    res.redirect("/recipes/favourites") //reload the fav page
   } catch (error) {
     console.error("Error deleting from favourites:", error)
     res.status(500).send(error.toString())
@@ -339,7 +340,7 @@ exports.viewRecipe = async (req, res) => {
   try {
     const recipeID = req.params.id
     const recipe = await recipeModel.findRecipeByID(recipeID) //find one recipe using its id
-    
+
     if (!recipe) {
       return res.status(404).send("Recipe not found") // good ol error 404
     }
@@ -347,9 +348,25 @@ exports.viewRecipe = async (req, res) => {
     let userEmail = "" // initialise email is empty string
     if (req.session.user) { // if user is logged in
       userEmail = req.session.user.email // change userEmail to the user's email
-      recipe.hasRated = recipe.ratings.some(r => r.email === userEmail) //return true if user's email(unique) is inside ratings 
-      recipe.hasReviewed = recipe.reviews.some(r => r.email === userEmail)
-       
+
+      // check hasRated
+      recipe.hasRated = false
+      for (let i = 0; i < recipe.ratings.length; i++) {
+        if (recipe.ratings[i].email === userEmail) {
+          recipe.hasRated = true
+          break
+        }
+      }
+
+      // check hasReviewed
+      recipe.hasReviewed = false
+      for (let i = 0; i < recipe.reviews.length; i++) {
+        if (recipe.reviews[i].email === userEmail) {
+          recipe.hasReviewed = true
+          break
+        }
+      }
+
     } else {
       recipe.hasRated = false //if no user log in, then is default havent rate yet 
       recipe.hasReviewed = false

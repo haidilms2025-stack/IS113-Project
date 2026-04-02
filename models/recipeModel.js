@@ -44,7 +44,7 @@ const recipeSchema = new mongoose.Schema({
         required: [true, 'A recipe must have steps']
     },
     difficulty: {
-        type: Array,
+        type: Number,
         required: [true, 'A recipe must have a difficulty']
     },
     ratings: {
