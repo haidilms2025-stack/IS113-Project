@@ -116,6 +116,7 @@ IS113-Project/
 5. **Recipe Features**: For each recipe, the users can view more details about the recipe when they click on ‘View’. They users are able to give a rating from 1 to 5 stars, update their ratings and delete their ratings. The users can also add or remove favourite recipes with a dashboard displaying their favourite recipes. The users can also leave a review for the recipe or delete and update their existing reviews. They can also view the reviews left by other users.
 6. **Shopping Cart** : The users can add all their specified recipe’s ingredients to their own shopping list. This shopping list shows all recipe ingredients, organised by recipe, which they can dynamically remove. Users can delete specified ingredients,recipes, or the entire list from their cart.
 7. **Manage Individual Recipe**: Users can Click on either Dashboard at the top or Manage My Recipes to access the dashboard showing the recipes they created. Users can click on +Create New Recipe to go to create recipe page where they can give it a title, description, difficulty rating, image url, ingredients and steps. Users can click on Edit on each of their created recipes to edit recipe image url, description, ingredients and steps. Users can also delete selected recipes from the dashboard.
+8. **Adding Image url for creating recipes**: Users can choose an image from google images, right click on the image and select “Copy image address** and paste the url in the image url field
 
 ## For Developers
 
