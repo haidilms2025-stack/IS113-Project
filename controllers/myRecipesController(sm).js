@@ -56,36 +56,65 @@ exports.removeRecipe = async(req, res) => {
 
 //display add create recipe page
 exports.showCreateRecipe = (req, res) => {
+  let errorArr=[]
   let recipe={
     ingredients:[],
     steps:[]
   }
-  res.render('create_recipe_ronald',{recipe})
+  res.render('create_recipe_ronald',{recipe, errorArr})
 }
 
 
 //add recipe
 exports.addRecipes = async (req, res) => {
-  let title = req.body.title;// get title
-  let description = req.body.description;// get description
-  let image = req.body.image;// get image
+  let title = req.body.title; // get title
+  let description = req.body.description; // get description
+  let image = req.body.image; // get image
   let ingredients = req.body.ingredient; // get ingridients
-  let steps = req.body.steps;// get steps
-  let difficulty = req.body.difficulty// get difficulty
-  let username = req.session.user.username//get username
-  let email = req.session.user.email //get email
+  let steps = req.body.steps; // get steps
+  let difficulty = req.body.difficulty; // get difficulty
+  let username = req.session.user.username; //get username
+  let email = req.session.user.email; //get email
+  const existingTitle = await myRecipesModel.findUserRecipeTitle(email,title);
+  let errorArr =[];
+  let cleanIngredients=[];
+  let cleanSteps=[];
 
   //cleaning up all the values
   title = title.trim();
   description = description.trim();
+  if(ingredients){
   ingredients = ingredients.map(item => item.trim());
-  const cleanIngredients = ingredients.filter(item => item !== "");
+  cleanIngredients = ingredients.filter(item => item !== "");
+  }
+  if(steps){
   steps = steps.map(item => item.trim());
-  const cleanSteps = steps.filter(item => item !== "");
+  cleanSteps = steps.filter(item => item !== ""); 
+  }
+
+  if(!title){
+    errorArr.push("Need a title")
+  } else if(existingTitle){
+    errorArr.push("Need a new title")
+  }
+  if (!description){
+    errorArr.push("Need a description")
+  }
+  if (!difficulty){
+    errorArr.push("Select a difficulty rating")
+  }
+  if (cleanSteps.length == 0) {
+    errorArr.push("Insert at least one step")
+  }
+  if (cleanIngredients.length == 0){
+    errorArr.push("Insert at least one ingredient")
+  }
+  
 
   //check if any field is empty
   //if empty, go back to create recipe page, else create the recipe
-  if(!title || !description || !difficulty ||cleanSteps.length == 0 ||cleanIngredients.length == 0){ 
+  if(errorArr.length > 0){ 
+    
     let newrecipe={
       title: title,
       description: description,
@@ -95,7 +124,7 @@ exports.addRecipes = async (req, res) => {
       difficulty: difficulty,
     }
     //console.log(newrecipe)
-    res.render('create_recipe_ronald',{recipe:newrecipe})
+    res.render('create_recipe_ronald',{recipe:newrecipe,errorArr})
   }else{
   let newRecipe = {
     title: title,

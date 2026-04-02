@@ -29,7 +29,28 @@
             margin-left: 15px;
             font-weight: bold;
         }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        #errorArr {
+            background-color: #ffebee; /* Light red background */
+            border: 1px solid #ffcdd2; /* Soft red border */
+            color: #c62828; /* Deep red text */
+            padding: 15px 20px;
+            border-radius: 5px;
+            list-style-type: none; /* Removes bullets */
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
 
+        #errorArr li {
+            margin-bottom: 5px;
+        }
+
+        #errorArr li::before {
+            content: "⚠️ "; /* Adds a small warning icon before each error */
+            margin-right: 8px;
+        }
 
         .container {
             max-width: 800px;
@@ -143,7 +164,13 @@
 <body>
 
     <div class="navbar">
-        <div><strong>🍳 Cookbook</strong></div>
+        <div>        
+        <a href="/">Home</a>
+        <a href="/recipes">Recipes</a>
+        <a href="/cart">🛒 Cart</a>
+        <a href="/myRecipes">Dashboard</a>
+        <a href="/recipes/favourites">Favourites</a>
+        </div>
         <div>
             <% if (user) { %>
                 👤 <%= user.username %>
@@ -156,8 +183,13 @@
     <div class="container">
         <form action="/myRecipes/create-recipe" method="post">
             <h1>Create Recipe</h1>
-            
-            <% console.log("aaaaa",recipe) %>
+            <% if (errorArr.length >0){ %>
+            <ul id="errorArr">
+                <% errorArr.forEach(element => { %>
+                    <li><%=element%></li>
+                <%}); %>
+            </ul>
+            <% } %>
             <label>Title</label>
             <input type="text" name="title" placeholder="Enter Title" value ="<%= recipe.title?recipe.title:""  %>"required>
 
