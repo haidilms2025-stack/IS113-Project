@@ -184,7 +184,7 @@ recipeSchema
 - image: String
 - ingredients: Array, required
 - steps: Array, required
-- difficulty: Array, required
+- difficulty: Number, required
 - ratings: Array of Objects containing email as String and rating as Number, default value is empty array
 - reviews: Array of Objects containing email as String, username as String and review as String, default value is empty array
 - email: String, required
