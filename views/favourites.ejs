@@ -257,7 +257,9 @@
                 <div class="recipes-grid">
                     <% user.favourites.forEach((favourite)=> { %>
                         <div class="recipe-card">
+                            <% if(favourite.image){%>
                             <img src="<%= favourite.image %>" alt="<%= favourite.title %>" class="recipe-image">
+                            <%}%>
 
                             <div class="recipe-content">
                                 <h3 class="recipe-title" title="<%= favourite.title %>">
