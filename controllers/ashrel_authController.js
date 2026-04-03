@@ -201,7 +201,7 @@ exports.deleteAccount = async (req, res) => {
     try {
         // delete all recipes user created
         let deletedRecipes = await userModel.deleteAllRecipes(email);
-        console.log(`Delted recipes: ${deletedRecipes}`);
+        console.log(`Deleted recipes: ${deletedRecipes}`);
 
         // delete user from database
         await userModel.deleteUser(email);
