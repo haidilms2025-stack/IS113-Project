@@ -4,37 +4,37 @@ const recipeModel = require("../models/recipeModel");
 // Add recipe to cart
 exports.addToCart = async (req, res) => {
     try {
-        const userId = req.session.user._id;
-        const recipeID = req.body.recipeId;
+        const userId = req.session.user._id; //References user 
+        const recipeID = req.body.recipeId; //References Recipe
         const recipe = await recipeModel.findRecipeByID(recipeID);
         if (!recipe) {
             return res.redirect('back');
         }
-        if (!recipe.ingredients || recipe.ingredients.length === 0) {
+        if (!recipe.ingredients || recipe.ingredients.length === 0) { //Error handling
             return res.redirect('back');
         }
-        await cartModel.addRecipeToCart(
+        await cartModel.addRecipeToCart( //Passes recipe data to function
             userId, 
             recipe._id, 
             recipe.title, 
             recipe.ingredients
         );
-        res.redirect('/cart');
-    } catch (error) {
+        res.redirect('/cart'); //Displays the cart
+    } catch (error) { 
         console.error('Error adding to cart:', error);
         res.redirect('back');
     }
 };
 
-// View cart
+// View cart 
 exports.viewCart = async (req, res) => {
     try {
         const userID = req.session.user._id;
-        const cartData = await cartModel.getCartGroupedByRecipe(userID);  
+        const cartData = await cartModel.getCartGroupedByRecipe(userID);  //Organises cart by Recipe
         res.render('cart', { 
             recipes: cartData.recipes || [],
-            totalItems: cartData.totalItems || 0,
-            user: req.session.user
+            totalItems: cartData.totalItems || 0, //Prevent null values
+            user: req.session.user 
         });
     } catch (error) {
         console.error('Error viewing cart:', error);

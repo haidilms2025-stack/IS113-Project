@@ -10,7 +10,7 @@ const cartItemSchema = new mongoose.Schema({
     },
     recipeTitle: { type: String, required: true }
 });
-
+// Shopping List Schema
 const shoppingListSchema = new mongoose.Schema({
     userID: { 
         type: mongoose.Schema.Types.ObjectId, 
@@ -34,7 +34,7 @@ exports.addRecipeToCart = async (userID, recipeId, recipeTitle, ingredients) => 
         const cart = await shoppingList.findOneAndUpdate(
             { userID: userID },
             { $push: { items: { $each: cartItems } } },
-            { upsert: true, returnDocument: 'after' }
+            { upsert: true, returnDocument: 'after' } //Creates new cart if non-existent
         );
         return cart;
     } catch (error) {
@@ -45,7 +45,7 @@ exports.addRecipeToCart = async (userID, recipeId, recipeTitle, ingredients) => 
 // Get cart grouped by recipe 
 exports.getCartGroupedByRecipe = async (userID) => {
     try {
-        const cart = await shoppingList.findOne({ userID: userID });
+        const cart = await shoppingList.findOne({ userID: userID }); 
         
         if (!cart) return { recipes: [] };
         
@@ -53,9 +53,8 @@ exports.getCartGroupedByRecipe = async (userID) => {
         
         cart.items.forEach(item => {
             const recipeId = item.recipeId.toString();
-            
-            // If this recipe doesn't exist in the object, create it
-            if (!recipesObj[recipeId]) {
+
+            if (!recipesObj[recipeId]) { // If this recipe doesn't exist in the object, create it
                 recipesObj[recipeId] = {
                     recipeId: item.recipeId,
                     recipeTitle: item.recipeTitle,
@@ -63,15 +62,14 @@ exports.getCartGroupedByRecipe = async (userID) => {
                 };
             }
             
-            // Add the item to the recipe's items array
-            recipesObj[recipeId].items.push({
+            recipesObj[recipeId].items.push({ // Add the item to the recipe's items array
                 name: item.name,
-                itemId: item._id
+                itemId: item._id //Unique identifier for each item
             });
         });
         
         return {
-            recipes: Object.values(recipesObj),  // Convert object to array
+            recipes: Object.values(recipesObj),  // Convert object to an array
             totalItems: cart.items.length
         };
     } catch (error) {
