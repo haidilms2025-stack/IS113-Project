@@ -220,11 +220,19 @@
 
         <% if (user) { %>
 
+            <% if (user.role === 'admin') { %>
+                <span class="admin-badge">👑 ADMIN</span>: <%= user.username %>
+            <% } else { %>
                 👤 <%= user.username %>
+            <% } %>
 
             <a href="/authentication/logout">Logout</a>
             <a href="/authentication/update">Update Account</a>
             <a href="/authentication/delete">Delete Account</a>
+
+            <% if (user.role === 'admin') { %>
+                <a href="/authentication/admin-profile">Admin Panel</a>
+            <% } %>
 
         <% } else { %>
 
