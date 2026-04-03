@@ -242,9 +242,9 @@ exports.editRecipes = function (title, email, description, ingredients, steps, i
     return recipes.updateOne({ title: title, email: email }, { description: description, ingredients: ingredients, steps: steps, image: image});
 }
 
-exports.findByTitle = (title) => {
-    return recipes.findOne({ title: title })
-}
+// exports.findByTitle = (title) => {
+//     return recipes.findOne({ title: title })
+// }
 
 exports.findUserRecipeTitle = (email, title) => {
     return recipes.findOne({email:email, title:title})

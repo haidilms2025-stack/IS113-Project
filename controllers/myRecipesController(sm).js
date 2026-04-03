@@ -106,6 +106,7 @@ exports.addRecipes = async (req, res) => {
   cleanSteps = steps.filter(item => item !== ""); 
   }
 
+  //check for any missing fields or duplicate
   if(!title){
     errorArr.push("Need a title")
   } else if(existingTitle){
@@ -163,10 +164,11 @@ exports.addRecipes = async (req, res) => {
 //display edit recipes
 exports.viewRecipes = async (req, res) => {
     let title = req.query.title;
-    console.log(title);
+    let email = req.session.user.email
+    //console.log(title);
 
     try {
-        let result = await myRecipesModel.findByTitle(title)
+        let result = await myRecipesModel.findUserRecipeTitle(email,title)
         res.render("casper_editRecipe", { result })
     } catch (error) {
         console.error("unable to find recipe")
