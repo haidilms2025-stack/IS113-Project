@@ -42,10 +42,24 @@ exports.removeRecipe = async(req, res) => {
     }
     
     try {
+        //recipe titles stored as array
         for (let title of titles) {
             let success = await myRecipesModel.deleteRecipe(title, email)
             console.log(success)
         }
+
+        //find recipe id from recipe and delete recipe from favourite
+        // for (let title of titles) {
+        //     let recipe = await myRecipesModel.findByTitle(title)
+        //     let recipeID = recipe.__id
+        //     console.log(`Recipe ID: ${recipeID} Recipe title: ${recipe.title} `)
+
+        //     //remove deleted recipes from favourite
+        //     let deletedFromFav = await myRecipesModel.deleteFavourites(email, recipeID)
+        //     console.log(`Deleted Recipe: ${deletedFromFav}`)
+              
+        // }
+        
         res.redirect("/myRecipes")
     
     } catch(error) {
