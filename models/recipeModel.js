@@ -293,7 +293,7 @@ exports.deleteFavourites = async (email, recipeId) => {
         const result = await users.findOneAndUpdate( //find a user with same email, update 
             { email: email },
             { $pull: { favourites: { _id: new mongoose.Types.ObjectId(recipeId) } } }, // update by pulling the recipe with same id from the mongo array
-            { new: true }
+            { new: true } //new result is the updated document
         );
 
         console.log("Delete result - User found?:", result !== null) // check if user is found
